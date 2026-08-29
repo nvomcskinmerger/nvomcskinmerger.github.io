@@ -750,29 +750,33 @@
 
     <script type="module">
         window.NVO_FIREBASE_READY = (async () => {
-            const [{ initializeApp }, analytics, auth, firestore] = await Promise.all([
-                import("https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"),
-                import("https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js"),
-                import("https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"),
-                import("https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js")
-            ]);
-            const firebaseConfig = {
-                apiKey: "AIzaSyCC2or3KD_8xKKEP01jM850UFQ_4HFym4M",
-                authDomain: "nvomcskinmerger.firebaseapp.com",
-                projectId: "nvomcskinmerger",
-                storageBucket: "nvomcskinmerger.firebasestorage.app",
-                messagingSenderId: "747052660692",
-                appId: "1:747052660692:web:0bdd140b9eeaec7ed2c841",
-                measurementId: "G-3LNDXMDRB3"
-            };
-            const firebaseApp = initializeApp(firebaseConfig);
-            try { if (await analytics.isSupported()) analytics.getAnalytics(firebaseApp); } catch(e) {}
-            const firebaseAuth = auth.getAuth(firebaseApp);
-            const firebaseDb = firestore.getFirestore(firebaseApp);
-            const googleProvider = new auth.GoogleAuthProvider();
-            googleProvider.setCustomParameters({ prompt: 'select_account' });
-            return { firebaseAuth, firebaseDb, googleProvider, ...auth, ...firestore };
-        })().catch(err => { console.error('Firebase başlatılamadı:', err); return null; });
+            try {
+                const [{ initializeApp }, auth, firestore] = await Promise.all([
+                    import("https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"),
+                    import("https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"),
+                    import("https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js")
+                ]);
+                const firebaseConfig = {
+                    apiKey: "AIzaSyCC2or3KD_8xKKEP01jM850UFQ_4HFym4M",
+                    authDomain: "nvomcskinmerger.firebaseapp.com",
+                    projectId: "nvomcskinmerger",
+                    storageBucket: "nvomcskinmerger.firebasestorage.app",
+                    messagingSenderId: "747052660692",
+                    appId: "1:747052660692:web:0bdd140b9eeaec7ed2c841",
+                    measurementId: "G-3LNDXMDRB3"
+                };
+                const firebaseApp = initializeApp(firebaseConfig);
+                const firebaseAuth = auth.getAuth(firebaseApp);
+                await auth.setPersistence(firebaseAuth, auth.browserLocalPersistence);
+                const firebaseDb = firestore.getFirestore(firebaseApp);
+                const googleProvider = new auth.GoogleAuthProvider();
+                googleProvider.setCustomParameters({ prompt: 'select_account' });
+                return { firebaseAuth, firebaseDb, googleProvider, ...auth, ...firestore };
+            } catch (err) {
+                console.error('Firebase başlatma hatası:', err);
+                return { error: err };
+            }
+        })();
     </script>
 
     <script>
@@ -843,15 +847,24 @@
                 if (!firebaseApi) throw new Error('Firebase başlatılamadı');
                 await firebaseApi.signInWithPopup(firebaseApi.firebaseAuth, firebaseApi.googleProvider);
             } catch(e) {
-                log('Google giriş başarısız: ' + (e.code || e.message), 'error');
+                const code = e?.code || '';
+                let msg = e?.message || 'Bilinmeyen hata';
+                if (code === 'auth/unauthorized-domain') msg = 'Bu alan adı Firebase Authentication > Yetkili alanlar bölümünde ekli değil.';
+                if (code === 'auth/popup-blocked') msg = 'Tarayıcı Google giriş penceresini engelledi. Açılır pencerelere izin verin.';
+                if (code === 'auth/popup-closed-by-user') msg = 'Google giriş penceresi kapatıldı.';
+                if (code === 'auth/operation-not-allowed') msg = 'Firebase Authentication içinde Google sağlayıcısı etkin değil.';
+                log('Google giriş başarısız' + (code ? ' [' + code + ']' : '') + ': ' + msg, 'error');
+                authStatusEl.textContent = msg;
             }
         }
         googleLoginBtn.addEventListener('click', handleGoogleLogin);
 
         (async () => {
             firebaseApi = await window.NVO_FIREBASE_READY;
-            if (!firebaseApi) {
+            if (!firebaseApi || firebaseApi.error) {
+                const err = firebaseApi?.error;
                 authStatusEl.textContent = 'Firebase bağlantısı kurulamadı';
+                log('Firebase başlatılamadı: ' + (err?.code || err?.message || 'Bilinmeyen hata'), 'error');
                 return;
             }
             firebaseApi.onAuthStateChanged(firebaseApi.firebaseAuth, user => {
