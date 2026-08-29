@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NVO MC SKIN MERGER v4.1 - Next-Gen Studio</title>
+    <title>NVO MC SKIN MERGER v5.6 - Mobile Safe Area</title>
     <!-- Sekme Logosu (Favicon) -->
     <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAANUlEQVQ4jWNgGAWjYBSMglEwCkYBSgYGBgYAFvQAAb637/0AAAAASUVORD5CYII=">
     <!-- Google Fonts -->
@@ -524,13 +524,35 @@
             width:100%; margin-top:10px; padding:9px 12px; border-radius:9px;
             background:rgba(255,255,255,.03); color:var(--text-muted); font-size:.75rem; line-height:1.45;
         }
+        /* Mobil kamera/damlacık güvenli alanı: üst orta kamera için içerik üstten uzak tutulur.
+           env() destekleyen cihazlarda gerçek safe-area da hesaba katılır. */
         @media(max-width:600px){
-            body{padding:15px 10px 35px}
+            body{padding: max(42px, env(safe-area-inset-top)) 10px 35px}
+            header{margin-top:4px}
+            main{padding-top:6px}
             h1{font-size:2rem}
             .glass-card{padding:17px}
             .btn-group{flex-direction:column}
             .utility-row{flex-direction:column}
         }
+
+
+
+        .auth-bar{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:14px auto 0;max-width:680px}
+        .auth-status{display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);font-size:.78rem;color:var(--text-muted)}
+        .auth-status img{width:26px;height:26px;border-radius:50%;display:none}
+        .google-login{border:1px solid rgba(255,255,255,.12);background:#fff;color:#111;padding:10px 15px;border-radius:10px;font-weight:700;cursor:pointer}
+        .google-login:hover{transform:translateY(-1px)}
+        #uvOutputPanel.uv-hidden{display:none !important;}
+        #uvOutputPanel.uv-hidden + .result-box{width:100%;}
+        .texture-lock{margin-top:10px;padding:9px 12px;border-radius:10px;background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.18);color:#ffd76a;font-size:.76rem;line-height:1.45}
+        .texture-lock.hidden{display:none}
+
+        .usage-counter{display:flex;align-items:center;justify-content:center;gap:10px;margin:18px auto 0;padding:10px 16px;width:max-content;max-width:calc(100% - 20px);border:1px solid rgba(255,255,255,.09);border-radius:999px;background:rgba(255,255,255,.04);color:var(--text-muted);font-size:.82rem;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+        .usage-counter i{color:var(--accent-cyan)}
+        .usage-counter strong{color:var(--text);font-size:.95rem;font-variant-numeric:tabular-nums}
+        .usage-counter small{opacity:.7}
+        @media(max-width:600px){.usage-counter{font-size:.75rem;padding:9px 13px;margin-top:14px}}
 
     </style>
 
@@ -541,8 +563,18 @@
 
     <header class="animate-fade">
         <span class="brand-badge"><i class="fa-solid fa-sparkles"></i> NVO TEAM • NEXT-GEN STUDIO</span>
-        <h1>NVO MC SKIN MERGER v4.1</h1>
+        <h1>NVO MC SKIN MERGER v5.1</h1>
         <p class="subtitle">Gelişmiş UV koordinat motoru ile Minecraft skinlerinizi kusursuz biçimde harmanlayın.</p>
+        <div class="usage-counter" aria-live="polite" title="Firebase üzerindeki toplam birleştirme kullanımı">
+            <i class="fa-solid fa-users"></i>
+            <span>Toplam kullanım:</span>
+            <strong id="usageCount">0</strong>
+            <small>kez</small>
+        </div>
+        <div class="auth-bar">
+            <button class="google-login" id="googleLogin" type="button">🔐 Google ile Giriş Yap</button>
+            <div class="auth-status" id="authStatus">Texture görüntüleme: giriş gerekli</div>
+        </div>
     </header>
 
     <main class="container">
@@ -593,7 +625,12 @@
                 <div class="mode-card" data-mode="top_bottom">
                     <i class="fa-solid fa-arrows-up-down"></i>
                     <span>Üst / Alt Bölme</span>
-                    <p>Gövde ve kollar tam orta çizgiden bölünür; üst yarı Skin 1, alt yarı Skin 2. Bacaklar Skin 2.</p>
+                    <p>Gövde ve iki kol tam ortadan 6+6 piksel bölünür; üst Skin 1, alt Skin 2. Bacaklar Skin 2.</p>
+                </div>
+                <div class="mode-card" data-mode="arm_swap">
+                    <i class="fa-solid fa-arrows-left-right"></i>
+                    <span>Kol Değişimi</span>
+                    <p>Skin 1'in kafa, gövde ve bacakları korunur; iki kol Skin 2'den alınır.</p>
                 </div>
                 <div class="mode-card" data-mode="outer_overlay">
                     <i class="fa-solid fa-shirt"></i>
@@ -613,7 +650,7 @@
             <span style="font-size:1.3rem;"><i class="fa-solid fa-triangle-exclamation"></i></span>
             <div>
                 <strong>Model Farkı Algılandı!</strong><br>
-                Biri Alex (3px) diğeri Steve (4px) modelinde. İşlem otomatik hizada devam edecektir.
+                Skin 1: <span id="warningModel1">?</span> • Skin 2: <span id="warningModel2">?</span>. UV/kol genişliği farkı otomatik uyarlanacaktır.
             </div>
         </div>
 
@@ -638,7 +675,7 @@
             
             <div class="result-grid">
                 <!-- 2D Canvas & Buttons -->
-                <div class="result-box">
+                <div class="result-box" id="uvOutputPanel">
                     <p style="font-size: 0.85rem; color: var(--text-muted);">64x64 UV Harita Çıktısı</p>
                     <canvas id="resultCanvas" width="64" height="64"></canvas>
                     
@@ -655,6 +692,7 @@
 
                 <!-- 3D Canvas -->
                 <div class="result-box">
+<div class="texture-lock" id="textureLock">🔒 3D skin texture için Google ile giriş yapın. Model/animasyon yine kullanılabilir.</div>
                     <canvas id="skin_3d_canvas"></canvas>
                     <div class="three-controls">
                         <button id="animWalk"><i class="fa-solid fa-person-walking"></i> Yürü</button>
@@ -681,7 +719,7 @@
     <div id="privacyModal" class="modal-overlay">
         <div class="modal-content">
             <h2>🔒 Gizlilik Politikası</h2>
-            <p><strong>NVO MC Skin Merger</strong> kullanıcı verilerine %100 saygı duyar. Yüklenen tüm dosyalar doğrudan cihazınızda işlenir ve hiçbir yere yüklenmez.</p>
+            <p><strong>NVO MC Skin Merger v5.1</strong> kullanıcı verilerine %100 saygı duyar. Yüklenen tüm dosyalar doğrudan cihazınızda işlenir ve hiçbir yere yüklenmez.</p>
             <button class="modal-close" onclick="closeModal('privacyModal')">Kapat</button>
         </div>
     </div>
@@ -710,9 +748,133 @@
         </div>
     </div>
 
+    <script type="module">
+        window.NVO_FIREBASE_READY = (async () => {
+            const [{ initializeApp }, analytics, auth, firestore] = await Promise.all([
+                import("https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"),
+                import("https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js"),
+                import("https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"),
+                import("https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js")
+            ]);
+            const firebaseConfig = {
+                apiKey: "AIzaSyCC2or3KD_8xKKEP01jM850UFQ_4HFym4M",
+                authDomain: "nvomcskinmerger.firebaseapp.com",
+                projectId: "nvomcskinmerger",
+                storageBucket: "nvomcskinmerger.firebasestorage.app",
+                messagingSenderId: "747052660692",
+                appId: "1:747052660692:web:0bdd140b9eeaec7ed2c841",
+                measurementId: "G-3LNDXMDRB3"
+            };
+            const firebaseApp = initializeApp(firebaseConfig);
+            try { if (await analytics.isSupported()) analytics.getAnalytics(firebaseApp); } catch(e) {}
+            const firebaseAuth = auth.getAuth(firebaseApp);
+            const firebaseDb = firestore.getFirestore(firebaseApp);
+            const googleProvider = new auth.GoogleAuthProvider();
+            googleProvider.setCustomParameters({ prompt: 'select_account' });
+            return { firebaseAuth, firebaseDb, googleProvider, ...auth, ...firestore };
+        })().catch(err => { console.error('Firebase başlatılamadı:', err); return null; });
+    </script>
+
     <script>
         let skinViewer = null;
         let selectedMode = 'half'; // Varsayılan mod
+
+        const usageCountEl = document.getElementById('usageCount');
+        const googleLoginBtn = document.getElementById('googleLogin');
+        const authStatusEl = document.getElementById('authStatus');
+        const textureLock = document.getElementById('textureLock');
+        const uvOutputPanel = document.getElementById('uvOutputPanel');
+        let firebaseUser = null;
+        let firebaseApi = null;
+        let resultReady = false;
+        if (uvOutputPanel) uvOutputPanel.classList.add('uv-hidden');
+
+        function blankTextureDataUrl(){
+            // Girişsiz kullanıcıda gerçek yüklenen skin ASLA gösterilmez.
+            // Model geometrisi görünür kalması için nötr, tek renkli bir 64x64 texture kullanılır.
+            const c = document.createElement('canvas'); c.width = 64; c.height = 64;
+            const x = c.getContext('2d');
+            x.fillStyle = '#777';
+            x.fillRect(0, 0, 64, 64);
+            return c.toDataURL('image/png');
+        }
+
+        function setTextureVisibility(visible){
+            textureLock.classList.toggle('hidden', visible);
+            // Google girişi yoksa 2D UV çıktı da tamamen gizlenir.
+            // 3D model ise HER ZAMAN görünür; yalnızca gerçek texture yerine nötr texture kullanılır.
+            if (uvOutputPanel) uvOutputPanel.classList.toggle('uv-hidden', !visible);
+            if (btnDownload) btnDownload.disabled = !visible || !resultReady;
+            if (!skinViewer) return;
+            if (visible && resultCanvas && resultReady) {
+                skinViewer.loadSkin(resultCanvas.toDataURL('image/png'));
+            } else {
+                // Model kaybolmaz; sadece texture yerine şeffaf/boş texture kullanılır.
+                skinViewer.loadSkin(blankTextureDataUrl());
+            }
+        }
+
+        async function updateGlobalUsage(){
+            try {
+                if (!firebaseApi) firebaseApi = await window.NVO_FIREBASE_READY;
+                if (!firebaseApi) throw new Error('Firebase kullanılamıyor');
+                const ref = firebaseApi.doc(firebaseApi.firebaseDb, 'stats', 'usage');
+                await firebaseApi.setDoc(ref, { totalMerges: firebaseApi.increment(1), updatedAt: firebaseApi.serverTimestamp() }, { merge:true });
+                const snap = await firebaseApi.getDoc(ref);
+                usageCountEl.textContent = Number(snap.data()?.totalMerges || 0).toLocaleString('tr-TR');
+            } catch (e) {
+                console.warn('Firebase kullanım sayacı güncellenemedi:', e);
+                usageCountEl.textContent = '—';
+            }
+        }
+
+        async function loadGlobalUsage(){
+            try {
+                if (!firebaseApi) firebaseApi = await window.NVO_FIREBASE_READY;
+                if (!firebaseApi) throw new Error('Firebase kullanılamıyor');
+                const snap = await firebaseApi.getDoc(firebaseApi.doc(firebaseApi.firebaseDb, 'stats', 'usage'));
+                usageCountEl.textContent = Number(snap.data()?.totalMerges || 0).toLocaleString('tr-TR');
+            } catch(e) { usageCountEl.textContent = '—'; }
+        }
+
+        async function handleGoogleLogin(){
+            try {
+                if (!firebaseApi) firebaseApi = await window.NVO_FIREBASE_READY;
+                if (!firebaseApi) throw new Error('Firebase başlatılamadı');
+                await firebaseApi.signInWithPopup(firebaseApi.firebaseAuth, firebaseApi.googleProvider);
+            } catch(e) {
+                log('Google giriş başarısız: ' + (e.code || e.message), 'error');
+            }
+        }
+        googleLoginBtn.addEventListener('click', handleGoogleLogin);
+
+        (async () => {
+            firebaseApi = await window.NVO_FIREBASE_READY;
+            if (!firebaseApi) {
+                authStatusEl.textContent = 'Firebase bağlantısı kurulamadı';
+                return;
+            }
+            firebaseApi.onAuthStateChanged(firebaseApi.firebaseAuth, user => {
+                firebaseUser = user;
+                if (user) {
+                    authStatusEl.innerHTML = `✅ ${user.displayName || user.email || 'Google hesabı'} • Texture açık`;
+                    googleLoginBtn.textContent = '🚪 Google hesabından çık';
+                    googleLoginBtn.onclick = async () => { try { await firebaseApi.signOut(firebaseApi.firebaseAuth); } catch(e) {} };
+                    setTextureVisibility(true);
+                    btnDownload.disabled = !resultReady;
+                    log('Google girişi başarılı. 3D texture görüntüleme açıldı.', 'success');
+                } else {
+                    authStatusEl.textContent = 'Texture görüntüleme: Google girişi gerekli';
+                    googleLoginBtn.textContent = '🔐 Google ile Giriş Yap';
+                    googleLoginBtn.onclick = handleGoogleLogin;
+                    setTextureVisibility(false);
+                    btnDownload.disabled = true;
+                }
+            });
+        })();
+
+        loadGlobalUsage();
+
 
         const inputSkin1 = document.getElementById('inputSkin1');
         const inputSkin2 = document.getElementById('inputSkin2');
@@ -759,7 +921,7 @@
                 canvas: canvasElement,
                 width: canvasElement.clientWidth,
                 height: 260,
-                skin: "https://raw.githubusercontent.com/bs-community/skinview3d/master/examples/img/steve.png"
+                skin: blankTextureDataUrl()
             });
 
             skinViewer.autoRotate = true;
@@ -776,25 +938,33 @@
         }
 
         function detectSkinModel(ctx) {
-            // Java skin model detection: Alex has a 3px-wide arm on the base layer.
-            // We inspect the canonical right-arm base region (44..47, y=20..31)
-            // and compare its alpha occupancy. This is more reliable than sampling
-            // the outer layer, which may legitimately be transparent on Steve skins.
-            const image = ctx.getImageData(0, 0, 64, 64).data;
-            let occupied = 0, total = 0;
-            for (let y = 20; y < 32; y++) {
-                for (let x = 44; x < 48; x++) {
-                    total++;
-                    if (image[(y * 64 + x) * 4 + 3] > 20) occupied++;
-                }
-            }
-            // In a normal skin the region is fully/mostly opaque for Steve.
-            // Alex leaves the fourth column unused/transparent.
-            let fourthColumn = 0;
-            for (let y = 20; y < 32; y++) {
-                if (image[(y * 64 + 47) * 4 + 3] > 20) fourthColumn++;
-            }
-            return (fourthColumn < 6 && occupied > 20) ? "alex" : "steve";
+            // Minecraft 64x64 model detection. The arm width is the reliable discriminator:
+            // Steve = 4px arm, Alex = 3px arm. We inspect the canonical right-arm front
+            // face and its unused 4th column. Unlike the previous detector, this does NOT
+            // sample x=54, which belongs to the back-face area and can be opaque on Alex skins.
+            const p = ctx.getImageData(0, 0, 64, 64).data;
+            const alpha = (x, y) => p[(y * 64 + x) * 4 + 3];
+            const countOpaque = (x0, x1, y0, y1) => {
+                let n = 0;
+                for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++)
+                    if (alpha(x, y) > 8) n++;
+                return n;
+            };
+
+            // Right-arm front face starts at x=44 for Steve and x=43 for Alex.
+            // Compare the two possible 4th-column strips. Alex's x=47 strip is unused;
+            // Steve's x=47 is part of the 4px front face and is normally opaque.
+            const x47 = countOpaque(47, 48, 20, 32);
+            const x46 = countOpaque(46, 47, 20, 32);
+            const x43 = countOpaque(43, 44, 20, 32);
+            const x44 = countOpaque(44, 45, 20, 32);
+
+            // Prefer the canonical unused-column signal, but tolerate transparent custom skins.
+            if (x47 <= 2 && x46 > 2 && x43 > 2) return 'alex';
+            if (x47 > 2) return 'steve';
+
+            // Fallback: Alex front begins one pixel earlier (x43).
+            return (x43 > x44 * 0.25) ? 'alex' : 'steve';
         }
 
         function updateModelTag(tagEl, model) {
@@ -813,6 +983,10 @@
                 resultInfo.textContent = `Hazır: ${model1.toUpperCase()} + ${model2.toUpperCase()} • ${selectedMode.toUpperCase()}`;
                 if (model1 !== model2) {
                     warningBox.classList.add('active');
+                    const w1 = document.getElementById('warningModel1');
+                    const w2 = document.getElementById('warningModel2');
+                    if (w1) w1.textContent = model1.toUpperCase();
+                    if (w2) w2.textContent = model2.toUpperCase();
                 } else {
                     warningBox.classList.remove('active');
                 }
@@ -882,15 +1056,15 @@
 
             log(`10s İşlem Başlatıldı - Seçilen Mod: [${selectedMode.toUpperCase()}]`, "info");
 
-            const totalDuration = 10000;
+            const totalDuration = 6000;
             const startTime = Date.now();
 
             const steps = [
-                { time: 1500, msg: "[%15] 64x64 UV Haritası Taranıyor...", logType: "normal" },
-                { time: 3500, msg: "[%35] Gövde ve Bacak Koordinatları Hizalanıyor...", logType: "normal" },
-                { time: 6000, msg: `[%60] ${selectedMode.toUpperCase()} Algoritması Uygulanıyor...`, logType: "normal" },
-                { time: 8500, msg: "[%85] Katman Geçişleri ve Yüzey Derinlikleri Derleniyor...", logType: "normal" },
-                { time: 9800, msg: "[%98] Render Matrisi Tamamlandı!", logType: "success" }
+                { time: 900, msg: "[%15] 64x64 UV Haritası Taranıyor...", logType: "normal" },
+                { time: 2100, msg: "[%35] Gövde ve Kol UV Merkezleri Hizalanıyor...", logType: "normal" },
+                { time: 3600, msg: `[%60] ${selectedMode.toUpperCase()} Algoritması Uygulanıyor...`, logType: "normal" },
+                { time: 5100, msg: "[%85] Katman Geçişleri ve Model UV Farkları Derleniyor...", logType: "normal" },
+                { time: 5880, msg: "[%98] Render Matrisi Tamamlandı!", logType: "success" }
             ];
 
             let stepIndex = 0;
@@ -914,7 +1088,125 @@
             }, 50);
         }
 
-        // KUSURSUZ UV KOORDİNAT BIRLEŞTIRME MOTORU
+        // ===== NVO v5.1: GERÇEK skinview3d UV GEOMETRİSİ =====
+        // Minecraft/skinview3d kutu UV'si: u,v,width,height,depth.
+        // Bu yardımcılar yüzleri tam olarak gerçek UV koordinatlarından çıkarır.
+        function boxFaces(u, v, w, h, d) {
+            return {
+                top:    [u + d,         v,         w, d],
+                bottom: [u + w + d,     v,         w, d],
+                left:   [u,             v + d,     d, h],
+                front:  [u + d,         v + d,     w, h],
+                right:  [u + w + d,     v + d,     d, h],
+                back:   [u + w + d * 2, v + d,     w, h]
+            };
+        }
+
+        function copyRect(srcCtx, dstCtx, srcRect, dstRect = srcRect) {
+            const [sx, sy, sw, sh] = srcRect;
+            const [dx, dy, dw, dh] = dstRect;
+            const tmp = document.createElement('canvas');
+            tmp.width = sw; tmp.height = sh;
+            const t = tmp.getContext('2d');
+            t.imageSmoothingEnabled = false;
+            t.putImageData(srcCtx.getImageData(sx, sy, sw, sh), 0, 0);
+            dstCtx.imageSmoothingEnabled = false;
+            dstCtx.drawImage(tmp, 0, 0, sw, sh, dx, dy, dw, dh);
+        }
+
+        function copyFace(srcCtx, dstCtx, srcFace, dstFace = srcFace) {
+            copyRect(srcCtx, dstCtx, srcFace, dstFace);
+        }
+
+        function copyWholeBox(srcCtx, dstCtx, srcBox, dstBox) {
+            const sf = boxFaces(...srcBox);
+            const df = boxFaces(...dstBox);
+            for (const name of ['top','bottom','left','front','right','back']) {
+                copyFace(srcCtx, dstCtx, sf[name], df[name]);
+            }
+        }
+
+        // Bir kutunun fiziksel ALT yarısını, iç skin + dış kıyafet/overlay dahil,
+        // gerçek UV yüzleri üzerinden taşır. 6 yüzün yalnızca Y ekseninde alanı olan
+        // dört dikey yüzü (ön/arka/sağ/sol) 6+6 olarak bölünür; üst ve alt kapaklar
+        // fiziksel olarak yatay yüzler olduğu için bölünmez. Alt kapak ise Skin 2'den
+        // tamamen alınır. Böylece tişört, ceket, kol kılıfı ve pantolon da aynı
+        // fiziksel orta çizgiyi takip eder.
+        function copyBottomPhysicalHalf(srcCtx, dstCtx, srcBox, dstBox, srcModel, dstModel) {
+            const sf = boxFaces(...srcBox);
+            const df = boxFaces(...dstBox);
+            const srcH = srcBox[3], dstH = dstBox[3];
+            const srcHalf = Math.ceil(srcH / 2);
+            const dstHalf = Math.ceil(dstH / 2);
+
+            // ALT yarı: UV satırlarının son yarısı = fiziksel kutunun alt yarısı.
+            // 12 px yükseklikte tam olarak 6 px Skin 2'ye gider.
+            for (const faceName of ['left', 'front', 'right', 'back']) {
+                const [sx, sy, sw, sh] = sf[faceName];
+                const [dx, dy, dw, dh] = df[faceName];
+                const srcY = sy + (sh - srcHalf);
+                const dstY = dy + (dh - dstHalf);
+                copyRect(srcCtx, dstCtx,
+                    [sx, srcY, sw, srcHalf],
+                    [dx, dstY, dw, dstHalf]
+                );
+            }
+
+            // Alt kapak Skin 2'den tamamen gelir.
+            copyFace(srcCtx, dstCtx, sf.bottom, df.bottom);
+        }
+
+        function copyBoxScaled(srcCtx, dstCtx, srcBox, dstBox) {
+            const sf = boxFaces(...srcBox);
+            const df = boxFaces(...dstBox);
+            for (const name of ['top','bottom','left','front','right','back']) {
+                copyRect(srcCtx, dstCtx, sf[name], df[name]);
+            }
+        }
+
+        function copyArmFull(srcCtx, dstCtx, srcBox, dstBox) {
+            // Steve(4px) <-> Alex(3px) kol genişliklerini hedef UV'ye ölçekleyerek eşleştir.
+            const sf = boxFaces(...srcBox);
+            const df = boxFaces(...dstBox);
+            for (const name of ['top','bottom','left','front','right','back']) {
+                copyRect(srcCtx, dstCtx, sf[name], df[name]);
+            }
+        }
+
+        function copyFrontBackPhysical(srcCtx, dstCtx, srcBox, dstBox) {
+            const sf = boxFaces(...srcBox);
+            const df = boxFaces(...dstBox);
+
+            // Ön yüz Skin 1'de bırakılır. Arka yüz tamamen Skin 2'den gelir.
+            copyFace(srcCtx, dstCtx, sf.back, df.back);
+
+            // Yan yüzlerin derinlik yönündeki yarısı: gerçek kutu UV'sindeki d/2.
+            const halfD = srcBox[4] / 2;
+            const targetHalfD = dstBox[4] / 2;
+
+            // Sol yüz: UV'de ilk yarı arka tarafa karşılık gelir.
+            copyRect(srcCtx, dstCtx,
+                [sf.left[0], sf.left[1], halfD, sf.left[3]],
+                [df.left[0], df.left[1], targetHalfD, df.left[3]]
+            );
+            // Sağ yüz: UV'de son yarı arka tarafa karşılık gelir.
+            copyRect(srcCtx, dstCtx,
+                [sf.right[0] + sf.right[2] - halfD, sf.right[1], halfD, sf.right[3]],
+                [df.right[0] + df.right[2] - targetHalfD, df.right[1], targetHalfD, df.right[3]]
+            );
+
+            // Üst/alt yüzler için de arka yarıyı doğru derinlik şeridinden al.
+            copyRect(srcCtx, dstCtx,
+                [sf.top[0], sf.top[1], sf.top[2], halfD],
+                [df.top[0], df.top[1], df.top[2], targetHalfD]
+            );
+            copyRect(srcCtx, dstCtx,
+                [sf.bottom[0], sf.bottom[1], sf.bottom[2], halfD],
+                [df.bottom[0], df.bottom[1], df.bottom[2], targetHalfD]
+            );
+        }
+
+        // KUSURSUZ UV KOORDİNAT BIRLEŞTİRME MOTORU
         function executeMergeLogic() {
             ctxOut.clearRect(0, 0, 64, 64);
             const armW = (model1 === "alex") ? 3 : 4;
@@ -924,9 +1216,11 @@
                 ctxOut.drawImage(canvas1, 0, 0);
 
                 // 2. Skin 2'nin Sağ (Kullanıcıya göre Sol) parçalarını aktar:
-                // Sol Kol (Base & Outer) -> Skin 2
-                copyArea(ctx2, ctxOut, 32, 48, 16, 16);
-                copyArea(ctx2, ctxOut, 48, 48, 16, 16);
+                // Sol Kol (Base + Outer) -> Skin 2
+                const swHalf = model2 === 'alex' ? 3 : 4;
+                const dwHalf = model1 === 'alex' ? 3 : 4;
+                copyWholeBox(ctx2, ctxOut, [32,48,swHalf,12,4], [32,48,dwHalf,12,4]);
+                copyWholeBox(ctx2, ctxOut, [48,48,swHalf,12,4], [48,48,dwHalf,12,4]);
 
                 // Sol Bacak (Base & Outer) -> Skin 2
                 copyArea(ctx2, ctxOut, 16, 48, 16, 16);
@@ -966,34 +1260,68 @@
                 copyArea(ctx1, ctxOut, 0, 0, 64, 16); // Tüm Kafa ve Şapka Katmanı
 
             } else if (selectedMode === 'top_bottom') {
-                // Gerçek ÜST/ALT bölme:
-                // Her vücut/kol yüzünün 12px yüksekliği tam 6+6 olarak kesilir.
-                // Skin 1 = üst yarı, Skin 2 = alt yarı.
-                // Kafa Skin 1'de kalır; bacaklar tamamen Skin 2 olur.
+                // v5.1: Gövde + kollar GERÇEK KUTU YÜKSEKLİĞİNDEN ortadan bölünür.
+                // Önce Skin 1'in tamamı alınır; sonra her dikey yüzün alt yarısı Skin 2 ile değiştirilir.
+                // Böylece UV'deki top/bottom şeritleri yanlışlıkla gövdeye yapıştırılmaz.
                 ctxOut.drawImage(canvas1, 0, 0);
 
-                function copyVerticalHalf(u, v, w, h) {
-                    const halfH = h / 2;
-                    // Üst yarı Skin 1 zaten çıktı üzerinde.
-                    copyArea(ctx2, ctxOut, u, v + halfH, w, halfH);
-                }
+                const dstModel = model1;
+                const srcModel = model2;
+                const sw = srcModel === 'alex' ? 3 : 4;
+                const dw = dstModel === 'alex' ? 3 : 4;
 
-                // GÖVDE: base + outer layer
-                copyVerticalHalf(16, 16, 8, 12);
-                copyVerticalHalf(16, 32, 8, 12);
+                // GÖVDE — iç skin + CEKET/DIŞ KATMAN.
+                // Her ikisi de aynı 6 px fiziksel orta çizgisinden bölünür.
+                copyBottomPhysicalHalf(ctx2, ctxOut,
+                    [16, 16, 8, 12, 4], [16, 16, 8, 12, 4], srcModel, dstModel);
+                copyBottomPhysicalHalf(ctx2, ctxOut,
+                    [16, 32, 8, 12, 4], [16, 32, 8, 12, 4], srcModel, dstModel);
 
-                // SAĞ KOL: base + outer layer
-                copyVerticalHalf(40, 16, armW, 12);
-                copyVerticalHalf(40, 32, armW, 12);
+                // SAĞ KOL — iç skin + kol kılıfı.
+                copyBottomPhysicalHalf(ctx2, ctxOut,
+                    [40, 16, sw, 12, 4], [40, 16, dw, 12, 4], srcModel, dstModel);
+                copyBottomPhysicalHalf(ctx2, ctxOut,
+                    [40, 32, sw, 12, 4], [40, 32, dw, 12, 4], srcModel, dstModel);
 
-                // SOL KOL: base + outer layer
-                copyVerticalHalf(32, 48, armW, 12);
-                copyVerticalHalf(48, 48, armW, 12);
+                // SOL KOL — iç skin + kol kılıfı.
+                copyBottomPhysicalHalf(ctx2, ctxOut,
+                    [32, 48, sw, 12, 4], [32, 48, dw, 12, 4], srcModel, dstModel);
+                copyBottomPhysicalHalf(ctx2, ctxOut,
+                    [48, 48, sw, 12, 4], [48, 48, dw, 12, 4], srcModel, dstModel);
 
-                // Bacakların tamamı Skin 2
-                copyArea(ctx2, ctxOut, 0, 16, 16, 16);
-                copyArea(ctx2, ctxOut, 16, 48, 16, 16);
-                copyArea(ctx2, ctxOut, 0, 48, 16, 16);
+                // BACAKLAR — hem iç skin hem DIŞ PANTOLON KATMANI %100 SKIN 2.
+                // Minecraft 64x64 UV'de:
+                // Sağ bacak base  = (0,16), outer = (0,32)
+                // Sol bacak base  = (16,48), outer = (0,48)
+                // copyWholeBox ile kutu yüzlerini taşımakla kalmıyoruz; son aşamada
+                // dış pantolonun tamamını doğrudan da kopyalıyoruz. Böylece Skin 1'in
+                // eski outer pantolon piksellerinin sonuçta kalması mümkün olmuyor.
+                copyWholeBox(ctx2, ctxOut, [0,16,4,12,4], [0,16,4,12,4]);
+                copyWholeBox(ctx2, ctxOut, [16,48,4,12,4], [16,48,4,12,4]);
+
+                // Dış pantolon: Skin 2'den tamamı.
+                copyArea(ctx2, ctxOut, 0, 32, 16, 16); // Sağ bacak pantolon
+                copyArea(ctx2, ctxOut, 0, 48, 16, 16); // Sol bacak pantolon
+
+                // Tekrar base kutularını Skin 2'den güvenceye al.
+                copyWholeBox(ctx2, ctxOut, [0,16,4,12,4], [0,16,4,12,4]);
+                copyWholeBox(ctx2, ctxOut, [16,48,4,12,4], [16,48,4,12,4]);
+
+                log('MERGER 5.4: Bacak iç katmanları ve dış pantolon katmanları tamamen Skin 2’den alındı; Skin 1 pantolonu artık sonuçta kalamaz.', 'success');
+
+            } else if (selectedMode === 'arm_swap') {
+                // Yeni merger: Skin 1'in kafa + gövde + bacakları, Skin 2'nin iki kolu.
+                ctxOut.drawImage(canvas1, 0, 0);
+                const srcW = model2 === 'alex' ? 3 : 4;
+                const dstW = model1 === 'alex' ? 3 : 4;
+
+                // Sağ kol iç/dış katman
+                copyArmFull(ctx2, ctxOut, [40,16,srcW,12,4], [40,16,dstW,12,4]);
+                copyArmFull(ctx2, ctxOut, [40,32,srcW,12,4], [40,32,dstW,12,4]);
+                // Sol kol iç/dış katman
+                copyArmFull(ctx2, ctxOut, [32,48,srcW,12,4], [32,48,dstW,12,4]);
+                copyArmFull(ctx2, ctxOut, [48,48,srcW,12,4], [48,48,dstW,12,4]);
+                log('KOL DEĞİŞİMİ: İki kol Skin 2’den hedef modele uyarlandı.', 'success');
 
             } else if (selectedMode === 'outer_overlay') {
                 // Skin 1 İç Beden + Skin 2 Dış Ceket/Zırh
@@ -1075,15 +1403,15 @@
                 copyFrontBackHalf(0, 48, 4, 12, 4);  // Dış Katman (Pantolon)
 
                 // --- 5. SAĞ KOL (RIGHT ARM) ---
-                copyFrontBackHalf(40, 16, armW, 12, 4); // İç Katman
-                copyFrontBackHalf(40, 32, armW, 12, 4); // Dış Katman (Kol Kılıfı)
+                copyFrontBackPhysical(ctx2, ctxOut, [40,16,model2 === 'alex' ? 3 : 4,12,4], [40,16,model1 === 'alex' ? 3 : 4,12,4]);
+                copyFrontBackPhysical(ctx2, ctxOut, [40,32,model2 === 'alex' ? 3 : 4,12,4], [40,32,model1 === 'alex' ? 3 : 4,12,4]);
 
                 // --- 6. SOL KOL (LEFT ARM) ---
-                copyFrontBackHalf(32, 48, armW, 12, 4); // İç Katman
-                copyFrontBackHalf(48, 48, armW, 12, 4); // Dış Katman (Kol Kılıfı)
+                copyFrontBackPhysical(ctx2, ctxOut, [32,48,model2 === 'alex' ? 3 : 4,12,4], [32,48,model1 === 'alex' ? 3 : 4,12,4]);
+                copyFrontBackPhysical(ctx2, ctxOut, [48,48,model2 === 'alex' ? 3 : 4,12,4], [48,48,model1 === 'alex' ? 3 : 4,12,4]);
             }
 
-            log("🔥 [NVO MERGER ENGINE v4.1] BİRLEŞTİRME BAŞARIYLA TAMAMLANTI!", "success");
+            log("🔥 [NVO MERGER ENGINE v5.1] BİRLEŞTİRME BAŞARIYLA TAMAMLANTI!", "success");
             btnMerge.disabled = false;
             btnDownload.disabled = false;
             progressBarFill.style.width = '100%';
@@ -1091,9 +1419,7 @@
             resultInfo.textContent = `Tamamlandı • ${selectedMode.toUpperCase()} • ${model1?.toUpperCase()} + ${model2?.toUpperCase()}`;
 
             // 3D Model Güncelle
-            if (skinViewer) {
-                skinViewer.loadSkin(resultCanvas.toDataURL('image/png'));
-            }
+            if (skinViewer) setTextureVisibility(!!firebaseUser);
         }
 
         function clearSkin(which) {
@@ -1137,14 +1463,19 @@
             });
         });
 
-        btnMerge.addEventListener('click', startAnimatedMerge);
+        btnMerge.addEventListener('click', async () => { await startAnimatedMerge(); updateGlobalUsage(); });
 
         btnDownload.addEventListener('click', () => {
+            if (!firebaseUser) {
+                log('İndirme için Google ile giriş yapmalısınız. Texture ve çıktı gizli.', 'warn');
+                return;
+            }
+            if (!resultReady) return;
             const link = document.createElement('a');
             link.download = `nvo_${selectedMode}_skin.png`;
             link.href = resultCanvas.toDataURL('image/png');
             link.click();
-            log("Skin başarıyla indirildi!", "success");
+            log('Skin başarıyla indirildi!', 'success');
         });
 
         // 3D Kontroller
