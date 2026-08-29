@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NVO MC SKIN MERGER v5.6 - Mobile Safe Area</title>
+    <title>NVO MC SKIN MERGER v6.0 - Mobile Safe Area</title>
     <!-- Sekme Logosu (Favicon) -->
     <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAANUlEQVQ4jWNgGAWjYBSMglEwCkYBSgYGBgYAFvQAAb637/0AAAAASUVORD5CYII=">
     <!-- Google Fonts -->
@@ -563,7 +563,7 @@
 
     <header class="animate-fade">
         <span class="brand-badge"><i class="fa-solid fa-sparkles"></i> NVO TEAM • NEXT-GEN STUDIO</span>
-        <h1>NVO MC SKIN MERGER v5.1</h1>
+        <h1>NVO MC SKIN MERGER v6.0</h1>
         <p class="subtitle">Gelişmiş UV koordinat motoru ile Minecraft skinlerinizi kusursuz biçimde harmanlayın.</p>
         <div class="usage-counter" aria-live="polite" title="Firebase üzerindeki toplam birleştirme kullanımı">
             <i class="fa-solid fa-users"></i>
@@ -719,7 +719,7 @@
     <div id="privacyModal" class="modal-overlay">
         <div class="modal-content">
             <h2>🔒 Gizlilik Politikası</h2>
-            <p><strong>NVO MC Skin Merger v5.1</strong> kullanıcı verilerine %100 saygı duyar. Yüklenen tüm dosyalar doğrudan cihazınızda işlenir ve hiçbir yere yüklenmez.</p>
+            <p><strong>NVO MC Skin Merger v6.0</strong> kullanıcı verilerine %100 saygı duyar. Yüklenen tüm dosyalar doğrudan cihazınızda işlenir ve hiçbir yere yüklenmez.</p>
             <button class="modal-close" onclick="closeModal('privacyModal')">Kapat</button>
         </div>
     </div>
@@ -749,49 +749,148 @@
     </div>
 
     <script type="module">
-        // Firebase: Authentication ve Firestore birbirinden bağımsız başlatılır.
-        // Özellikle mobil GitHub Pages ortamında persistence hatası Firebase'i
-        // tamamen "başlatılamadı" durumuna düşürmemelidir.
-        window.NVO_FIREBASE_READY = (async () => {
-            const firebaseConfig = {
-                apiKey: "AIzaSyCC2or3KD_8xKKEP01jM850UFQ_4HFym4M",
-                authDomain: "nvomcskinmerger.firebaseapp.com",
-                projectId: "nvomcskinmerger",
-                storageBucket: "nvomcskinmerger.firebasestorage.app",
-                messagingSenderId: "747052660692",
-                appId: "1:747052660692:web:958b5b35e1378767d2c841",
-                measurementId: "G-RL0TBQNVTC"
-            };
-            try {
-                const [{ initializeApp }, auth, firestore] = await Promise.all([
-                    import("https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"),
-                    import("https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"),
-                    import("https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js")
-                ]);
+        // ================================================================
+        // NVO FIREBASE BAŞLATMA MODÜLÜ — v6.0 (Tam Yeniden Yazım)
+        // ================================================================
+        // Amaç: Firebase'in "sessizce" başarısız olmasını engellemek.
+        // Eski sürümde bir CDN/ağ/adblock sorunu olduğunda kod süresiz
+        // bekliyor ya da anlaşılmaz bir hata veriyordu. Bu sürüm:
+        //   1) Her adımı ayrı ayrı dener ve hangi adımın patladığını söyler.
+        //   2) 10 saniyelik bir zaman aşımı koyar (CDN engellenmişse
+        //      sonsuza kadar "yükleniyor" görünmesini önler).
+        //   3) Hata objesini window.NVO_FIREBASE_DEBUG içine yazar, böylece
+        //      tarayıcı konsolunda `NVO_FIREBASE_DEBUG` yazarak tam hatayı
+        //      görebilirsiniz.
+        //   4) Config alanlarının dolu olup olmadığını kontrol eder.
+        // ================================================================
 
-                const app = initializeApp(firebaseConfig);
-                const firebaseAuth = auth.getAuth(app);
-                const firebaseDb = firestore.getFirestore(app);
-                const googleProvider = new auth.GoogleAuthProvider();
+        const FIREBASE_SDK_VERSION = "12.18.0";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCC2or3KD_8xKKEP01jM850UFQ_4HFym4M",
+            authDomain: "nvomcskinmerger.firebaseapp.com",
+            projectId: "nvomcskinmerger",
+            storageBucket: "nvomcskinmerger.firebasestorage.app",
+            messagingSenderId: "747052660692",
+            appId: "1:747052660692:web:958b5b35e1378767d2c841",
+            measurementId: "G-RL0TBQNVTC"
+        };
+
+        window.NVO_FIREBASE_DEBUG = null; // Konsoldan incelemek için: NVO_FIREBASE_DEBUG
+
+        function withTimeout(promise, ms, label) {
+            return Promise.race([
+                promise,
+                new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error(`ZAMAN_ASIMI: ${label} ${ms}ms içinde tamamlanamadı (CDN engelli/yavaş ağ olabilir).`)), ms)
+                )
+            ]);
+        }
+
+        function validateConfig(cfg) {
+            const required = ["apiKey", "authDomain", "projectId", "appId"];
+            const missing = required.filter(k => !cfg[k] || String(cfg[k]).trim() === "");
+            if (missing.length) {
+                throw new Error(`Config eksik alan(lar): ${missing.join(", ")}`);
+            }
+        }
+
+        async function initFirebase() {
+            // 1) Config doğrulaması — CDN'e hiç gitmeden önce yakala.
+            validateConfig(firebaseConfig);
+
+            // 2) SDK modüllerini ayrı ayrı yükle (Promise.all yerine sıralı+tekil
+            //    hata mesajı için) ve her birine zaman aşımı koy.
+            const base = `https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}`;
+            let appModule, authModule, firestoreModule;
+            try {
+                appModule = await withTimeout(import(/* @vite-ignore */ `${base}/firebase-app.js`), 10000, "firebase-app.js yüklemesi");
+            } catch (e) {
+                throw Object.assign(new Error("SDK_YUKLEME_HATASI: firebase-app.js indirilemedi. Ağ engeli, adblocker veya CSP olabilir. Detay: " + e.message), { stage: "load-app" });
+            }
+            try {
+                authModule = await withTimeout(import(/* @vite-ignore */ `${base}/firebase-auth.js`), 10000, "firebase-auth.js yüklemesi");
+            } catch (e) {
+                throw Object.assign(new Error("SDK_YUKLEME_HATASI: firebase-auth.js indirilemedi. Detay: " + e.message), { stage: "load-auth" });
+            }
+            try {
+                firestoreModule = await withTimeout(import(/* @vite-ignore */ `${base}/firebase-firestore.js`), 10000, "firebase-firestore.js yüklemesi");
+            } catch (e) {
+                throw Object.assign(new Error("SDK_YUKLEME_HATASI: firebase-firestore.js indirilemedi. Detay: " + e.message), { stage: "load-firestore" });
+            }
+
+            // 3) App'i başlat.
+            let app;
+            try {
+                app = appModule.initializeApp(firebaseConfig);
+            } catch (e) {
+                throw Object.assign(new Error("APP_BASLATMA_HATASI: initializeApp çağrısı başarısız. Kod: " + (e.code || "-") + " Mesaj: " + e.message), { stage: "init-app", code: e.code });
+            }
+
+            // 4) Auth ve Firestore servislerini başlat (birbirinden bağımsız,
+            //    biri patlarsa diğerini engellemesin).
+            let firebaseAuth = null, authError = null;
+            try {
+                firebaseAuth = authModule.getAuth(app);
+            } catch (e) {
+                authError = e;
+                console.error("Auth başlatılamadı:", e);
+            }
+
+            let firebaseDb = null, dbError = null;
+            try {
+                firebaseDb = firestoreModule.getFirestore(app);
+            } catch (e) {
+                dbError = e;
+                console.error("Firestore başlatılamadı:", e);
+            }
+
+            let googleProvider = null;
+            if (firebaseAuth) {
+                googleProvider = new authModule.GoogleAuthProvider();
                 googleProvider.setCustomParameters({ prompt: "select_account" });
 
                 // Persistence başarısız olsa bile Auth çalışmaya devam etsin.
                 // Bazı mobil/WebView tarayıcılarında localStorage kısıtlanabiliyor.
                 try {
-                    await auth.setPersistence(firebaseAuth, auth.browserLocalPersistence);
+                    await authModule.setPersistence(firebaseAuth, authModule.browserLocalPersistence);
                 } catch (persistenceError) {
-                    console.warn("Firebase persistence kullanılamadı; oturum geçici olarak sürdürülecek:", persistenceError);
+                    console.warn("Firebase persistence (local) kullanılamadı, session'a düşülüyor:", persistenceError);
                     try {
-                        await auth.setPersistence(firebaseAuth, auth.browserSessionPersistence);
-                    } catch (_) {}
+                        await authModule.setPersistence(firebaseAuth, authModule.browserSessionPersistence);
+                    } catch (e2) {
+                        console.warn("Firebase persistence (session) da kullanılamadı; oturum kalıcı olmayacak:", e2);
+                    }
                 }
-
-                return { firebaseAuth, firebaseDb, googleProvider, ...auth, ...firestore };
-            } catch (err) {
-                console.error("Firebase başlatma hatası:", err);
-                return { error: err };
             }
-        })();
+
+            return {
+                app,
+                firebaseAuth,
+                firebaseDb,
+                googleProvider,
+                authError,
+                dbError,
+                ...authModule,
+                ...firestoreModule
+            };
+        }
+
+        window.NVO_FIREBASE_READY = initFirebase().catch(err => {
+            console.error("Firebase başlatma hatası (tam detay):", err);
+            window.NVO_FIREBASE_DEBUG = err;
+            return { error: err };
+        });
+
+        // Dışarıdan (arayüzdeki "Yeniden Dene" akışından) yeniden başlatma imkânı.
+        window.NVO_FIREBASE_RETRY = function () {
+            window.NVO_FIREBASE_READY = initFirebase().catch(err => {
+                console.error("Firebase yeniden başlatma hatası:", err);
+                window.NVO_FIREBASE_DEBUG = err;
+                return { error: err };
+            });
+            return window.NVO_FIREBASE_READY;
+        };
     </script>
 
     <script>
@@ -833,16 +932,45 @@
             }
         }
 
+        // Firebase'e dair kullanıcı-dostu hata metni üretir. code (auth/... veya
+        // firestore permission-denied gibi) ve düz mesajı birlikte değerlendirir.
+        function describeFirebaseError(e) {
+            const code = e?.code || '';
+            const raw = e?.message || 'Bilinmeyen hata';
+
+            const map = {
+                'auth/unauthorized-domain': 'Bu alan adı Firebase Console > Authentication > Settings > Yetkili Alanlar (Authorized domains) listesine ekli değil. Sitenin çalıştığı domaini (örn. kullanici.github.io) oraya ekleyin.',
+                'auth/operation-not-allowed': 'Firebase Console > Authentication > Sign-in method bölümünde Google sağlayıcısı etkinleştirilmemiş.',
+                'auth/popup-blocked': 'Tarayıcı açılır pencereyi engelledi. Açılır pencerelere izin verin veya mobil modda tekrar deneyin.',
+                'auth/popup-closed-by-user': 'Google giriş penceresi kapatıldı.',
+                'auth/api-key-not-valid.-please-pass-a-valid-api-key.': 'API key geçersiz. Firebase Console > Project settings > General bölümünden güncel Web API Key\'i kontrol edin.',
+                'auth/invalid-api-key': 'API key geçersiz. Firebase Console\'daki config ile buradaki apiKey birebir eşleşmiyor olabilir.',
+                'auth/network-request-failed': 'Ağ isteği başarısız. İnternet bağlantınızı veya bir ağ engelleyicisini (adblocker/firewall) kontrol edin.',
+                'permission-denied': 'Firestore güvenlik kuralları bu isteği reddediyor. Firebase Console > Firestore Database > Rules bölümünü kontrol edin (stats/usage yoluna yazma/okuma izni gerekli).',
+                'unavailable': 'Firestore şu anda ulaşılamıyor durumda (ağ sorunu olabilir).'
+            };
+
+            if (map[code]) return `[${code}] ${map[code]}`;
+            if (raw.startsWith('SDK_YUKLEME_HATASI')) return raw + ' Çözüm: adblocker/CSP ayarlarını kontrol edin, https://www.gstatic.com engelli olmasın.';
+            if (raw.startsWith('ZAMAN_ASIMI')) return raw + ' Çözüm: ağ bağlantınızı kontrol edin, gstatic.com adresine erişim engellenmiş olabilir.';
+            if (raw.startsWith('APP_BASLATMA_HATASI')) return raw + ' Çözüm: firebaseConfig değerlerini Firebase Console > Project settings ile karşılaştırın.';
+            if (raw.startsWith('Config eksik')) return 'FIREBASE_CONFIG_HATASI: ' + raw;
+            return code ? `[${code}] ${raw}` : raw;
+        }
+
         async function updateGlobalUsage(){
             try {
                 if (!firebaseApi) firebaseApi = await window.NVO_FIREBASE_READY;
-                if (!firebaseApi) throw new Error('Firebase kullanılamıyor');
+                if (!firebaseApi || firebaseApi.error) throw (firebaseApi?.error || new Error('Firebase kullanılamıyor'));
+                if (!firebaseApi.firebaseDb) throw (firebaseApi.dbError || new Error('Firestore başlatılamadı'));
                 const ref = firebaseApi.doc(firebaseApi.firebaseDb, 'stats', 'usage');
                 await firebaseApi.setDoc(ref, { totalMerges: firebaseApi.increment(1), updatedAt: firebaseApi.serverTimestamp() }, { merge:true });
                 const snap = await firebaseApi.getDoc(ref);
                 usageCountEl.textContent = Number(snap.data()?.totalMerges || 0).toLocaleString('tr-TR');
             } catch (e) {
+                const msg = describeFirebaseError(e);
                 console.warn('Firebase kullanım sayacı güncellenemedi:', e);
+                log('Kullanım sayacı güncellenemedi: ' + msg, 'warn');
                 usageCountEl.textContent = '—';
             }
         }
@@ -850,10 +978,16 @@
         async function loadGlobalUsage(){
             try {
                 if (!firebaseApi) firebaseApi = await window.NVO_FIREBASE_READY;
-                if (!firebaseApi) throw new Error('Firebase kullanılamıyor');
+                if (!firebaseApi || firebaseApi.error) throw (firebaseApi?.error || new Error('Firebase kullanılamıyor'));
+                if (!firebaseApi.firebaseDb) throw (firebaseApi.dbError || new Error('Firestore başlatılamadı'));
                 const snap = await firebaseApi.getDoc(firebaseApi.doc(firebaseApi.firebaseDb, 'stats', 'usage'));
                 usageCountEl.textContent = Number(snap.data()?.totalMerges || 0).toLocaleString('tr-TR');
-            } catch(e) { usageCountEl.textContent = '—'; }
+            } catch(e) {
+                const msg = describeFirebaseError(e);
+                console.warn('Kullanım sayısı yüklenemedi:', e);
+                log('Kullanım sayısı yüklenemedi: ' + msg, 'warn');
+                usageCountEl.textContent = '—';
+            }
         }
 
         function isMobileBrowser(){
@@ -861,9 +995,16 @@
         }
 
         async function handleGoogleLogin(){
+            authStatusEl.textContent = 'Firebase\'e bağlanılıyor...';
             try {
                 if (!firebaseApi) firebaseApi = await window.NVO_FIREBASE_READY;
+                if (!firebaseApi || firebaseApi.error) {
+                    // Bağlantı daha önce başarısız olduysa bir kez daha dene.
+                    log('Firebase bağlantısı yeniden deneniyor...', 'warn');
+                    firebaseApi = await window.NVO_FIREBASE_RETRY();
+                }
                 if (!firebaseApi || firebaseApi.error) throw (firebaseApi?.error || new Error("Firebase başlatılamadı"));
+                if (!firebaseApi.firebaseAuth) throw (firebaseApi.authError || new Error("Auth servisi başlatılamadı"));
 
                 // Mobilde Firebase'in önerdiği redirect akışı kullanılır.
                 // Masaüstünde popup daha hızlıdır.
@@ -873,59 +1014,92 @@
                     await firebaseApi.signInWithPopup(firebaseApi.firebaseAuth, firebaseApi.googleProvider);
                 }
             } catch(e) {
-                const code = e?.code || '';
-                let msg = e?.message || 'Bilinmeyen hata';
-                if (code === 'auth/unauthorized-domain') msg = 'Bu alan adı Firebase Authentication > Yetkili alanlar bölümünde ekli değil.';
-                if (code === 'auth/popup-blocked') msg = 'Tarayıcı Google giriş penceresini engelledi. Açılır pencerelere izin verin.';
-                if (code === 'auth/popup-closed-by-user') msg = 'Google giriş penceresi kapatıldı.';
-                if (code === 'auth/operation-not-allowed') msg = 'Firebase Authentication içinde Google sağlayıcısı etkin değil.';
-                log('Google giriş başarısız' + (code ? ' [' + code + ']' : '') + ': ' + msg, 'error');
+                const msg = describeFirebaseError(e);
+                log('Google giriş başarısız: ' + msg, 'error');
                 authStatusEl.textContent = msg;
+                console.error('Google giriş hatası (tam detay):', e);
             }
         }
         googleLoginBtn.addEventListener('click', handleGoogleLogin);
 
         (async () => {
+            authStatusEl.textContent = 'Firebase\'e bağlanılıyor...';
             firebaseApi = await window.NVO_FIREBASE_READY;
+
             if (!firebaseApi || firebaseApi.error) {
                 const err = firebaseApi?.error;
-                authStatusEl.textContent = 'Firebase bağlantısı kurulamadı';
-                log('Firebase başlatılamadı: ' + (err?.code || err?.message || 'Bilinmeyen hata'), 'error');
+                const msg = describeFirebaseError(err || new Error('Bilinmeyen hata'));
+                authStatusEl.textContent = 'Firebase bağlantısı kurulamadı: ' + msg;
+                log('Firebase başlatılamadı: ' + msg, 'error');
+                log('Detaylı hatayı görmek için tarayıcı konsoluna (F12) "NVO_FIREBASE_DEBUG" yazın.', 'warn');
+                googleLoginBtn.textContent = '🔄 Firebase\'e Yeniden Bağlan';
+                googleLoginBtn.onclick = async () => {
+                    log('Firebase yeniden başlatılıyor...', 'warn');
+                    firebaseApi = await window.NVO_FIREBASE_RETRY();
+                    if (firebaseApi && !firebaseApi.error) {
+                        log('Firebase bağlantısı kuruldu, sayfayı yenilemeniz gerekebilir.', 'success');
+                        authStatusEl.textContent = 'Bağlantı kuruldu ✅ — giriş için tekrar tıklayın.';
+                        googleLoginBtn.textContent = '🔐 Google ile Giriş Yap';
+                        googleLoginBtn.onclick = handleGoogleLogin;
+                    } else {
+                        const msg2 = describeFirebaseError(firebaseApi?.error || new Error('Bilinmeyen hata'));
+                        authStatusEl.textContent = 'Hâlâ bağlanılamadı: ' + msg2;
+                        log('Yeniden deneme başarısız: ' + msg2, 'error');
+                    }
+                };
+                loadGlobalUsage(); // yine de dene; Firestore bazen Auth'tan bağımsız çalışabilir
                 return;
             }
-            // Mobil redirect dönüşündeki Google sonucunu işle.
-            try {
-                const redirectResult = await firebaseApi.getRedirectResult(firebaseApi.firebaseAuth);
-                if (redirectResult?.user) {
-                    console.log('Google redirect girişi tamamlandı:', redirectResult.user.email);
-                }
-            } catch (redirectError) {
-                console.error('Google redirect sonucu alınamadı:', redirectError);
-                const code = redirectError?.code || '';
-                if (code === 'auth/unauthorized-domain') {
-                    authStatusEl.textContent = 'Bu GitHub Pages alan adı Firebase Yetkili Alanlar listesinde yok.';
-                } else {
-                    authStatusEl.textContent = 'Google oturumu doğrulanamadı: ' + (redirectError?.message || code);
-                }
+
+            if (firebaseApi.authError) {
+                log('Uyarı: Auth servisi kısmen başlatılamadı: ' + describeFirebaseError(firebaseApi.authError), 'warn');
+            }
+            if (firebaseApi.dbError) {
+                log('Uyarı: Firestore kısmen başlatılamadı: ' + describeFirebaseError(firebaseApi.dbError), 'warn');
             }
 
-            firebaseApi.onAuthStateChanged(firebaseApi.firebaseAuth, user => {
-                firebaseUser = user;
-                if (user) {
-                    authStatusEl.innerHTML = `✅ ${user.displayName || user.email || 'Google hesabı'} • Texture açık`;
-                    googleLoginBtn.textContent = '🚪 Google hesabından çık';
-                    googleLoginBtn.onclick = async () => { try { await firebaseApi.signOut(firebaseApi.firebaseAuth); } catch(e) {} };
-                    setTextureVisibility(true);
-                    btnDownload.disabled = !resultReady;
-                    log('Google girişi başarılı. 3D texture görüntüleme açıldı.', 'success');
-                } else {
-                    authStatusEl.textContent = 'Texture görüntüleme: Google girişi gerekli';
-                    googleLoginBtn.textContent = '🔐 Google ile Giriş Yap';
-                    googleLoginBtn.onclick = handleGoogleLogin;
-                    setTextureVisibility(false);
-                    btnDownload.disabled = true;
+            log('Firebase bağlantısı kuruldu.', 'success');
+
+            // Mobil redirect dönüşündeki Google sonucunu işle.
+            if (firebaseApi.firebaseAuth) {
+                try {
+                    const redirectResult = await firebaseApi.getRedirectResult(firebaseApi.firebaseAuth);
+                    if (redirectResult?.user) {
+                        console.log('Google redirect girişi tamamlandı:', redirectResult.user.email);
+                        log('Google redirect girişi tamamlandı.', 'success');
+                    }
+                } catch (redirectError) {
+                    const msg = describeFirebaseError(redirectError);
+                    console.error('Google redirect sonucu alınamadı:', redirectError);
+                    authStatusEl.textContent = msg;
+                    log('Redirect girişi başarısız: ' + msg, 'error');
                 }
-            });
+
+                firebaseApi.onAuthStateChanged(firebaseApi.firebaseAuth, user => {
+                    firebaseUser = user;
+                    if (user) {
+                        authStatusEl.innerHTML = `✅ ${user.displayName || user.email || 'Google hesabı'} • Texture açık`;
+                        googleLoginBtn.textContent = '🚪 Google hesabından çık';
+                        googleLoginBtn.onclick = async () => { try { await firebaseApi.signOut(firebaseApi.firebaseAuth); } catch(e) { console.warn('Çıkış hatası:', e); } };
+                        setTextureVisibility(true);
+                        btnDownload.disabled = !resultReady;
+                        log('Google girişi başarılı. 3D texture görüntüleme açıldı.', 'success');
+                    } else {
+                        authStatusEl.textContent = 'Texture görüntüleme: Google girişi gerekli';
+                        googleLoginBtn.textContent = '🔐 Google ile Giriş Yap';
+                        googleLoginBtn.onclick = handleGoogleLogin;
+                        setTextureVisibility(false);
+                        btnDownload.disabled = true;
+                    }
+                }, authStateError => {
+                    const msg = describeFirebaseError(authStateError);
+                    log('Oturum durumu izlenemedi: ' + msg, 'error');
+                    authStatusEl.textContent = msg;
+                });
+            } else {
+                authStatusEl.textContent = 'Auth servisi kullanılamıyor: ' + describeFirebaseError(firebaseApi.authError || new Error('Bilinmeyen hata'));
+                googleLoginBtn.disabled = true;
+            }
         })();
 
         loadGlobalUsage();
@@ -1143,7 +1317,7 @@
             }, 50);
         }
 
-        // ===== NVO v5.1: GERÇEK skinview3d UV GEOMETRİSİ =====
+        // ===== NVO v6.0: GERÇEK skinview3d UV GEOMETRİSİ =====
         // Minecraft/skinview3d kutu UV'si: u,v,width,height,depth.
         // Bu yardımcılar yüzleri tam olarak gerçek UV koordinatlarından çıkarır.
         function boxFaces(u, v, w, h, d) {
@@ -1264,7 +1438,6 @@
         // KUSURSUZ UV KOORDİNAT BIRLEŞTİRME MOTORU
         function executeMergeLogic() {
             ctxOut.clearRect(0, 0, 64, 64);
-            const armW = (model1 === "alex") ? 3 : 4;
 
             if (selectedMode === 'half') {
                 // 1. Temel olarak Skin 1'i tamamen çiz
@@ -1315,7 +1488,7 @@
                 copyArea(ctx1, ctxOut, 0, 0, 64, 16); // Tüm Kafa ve Şapka Katmanı
 
             } else if (selectedMode === 'top_bottom') {
-                // v5.1: Gövde + kollar GERÇEK KUTU YÜKSEKLİĞİNDEN ortadan bölünür.
+                // v6.0: Gövde + kollar GERÇEK KUTU YÜKSEKLİĞİNDEN ortadan bölünür.
                 // Önce Skin 1'in tamamı alınır; sonra her dikey yüzün alt yarısı Skin 2 ile değiştirilir.
                 // Böylece UV'deki top/bottom şeritleri yanlışlıkla gövdeye yapıştırılmaz.
                 ctxOut.drawImage(canvas1, 0, 0);
@@ -1362,7 +1535,7 @@
                 copyWholeBox(ctx2, ctxOut, [0,16,4,12,4], [0,16,4,12,4]);
                 copyWholeBox(ctx2, ctxOut, [16,48,4,12,4], [16,48,4,12,4]);
 
-                log('MERGER 5.4: Bacak iç katmanları ve dış pantolon katmanları tamamen Skin 2’den alındı; Skin 1 pantolonu artık sonuçta kalamaz.', 'success');
+                log('MERGER v6.0: Bacak iç katmanları ve dış pantolon katmanları tamamen Skin 2’den alındı; Skin 1 pantolonu artık sonuçta kalamaz.', 'success');
 
             } else if (selectedMode === 'arm_swap') {
                 // Yeni merger: Skin 1'in kafa + gövde + bacakları, Skin 2'nin iki kolu.
@@ -1389,6 +1562,7 @@
                 copyArea(ctx2, ctxOut, 0, 32, 16, 16);  // Right Pants
                 copyArea(ctx2, ctxOut, 0, 48, 16, 16);  // Left Pants
                 copyArea(ctx2, ctxOut, 48, 48, 16, 16); // Left Sleeve
+                log('CEKET & ZIRH KATMANI: Dış katmanlar Skin 2’den aktarıldı.', 'success');
 
             } else if (selectedMode === 'front_back') {
                 // Skin 1 ön yüz olarak taranır, arkaya kalan her şey Skin 2'den 3D Z-Ekseninde çekilir.
@@ -1464,11 +1638,13 @@
                 // --- 6. SOL KOL (LEFT ARM) ---
                 copyFrontBackPhysical(ctx2, ctxOut, [32,48,model2 === 'alex' ? 3 : 4,12,4], [32,48,model1 === 'alex' ? 3 : 4,12,4]);
                 copyFrontBackPhysical(ctx2, ctxOut, [48,48,model2 === 'alex' ? 3 : 4,12,4], [48,48,model1 === 'alex' ? 3 : 4,12,4]);
+                log('ÖN/ARKA BÖLME: Ön yüz Skin 1, arka yüz Skin 2’den birleştirildi.', 'success');
             }
 
-            log("🔥 [NVO MERGER ENGINE v5.1] BİRLEŞTİRME BAŞARIYLA TAMAMLANTI!", "success");
+            log("🔥 [NVO MERGER ENGINE v6.0] BİRLEŞTİRME BAŞARIYLA TAMAMLANDI!", "success");
+            resultReady = true;
             btnMerge.disabled = false;
-            btnDownload.disabled = false;
+            btnDownload.disabled = !firebaseUser;
             progressBarFill.style.width = '100%';
             progressText.textContent = '100%';
             resultInfo.textContent = `Tamamlandı • ${selectedMode.toUpperCase()} • ${model1?.toUpperCase()} + ${model2?.toUpperCase()}`;
@@ -1492,6 +1668,7 @@
                 meta2.innerHTML = '<span><span class="status-dot"></span> Bekleniyor</span>';
                 inputSkin2.value = "";
             }
+            resultReady = false;
             btnMerge.disabled = true;
             btnDownload.disabled = true;
             warningBox.classList.remove('active');
