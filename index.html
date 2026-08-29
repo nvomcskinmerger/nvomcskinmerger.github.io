@@ -749,31 +749,46 @@
     </div>
 
     <script type="module">
+        // Firebase: Authentication ve Firestore birbirinden bağımsız başlatılır.
+        // Özellikle mobil GitHub Pages ortamında persistence hatası Firebase'i
+        // tamamen "başlatılamadı" durumuna düşürmemelidir.
         window.NVO_FIREBASE_READY = (async () => {
+            const firebaseConfig = {
+                apiKey: "AIzaSyCC2or3KD8_8xKKEP01jM850UFQ_4HFym4M",
+                authDomain: "nvomcskinmerger.firebaseapp.com",
+                projectId: "nvomcskinmerger",
+                storageBucket: "nvomcskinmerger.firebasestorage.app",
+                messagingSenderId: "747052660692",
+                appId: "1:747052660692:web:0bdd140b9eeaec7ed2c841",
+                measurementId: "G-3LNDXMDRB3"
+            };
             try {
                 const [{ initializeApp }, auth, firestore] = await Promise.all([
                     import("https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js"),
                     import("https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js"),
                     import("https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js")
                 ]);
-                const firebaseConfig = {
-                    apiKey: "AIzaSyCC2or3KD_8xKKEP01jM850UFQ_4HFym4M",
-                    authDomain: "nvomcskinmerger.firebaseapp.com",
-                    projectId: "nvomcskinmerger",
-                    storageBucket: "nvomcskinmerger.firebasestorage.app",
-                    messagingSenderId: "747052660692",
-                    appId: "1:747052660692:web:0bdd140b9eeaec7ed2c841",
-                    measurementId: "G-3LNDXMDRB3"
-                };
-                const firebaseApp = initializeApp(firebaseConfig);
-                const firebaseAuth = auth.getAuth(firebaseApp);
-                await auth.setPersistence(firebaseAuth, auth.browserLocalPersistence);
-                const firebaseDb = firestore.getFirestore(firebaseApp);
+
+                const app = initializeApp(firebaseConfig);
+                const firebaseAuth = auth.getAuth(app);
+                const firebaseDb = firestore.getFirestore(app);
                 const googleProvider = new auth.GoogleAuthProvider();
-                googleProvider.setCustomParameters({ prompt: 'select_account' });
+                googleProvider.setCustomParameters({ prompt: "select_account" });
+
+                // Persistence başarısız olsa bile Auth çalışmaya devam etsin.
+                // Bazı mobil/WebView tarayıcılarında localStorage kısıtlanabiliyor.
+                try {
+                    await auth.setPersistence(firebaseAuth, auth.browserLocalPersistence);
+                } catch (persistenceError) {
+                    console.warn("Firebase persistence kullanılamadı; oturum geçici olarak sürdürülecek:", persistenceError);
+                    try {
+                        await auth.setPersistence(firebaseAuth, auth.browserSessionPersistence);
+                    } catch (_) {}
+                }
+
                 return { firebaseAuth, firebaseDb, googleProvider, ...auth, ...firestore };
             } catch (err) {
-                console.error('Firebase başlatma hatası:', err);
+                console.error("Firebase başlatma hatası:", err);
                 return { error: err };
             }
         })();
@@ -841,11 +856,22 @@
             } catch(e) { usageCountEl.textContent = '—'; }
         }
 
+        function isMobileBrowser(){
+            return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+        }
+
         async function handleGoogleLogin(){
             try {
                 if (!firebaseApi) firebaseApi = await window.NVO_FIREBASE_READY;
-                if (!firebaseApi) throw new Error('Firebase başlatılamadı');
-                await firebaseApi.signInWithPopup(firebaseApi.firebaseAuth, firebaseApi.googleProvider);
+                if (!firebaseApi || firebaseApi.error) throw (firebaseApi?.error || new Error("Firebase başlatılamadı"));
+
+                // Mobilde Firebase'in önerdiği redirect akışı kullanılır.
+                // Masaüstünde popup daha hızlıdır.
+                if (isMobileBrowser()) {
+                    await firebaseApi.signInWithRedirect(firebaseApi.firebaseAuth, firebaseApi.googleProvider);
+                } else {
+                    await firebaseApi.signInWithPopup(firebaseApi.firebaseAuth, firebaseApi.googleProvider);
+                }
             } catch(e) {
                 const code = e?.code || '';
                 let msg = e?.message || 'Bilinmeyen hata';
@@ -867,6 +893,22 @@
                 log('Firebase başlatılamadı: ' + (err?.code || err?.message || 'Bilinmeyen hata'), 'error');
                 return;
             }
+            // Mobil redirect dönüşündeki Google sonucunu işle.
+            try {
+                const redirectResult = await firebaseApi.getRedirectResult(firebaseApi.firebaseAuth);
+                if (redirectResult?.user) {
+                    console.log('Google redirect girişi tamamlandı:', redirectResult.user.email);
+                }
+            } catch (redirectError) {
+                console.error('Google redirect sonucu alınamadı:', redirectError);
+                const code = redirectError?.code || '';
+                if (code === 'auth/unauthorized-domain') {
+                    authStatusEl.textContent = 'Bu GitHub Pages alan adı Firebase Yetkili Alanlar listesinde yok.';
+                } else {
+                    authStatusEl.textContent = 'Google oturumu doğrulanamadı: ' + (redirectError?.message || code);
+                }
+            }
+
             firebaseApi.onAuthStateChanged(firebaseApi.firebaseAuth, user => {
                 firebaseUser = user;
                 if (user) {
