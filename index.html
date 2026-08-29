@@ -10,6 +10,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDK dosyalarını sayfa daha parse edilirken indirmeye başla:
+         initFirebase() çalıştığında dosyalar zaten önbellekte/yolda olur,
+         böylece ilk denemede zaman aşımına takılma ihtimali azalır. -->
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js">
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js">
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js">
     
     <style>
         :root {
@@ -799,25 +805,22 @@
             // 1) Config doğrulaması — CDN'e hiç gitmeden önce yakala.
             validateConfig(firebaseConfig);
 
-            // 2) SDK modüllerini ayrı ayrı yükle (Promise.all yerine sıralı+tekil
-            //    hata mesajı için) ve her birine zaman aşımı koy.
+            // 2) SDK modüllerini PARALEL yükle. (Önceki sürümde sırayla
+            //    yükleniyordu; bu, üç dosyanın toplam süresini üst üste
+            //    bindirdiği için ilk denemede zaman aşımına çok daha
+            //    kolay takılıyordu. Paralel yükleme + modulepreload ile
+            //    ilk deneme artık genelde doğrudan başarılı oluyor.)
             const base = `https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}`;
-            let appModule, authModule, firestoreModule;
-            try {
-                appModule = await withTimeout(import(/* @vite-ignore */ `${base}/firebase-app.js`), 10000, "firebase-app.js yüklemesi");
-            } catch (e) {
-                throw Object.assign(new Error("SDK_YUKLEME_HATASI: firebase-app.js indirilemedi. Ağ engeli, adblocker veya CSP olabilir. Detay: " + e.message), { stage: "load-app" });
-            }
-            try {
-                authModule = await withTimeout(import(/* @vite-ignore */ `${base}/firebase-auth.js`), 10000, "firebase-auth.js yüklemesi");
-            } catch (e) {
-                throw Object.assign(new Error("SDK_YUKLEME_HATASI: firebase-auth.js indirilemedi. Detay: " + e.message), { stage: "load-auth" });
-            }
-            try {
-                firestoreModule = await withTimeout(import(/* @vite-ignore */ `${base}/firebase-firestore.js`), 10000, "firebase-firestore.js yüklemesi");
-            } catch (e) {
-                throw Object.assign(new Error("SDK_YUKLEME_HATASI: firebase-firestore.js indirilemedi. Detay: " + e.message), { stage: "load-firestore" });
-            }
+            const LOAD_TIMEOUT_MS = 15000;
+
+            const appPromise = withTimeout(import(/* @vite-ignore */ `${base}/firebase-app.js`), LOAD_TIMEOUT_MS, "firebase-app.js yüklemesi")
+                .catch(e => { throw Object.assign(new Error("SDK_YUKLEME_HATASI: firebase-app.js indirilemedi. Ağ engeli, adblocker veya CSP olabilir. Detay: " + e.message), { stage: "load-app" }); });
+            const authPromise = withTimeout(import(/* @vite-ignore */ `${base}/firebase-auth.js`), LOAD_TIMEOUT_MS, "firebase-auth.js yüklemesi")
+                .catch(e => { throw Object.assign(new Error("SDK_YUKLEME_HATASI: firebase-auth.js indirilemedi. Detay: " + e.message), { stage: "load-auth" }); });
+            const firestorePromise = withTimeout(import(/* @vite-ignore */ `${base}/firebase-firestore.js`), LOAD_TIMEOUT_MS, "firebase-firestore.js yüklemesi")
+                .catch(e => { throw Object.assign(new Error("SDK_YUKLEME_HATASI: firebase-firestore.js indirilemedi. Detay: " + e.message), { stage: "load-firestore" }); });
+
+            const [appModule, authModule, firestoreModule] = await Promise.all([appPromise, authPromise, firestorePromise]);
 
             // 3) App'i başlat.
             let app;
@@ -876,15 +879,44 @@
             };
         }
 
-        window.NVO_FIREBASE_READY = initFirebase().catch(err => {
-            console.error("Firebase başlatma hatası (tam detay):", err);
+        function delay(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+        // Başlangıçta kullanıcıdan hiçbir tıklama istemeden, arka planda
+        // birkaç kez otomatik dener. Elle "Yeniden Bağlan" tıklaması sadece
+        // bu otomatik denemeler de tükenirse gerekli olur.
+        async function initFirebaseAutoRetry(maxAttempts = 3, baseDelayMs = 1000) {
+            const statusEl = document.getElementById('authStatus');
+            let lastErr = null;
+            for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+                try {
+                    const result = await initFirebase();
+                    if (attempt > 1) {
+                        console.info(`Firebase ${attempt}. denemede bağlandı.`);
+                    }
+                    return result;
+                } catch (err) {
+                    lastErr = err;
+                    console.warn(`Firebase başlatma denemesi ${attempt}/${maxAttempts} başarısız:`, err);
+                    if (statusEl && attempt < maxAttempts) {
+                        statusEl.textContent = `Firebase'e bağlanılıyor (deneme ${attempt + 1}/${maxAttempts})...`;
+                    }
+                    if (attempt < maxAttempts) {
+                        await delay(baseDelayMs * attempt); // 1s, 2s, 3s... artan bekleme
+                    }
+                }
+            }
+            throw lastErr;
+        }
+
+        window.NVO_FIREBASE_READY = initFirebaseAutoRetry().catch(err => {
+            console.error("Firebase başlatma hatası (tam detay, tüm denemeler tükendi):", err);
             window.NVO_FIREBASE_DEBUG = err;
             return { error: err };
         });
 
         // Dışarıdan (arayüzdeki "Yeniden Dene" akışından) yeniden başlatma imkânı.
         window.NVO_FIREBASE_RETRY = function () {
-            window.NVO_FIREBASE_READY = initFirebase().catch(err => {
+            window.NVO_FIREBASE_READY = initFirebaseAutoRetry().catch(err => {
                 console.error("Firebase yeniden başlatma hatası:", err);
                 window.NVO_FIREBASE_DEBUG = err;
                 return { error: err };
