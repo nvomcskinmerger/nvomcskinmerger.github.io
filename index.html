@@ -1587,7 +1587,8 @@
                 copyFrontBackPhysical(ctx2, ctxOut, [48,48,model2 === 'alex' ? 3 : 4,12,4], [48,48,model1 === 'alex' ? 3 : 4,12,4]);
             }
 
-            log("🔥 [NVO MERGER ENGINE v6.1] BİRLEŞTİRME BAŞARIYLA TAMAMLANTI!", "success");
+            log("🔥 [NVO MERGER ENGINE v6.2] BİRLEŞTİRME BAŞARIYLA TAMAMLANDI!", "success");
+            resultReady = true; // KRİTİK: bu satır eksikti, 3D önizleme ve indirme hiç açılmıyordu.
             btnMerge.disabled = false;
             btnDownload.disabled = false;
             progressBarFill.style.width = '100%';
@@ -1615,6 +1616,8 @@
             }
             btnMerge.disabled = true;
             btnDownload.disabled = true;
+            resultReady = false;
+            if (skinViewer) skinViewer.loadSkin(blankTextureDataUrl());
             warningBox.classList.remove('active');
             log(`Skin ${which} temizlendi.`, "warn");
         }
