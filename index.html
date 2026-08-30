@@ -389,7 +389,7 @@
             width: 140px;
             height: 140px;
             image-rendering: pixelated;
-            background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED46yAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABwSURBVHjaYmBgYPgPxEw4BJF4wCRl4CgAAAD//wMADJ0C7RsqO8gAAAAASUVORK5CYII=") repeat;
+            background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAJUlEQVR42mP8////fwYkcPbsWWQuAxMDAUC5AhZ0O42NjentBgDoDQl1lZW7lgAAAABJRU5ErkJggg==") repeat;
             border-radius: var(--radius-md);
             border: 2px solid var(--accent-purple);
             box-shadow: 0 0 25px rgba(138, 43, 226, 0.3);
@@ -780,7 +780,7 @@
     provider.setCustomParameters({prompt:'select_account'});
     window.NVO_FIREBASE_READY = Promise.resolve({
       app, auth, db, firebaseDb: db, provider,
-      onAuthStateChanged: firebase.auth().onAuthStateChanged.bind(firebase.auth()),
+      onAuthStateChanged: (authInstance, callback) => authInstance.onAuthStateChanged(callback),
       getRedirectResult: () => auth.getRedirectResult(),
       signInWithRedirect: (a,p) => a.signInWithRedirect(p),
       signInWithPopup: (a,p) => a.signInWithPopup(p),
