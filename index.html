@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NVO MC SKIN MERGER v5.6 - Mobile Safe Area</title>
+    <title>NVO MC SKIN MERGER v6.2 - Mobile Safe Area</title>
     <!-- Sekme Logosu (Favicon) -->
     <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAANUlEQVQ4jWNgGAWjYBSMglEwCkYBSgYGBgYAFvQAAb637/0AAAAASUVORK5CYII=">
     <!-- Google Fonts -->
@@ -564,7 +564,7 @@
 
     <header class="animate-fade">
         <span class="brand-badge"><i class="fa-solid fa-sparkles"></i> NVO TEAM • NEXT-GEN STUDIO</span>
-        <h1>NVO MC SKIN MERGER v6.1</h1>
+        <h1>NVO MC SKIN MERGER v6.2</h1>
         <p class="subtitle">Gelişmiş UV koordinat motoru ile Minecraft skinlerinizi kusursuz biçimde harmanlayın.</p>
         <div class="usage-counter" aria-live="polite" title="Firebase üzerindeki toplam birleştirme kullanımı">
             <i class="fa-solid fa-users"></i>
@@ -960,16 +960,35 @@
             googleLoginBtn.disabled = true;
             try {
                 const { auth, provider } = await getFirebase();
-                log('Google giriş penceresi açılıyor...', 'normal');
+                log('Google giriş penceresi açılıyor (popup)...', 'normal');
 
-                if (isMobileBrowser()) {
-                    // Mobilde redirect akışı kullanılır: kullanıcı Google'a gider,
-                    // hesap seçer, ve bu sayfaya otomatik geri döner.
-                    await auth.signInWithRedirect(provider);
-                    // Bu satırdan sonrası genelde çalışmaz çünkü tarayıcı sayfadan ayrılır.
-                } else {
+                // ÖNEMLİ MİMARİ DEĞİŞİKLİK:
+                // Önceki sürümlerde mobilde signInWithRedirect kullanılıyordu.
+                // authDomain (nvomcskinmerger.firebaseapp.com) sitenin kendi domaininden
+                // (örn. *.github.io) FARKLI olduğu için redirect akışı, oturum sonucunu
+                // taşımak amacıyla gizli bir iframe + paylaşımlı depolama (storage) kullanır.
+                // Tarayıcılar (Chrome Privacy Sandbox, Safari ITP vb.) bu üçüncü taraf
+                // depolamayı giderek daha agresif şekilde engelliyor: redirect görünüşte
+                // tamamlanıyor (Google'a gidip geri dönüyorsun) ama oturum bilgisi SİTEYE
+                // HİÇ ULAŞMIYOR — tam senin yaşadığın belirti buydu.
+                //
+                // signInWithPopup ise sonucu window.postMessage ile doğrudan açan pencereye
+                // iletir; paylaşımlı depolamaya ihtiyaç duymaz ve bu yüzden bu senaryoda
+                // çok daha güvenilirdir. Bu yüzden artık HEM masaüstü HEM mobilde önce popup
+                // deneniyor; sadece popup fiilen engellenirse (auth/popup-blocked) redirect'e
+                // geri düşülüyor.
+                try {
                     const result = await auth.signInWithPopup(provider);
                     log('Google girişi tamamlandı: ' + (result.user?.displayName || result.user?.email || ''), 'success');
+                } catch (popupErr) {
+                    if (popupErr?.code === 'auth/popup-blocked' || popupErr?.code === 'auth/operation-not-supported-in-this-environment') {
+                        log('Popup engellendi/desteklenmiyor, redirect yöntemine geçiliyor...', 'warn');
+                        sessionStorage.setItem('nvo_pending_redirect', '1');
+                        await auth.signInWithRedirect(provider);
+                        // Bu satırdan sonrası genelde çalışmaz çünkü tarayıcı sayfadan ayrılır.
+                    } else {
+                        throw popupErr;
+                    }
                 }
             } catch (e) {
                 const msg = firebaseErrorText(e);
@@ -995,27 +1014,19 @@
 
             const { auth } = fb;
 
-            // Sayfa bir Google redirect'inden mi dönüyor, yoksa normal bir ziyaret mi
-            // olduğunu ayırt etmek için bayrak kullanıyoruz; bu sadece daha net
-            // teşhis mesajı vermek içindir, giriş akışının kendisi buna bağlı değildir.
+            // Sadece redirect fallback'inden dönüşü ayırt etmek için bayrak kullanılıyor
+            // (artık normal akışta redirect kullanılmıyor, sadece popup engellenirse devreye girer).
             const wasPendingRedirect = sessionStorage.getItem('nvo_pending_redirect') === '1';
             sessionStorage.removeItem('nvo_pending_redirect');
-            if (isMobileBrowser() && !wasPendingRedirect) {
-                sessionStorage.setItem('nvo_pending_redirect', '1');
-            }
 
             try {
                 const redirectResult = await auth.getRedirectResult();
                 if (redirectResult?.user) {
                     log('Google redirect girişi tamamlandı: ' + (redirectResult.user.displayName || redirectResult.user.email || ''), 'success');
                 } else if (wasPendingRedirect) {
-                    // Redirect tamamlanmış görünüyor ama kullanıcı bilgisi gelmedi ve
-                    // hata da fırlatılmadı. En sık nedenler: authDomain'in site domaininden
-                    // farklı olması + tarayıcının üçüncü taraf depolamayı engellemesi,
-                    // ya da bu domainin Authorized domains listesinde olmaması.
                     log('Google girişi tamamlandı ama oturum bilgisi siteye ulaşmadı. authDomain (' +
                         auth.app.options.authDomain + ') ile site domaini (' + location.hostname +
-                        ') farklı olduğu için taraycının üçüncü taraf depolama/çerez engeli buna sebep olabilir; ' +
+                        ') farklı olduğu için tarayıcının üçüncü taraf depolama/çerez engeli buna sebep olabilir; ' +
                         'ayrıca bu domainin Firebase Authentication > Settings > Authorized domains listesinde olduğundan emin olun.', 'error');
                 }
             } catch (e) {
