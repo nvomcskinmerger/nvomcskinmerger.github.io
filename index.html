@@ -762,6 +762,19 @@
 <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
 <script>
 (function(){
+  // Sayfa üzerindeki terminale erken aşamada bile yazabilmek için
+  // bağımsız, küçük bir log yardımcı fonksiyonu (asıl log() fonksiyonu
+  // henüz tanımlanmadığı için buna ihtiyaç var).
+  function nvoLog(msg, type){
+    const term = document.getElementById('terminal');
+    if (!term) { console.log('[NVO]', msg); return; }
+    const div = document.createElement('div');
+    div.className = 'terminal-line ' + (type || 'normal');
+    div.textContent = '> ' + msg;
+    term.appendChild(div);
+    term.scrollTop = term.scrollHeight;
+  }
+
   const firebaseConfig = {
     apiKey: "AIzaSyCC2or3KD_8xKKEP01jM850UFQ_4HFym4M",
     authDomain: "nvomcskinmerger.firebaseapp.com",
@@ -771,30 +784,37 @@
     appId: "1:747052660692:web:958b5b35e1378767d2c841",
     measurementId: "G-RL0TBQNVTC"
   };
+
   try {
     if (!window.firebase) throw new Error('Firebase SDK yüklenemedi. İnternet bağlantısını kontrol edin.');
-    const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
+
+    const app  = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth(app);
-    const db = firebase.firestore(app);
+    const db   = firebase.firestore(app);
     const provider = new firebase.auth.GoogleAuthProvider();
-    provider.setCustomParameters({prompt:'select_account'});
-    window.NVO_FIREBASE_READY = Promise.resolve({
-      app, auth, db, firebaseDb: db, provider,
-      onAuthStateChanged: (authInstance, callback) => authInstance.onAuthStateChanged(callback),
-      getRedirectResult: () => auth.getRedirectResult(),
-      signInWithRedirect: (a,p) => a.signInWithRedirect(p),
-      signInWithPopup: (a,p) => a.signInWithPopup(p),
-      signOut: () => auth.signOut(),
-      doc: (db,c,d) => db.collection(c).doc(d),
-      getDoc: async ref => { const s=await ref.get(); return {data:()=>s.data()}; },
-      setDoc: (ref,data,opts) => ref.set(data,opts),
-      increment: firebase.firestore.FieldValue.increment,
-      serverTimestamp: firebase.firestore.FieldValue.serverTimestamp
+    provider.setCustomParameters({ prompt: 'select_account' });
+
+    // Oturumun sayfa yenilemeleri / redirect dönüşleri arasında kalıcı olmasını garanti et.
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(e){
+      console.warn('[NVO] setPersistence başarısız:', e);
     });
-    console.info('[NVO] Firebase hazır:', app.options.projectId);
-  } catch(error) {
+
+    // Not: Önceki sürümde burada auth/db metotlarını saran ekstra bir "wrapper"
+    // katmanı vardı (onAuthStateChanged, getRedirectResult vb. için özel fonksiyonlar).
+    // O katmandaki yanlış bind() kullanımı "n is not a function" hatasına sebep oluyordu.
+    // Artık ham firebase nesneleri doğrudan dışa açılıyor; her yerde native SDK
+    // metotları kullanılıyor, ekstra indirection yok.
+    window.NVO = { app: app, auth: auth, db: db, provider: provider };
+    window.NVO_FIREBASE_READY = Promise.resolve(window.NVO);
+
+    if (app.options.authDomain && location.hostname && !location.hostname.endsWith('firebaseapp.com') && !location.hostname.endsWith('web.app')) {
+      nvoLog('Uyarı: authDomain (' + app.options.authDomain + ') site domaininden (' + location.hostname + ') farklı. Google girişi sonrası oturum senkronize olmazsa (redirect tamamlanır ama giriş görünmezse) Firebase Console > Authentication > Settings kısmından bu site domaini için "custom auth domain" tanımlamanız gerekir.', 'warn');
+    }
+    console.info('[NVO] Firebase hazır:', app.options.projectId, '| authDomain:', app.options.authDomain, '| site:', location.hostname);
+  } catch (error) {
     console.error('[NVO] Firebase başlatılamadı:', error);
-    window.NVO_FIREBASE_READY = Promise.resolve({error});
+    window.NVO_FIREBASE_READY = Promise.resolve({ error: error });
+    nvoLog('Firebase başlatılamadı: ' + (error && error.message ? error.message : error), 'error');
   }
 })();
 </script>
@@ -812,7 +832,6 @@
         const textureLock = document.getElementById('textureLock');
         const uvOutputPanel = document.getElementById('uvOutputPanel');
         let firebaseUser = null;
-        let firebaseApi = null;
         let resultReady = false;
         if (uvOutputPanel) uvOutputPanel.classList.add('uv-hidden');
 
@@ -841,13 +860,23 @@
             }
         }
 
+        // Firebase hazır olana kadar bekleyip {app, auth, db, provider} döndürür.
+        // Başlatma başarısızsa hatayı fırlatır.
+        async function getFirebase(){
+            const ready = await window.NVO_FIREBASE_READY;
+            if (!ready || ready.error) throw (ready && ready.error) || new Error('Firebase kullanılamıyor');
+            return ready;
+        }
+
         async function updateGlobalUsage(){
             try {
-                if (!firebaseApi) firebaseApi = await window.NVO_FIREBASE_READY;
-                if (!firebaseApi) throw new Error('Firebase kullanılamıyor');
-                const ref = firebaseApi.doc(firebaseApi.firebaseDb, 'stats', 'usage');
-                await firebaseApi.setDoc(ref, { totalMerges: firebaseApi.increment(1), updatedAt: firebaseApi.serverTimestamp() }, { merge:true });
-                const snap = await firebaseApi.getDoc(ref);
+                const { db } = await getFirebase();
+                const ref = db.collection('stats').doc('usage');
+                await ref.set({
+                    totalMerges: firebase.firestore.FieldValue.increment(1),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                const snap = await ref.get();
                 usageCountEl.textContent = Number(snap.data()?.totalMerges || 0).toLocaleString('tr-TR');
             } catch (e) {
                 console.warn('Firebase kullanım sayacı güncellenemedi:', e);
@@ -857,11 +886,12 @@
 
         async function loadGlobalUsage(){
             try {
-                if (!firebaseApi) firebaseApi = await window.NVO_FIREBASE_READY;
-                if (!firebaseApi) throw new Error('Firebase kullanılamıyor');
-                const snap = await firebaseApi.getDoc(firebaseApi.doc(firebaseApi.firebaseDb, 'stats', 'usage'));
+                const { db } = await getFirebase();
+                const snap = await db.collection('stats').doc('usage').get();
                 usageCountEl.textContent = Number(snap.data()?.totalMerges || 0).toLocaleString('tr-TR');
-            } catch(e) { usageCountEl.textContent = '—'; }
+            } catch (e) {
+                usageCountEl.textContent = '—';
+            }
         }
 
         function isMobileBrowser(){
@@ -875,7 +905,7 @@
                 return 'Firebase API anahtarı geçersiz. Firebase Console > Project settings > Web app bölümündeki güncel Web config kullanılmalı ve API anahtarının kısıtlamaları kontrol edilmelidir.';
             }
             if (code === 'auth/unauthorized-domain') {
-                return 'Bu alan adı Firebase Authentication > Settings > Authorized domains listesinde yok.';
+                return 'Bu alan adı (' + location.hostname + ') Firebase Authentication > Settings > Authorized domains listesinde yok. Oraya eklemeden Google girişi çalışmaz.';
             }
             if (code === 'auth/operation-not-allowed') {
                 return 'Firebase Authentication > Sign-in method bölümünde Google sağlayıcısını etkinleştirin.';
@@ -883,110 +913,132 @@
             if (code === 'auth/popup-blocked') return 'Google giriş penceresi tarayıcı tarafından engellendi.';
             if (code === 'auth/popup-closed-by-user') return 'Google giriş penceresi kapatıldı.';
             if (code === 'auth/network-request-failed') return 'Firebase ağ isteği başarısız. İnternet bağlantısını kontrol edin.';
-            return raw;
+            if (code === 'auth/cancelled-popup-request') return 'Önceki giriş penceresi hâlâ açıktı, yeni istek iptal edildi. Tekrar deneyin.';
+            return raw + (code ? ' [' + code + ']' : '');
         }
 
-        async function handleGoogleLogin(){
+        function applySignedOutUI(){
+            authStatusText.textContent = 'Texture görüntüleme: Google girişi gerekli';
+            authAvatar.style.display = 'none';
+            authAvatar.removeAttribute('src');
+            googleLoginLabel.textContent = 'Google ile Giriş Yap';
+            googleLoginBtn.onclick = handleGoogleLogin;
+            setTextureVisibility(false);
+            btnDownload.disabled = true;
+        }
+
+        function applySignedInUI(user){
+            // NOT: displayName/email değerleri Google hesabı tarafından belirlenir ve
+            // teorik olarak HTML/script karakteri içerebilir. innerHTML yerine
+            // textContent kullanılarak XSS riski tamamen ortadan kaldırılır.
+            authStatusText.textContent = `✅ ${user.displayName || user.email || 'Google hesabı'} • Texture açık`;
+            if (user.photoURL) {
+                authAvatar.src = user.photoURL;
+                authAvatar.style.display = 'inline-block';
+                authAvatar.referrerPolicy = 'no-referrer';
+            } else {
+                authAvatar.style.display = 'none';
+                authAvatar.removeAttribute('src');
+            }
+            googleLoginLabel.textContent = 'Google hesabından çık';
+            googleLoginBtn.onclick = handleGoogleLogout;
+            setTextureVisibility(true);
+            btnDownload.disabled = !resultReady;
+        }
+
+        async function handleGoogleLogout(){
             try {
-                const api = await window.NVO_FIREBASE_READY;
-                if (!api || api.error) throw (api?.error || new Error('Firebase başlatılamadı'));
-
-                // Redirect'ten dönüşü ayırt edebilmek için bir bayrak bırakıyoruz.
-                // getRedirectResult() hem "hiç redirect olmadı" hem de
-                // "redirect oldu ama 3.taraf depolama engellendiği için sonuç kayboldu"
-                // durumlarında aynı şekilde boş/null döner; bu bayrak ikisini ayırt etmemizi sağlar.
-                sessionStorage.setItem('nvo_pending_redirect', '1');
-
-                // Mobile: redirect is the recommended Google flow.
-                // Desktop: popup keeps the user on the current page.
-                if (isMobileBrowser()) {
-                    await api.signInWithRedirect(api.auth, api.provider);
-                } else {
-                    await api.signInWithPopup(api.auth, api.provider);
-                    sessionStorage.removeItem('nvo_pending_redirect');
-                }
+                const { auth } = await getFirebase();
+                await auth.signOut();
+                log('Çıkış yapıldı.', 'warn');
             } catch (e) {
-                sessionStorage.removeItem('nvo_pending_redirect');
-                const msg = firebaseErrorText(e);
-                authStatusText.textContent = msg;
-                log('Google giriş başarısız' + (e?.code ? ' [' + e.code + ']' : '') + ': ' + msg, 'error');
+                log('Çıkış başarısız: ' + firebaseErrorText(e), 'error');
             }
         }
 
-        // Use ONE click handler. Do not combine addEventListener + onclick,
-        // otherwise logout/login handlers can fire twice.
+        async function handleGoogleLogin(){
+            googleLoginBtn.disabled = true;
+            try {
+                const { auth, provider } = await getFirebase();
+                log('Google giriş penceresi açılıyor...', 'normal');
+
+                if (isMobileBrowser()) {
+                    // Mobilde redirect akışı kullanılır: kullanıcı Google'a gider,
+                    // hesap seçer, ve bu sayfaya otomatik geri döner.
+                    await auth.signInWithRedirect(provider);
+                    // Bu satırdan sonrası genelde çalışmaz çünkü tarayıcı sayfadan ayrılır.
+                } else {
+                    const result = await auth.signInWithPopup(provider);
+                    log('Google girişi tamamlandı: ' + (result.user?.displayName || result.user?.email || ''), 'success');
+                }
+            } catch (e) {
+                const msg = firebaseErrorText(e);
+                authStatusText.textContent = msg;
+                log('Google giriş başarısız' + (e?.code ? ' [' + e.code + ']' : '') + ': ' + msg, 'error');
+            } finally {
+                googleLoginBtn.disabled = false;
+            }
+        }
+
         googleLoginBtn.onclick = handleGoogleLogin;
 
         (async () => {
-            const api = await window.NVO_FIREBASE_READY;
-            firebaseApi = api;
-
-            if (!api || api.error) {
-                const err = api?.error;
-                const msg = firebaseErrorText(err);
+            let fb;
+            try {
+                fb = await getFirebase();
+            } catch (e) {
+                const msg = firebaseErrorText(e);
                 authStatusText.textContent = msg;
                 log('Firebase başlatılamadı: ' + msg, 'error');
                 return;
             }
 
-            // Complete a mobile redirect login, if one is pending.
+            const { auth } = fb;
+
+            // Sayfa bir Google redirect'inden mi dönüyor, yoksa normal bir ziyaret mi
+            // olduğunu ayırt etmek için bayrak kullanıyoruz; bu sadece daha net
+            // teşhis mesajı vermek içindir, giriş akışının kendisi buna bağlı değildir.
             const wasPendingRedirect = sessionStorage.getItem('nvo_pending_redirect') === '1';
+            sessionStorage.removeItem('nvo_pending_redirect');
+            if (isMobileBrowser() && !wasPendingRedirect) {
+                sessionStorage.setItem('nvo_pending_redirect', '1');
+            }
+
             try {
-                const redirectResult = await api.getRedirectResult(api.auth);
-                if (wasPendingRedirect && !redirectResult?.user) {
-                    // Redirect tamamlandı ama kullanıcı gelmedi ve hata da fırlatılmadı.
-                    // Bu, klasik "üçüncü taraf çerez/depolama engellendi" belirtisidir:
-                    // authDomain (firebaseapp.com) sitenin kendi domain'inden farklı olduğu için
-                    // Firebase'in gizli iframe'i üzerinden oturum bilgisini taşıyamıyor.
-                    const hint = 'Google girişi tamamlandı ama oturum bilgisi siteye ulaşmadı. ' +
-                        'Bunun en olası sebebi tarayıcının üçüncü taraf çerez/depolamayı engellemesi: ' +
-                        'authDomain (' + api.auth.app.options.authDomain + ') sitenin kendi alan adından farklı. ' +
-                        'Kalıcı çözüm: Firebase Auth için sitenizle aynı domainde bir "custom auth domain" tanımlayın. ' +
-                        'Hızlı test: tarayıcıda üçüncü taraf çerezlere geçici izin verip tekrar deneyin.';
-                    authStatusText.textContent = 'Giriş tamamlanamadı: üçüncü taraf çerez engeli olabilir (detay için konsola bakın).';
-                    log(hint, 'error');
+                const redirectResult = await auth.getRedirectResult();
+                if (redirectResult?.user) {
+                    log('Google redirect girişi tamamlandı: ' + (redirectResult.user.displayName || redirectResult.user.email || ''), 'success');
+                } else if (wasPendingRedirect) {
+                    // Redirect tamamlanmış görünüyor ama kullanıcı bilgisi gelmedi ve
+                    // hata da fırlatılmadı. En sık nedenler: authDomain'in site domaininden
+                    // farklı olması + tarayıcının üçüncü taraf depolamayı engellemesi,
+                    // ya da bu domainin Authorized domains listesinde olmaması.
+                    log('Google girişi tamamlandı ama oturum bilgisi siteye ulaşmadı. authDomain (' +
+                        auth.app.options.authDomain + ') ile site domaini (' + location.hostname +
+                        ') farklı olduğu için taraycının üçüncü taraf depolama/çerez engeli buna sebep olabilir; ' +
+                        'ayrıca bu domainin Firebase Authentication > Settings > Authorized domains listesinde olduğundan emin olun.', 'error');
                 }
             } catch (e) {
                 const msg = firebaseErrorText(e);
                 authStatusText.textContent = msg;
                 log('Google redirect sonucu alınamadı: ' + msg, 'error');
-            } finally {
-                sessionStorage.removeItem('nvo_pending_redirect');
             }
 
-            api.onAuthStateChanged(api.auth, user => {
+            // onAuthStateChanged, Firebase Auth'un kendi native metodu; ekstra
+            // sarmalayıcı/bind katmanı yok, bu yüzden parametre uyuşmazlığı riski de yok.
+            auth.onAuthStateChanged(user => {
                 firebaseUser = user;
                 if (user) {
-                    // NOT: displayName/email değerleri Google hesabı tarafından belirlenir ve
-                    // teorik olarak HTML/script karakterleri içerebilir. innerHTML yerine
-                    // textContent kullanılarak XSS riski tamamen ortadan kaldırılır.
-                    authStatusText.textContent = `✅ ${user.displayName || user.email || 'Google hesabı'} • Texture açık`;
-                    if (user.photoURL) {
-                        authAvatar.src = user.photoURL;
-                        authAvatar.style.display = 'inline-block';
-                        authAvatar.referrerPolicy = 'no-referrer';
-                    } else {
-                        authAvatar.style.display = 'none';
-                        authAvatar.removeAttribute('src');
-                    }
-                    googleLoginLabel.textContent = 'Google hesabından çık';
-                    googleLoginBtn.onclick = async () => {
-                        try { await api.signOut(api.auth); }
-                        catch (e) { log('Çıkış başarısız: ' + firebaseErrorText(e), 'error'); }
-                    };
-                    setTextureVisibility(true);
-                    btnDownload.disabled = !resultReady;
-                    log('Google girişi başarılı. 3D texture ve UV çıktı açıldı.', 'success');
+                    applySignedInUI(user);
+                    log('Oturum aktif: ' + (user.displayName || user.email || 'Google hesabı') + '. 3D texture ve UV çıktı açıldı.', 'success');
                 } else {
-                    authStatusText.textContent = 'Texture görüntüleme: Google girişi gerekli';
-                    authAvatar.style.display = 'none';
-                    authAvatar.removeAttribute('src');
-                    googleLoginLabel.textContent = 'Google ile Giriş Yap';
-                    googleLoginBtn.onclick = handleGoogleLogin;
-                    setTextureVisibility(false);
-                    btnDownload.disabled = true;
+                    applySignedOutUI();
                 }
+            }, error => {
+                log('onAuthStateChanged hatası: ' + firebaseErrorText(error), 'error');
             });
+
+            loadGlobalUsage();
         })();
 
         const inputSkin1 = document.getElementById('inputSkin1');
