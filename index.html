@@ -891,14 +891,22 @@
                 const api = await window.NVO_FIREBASE_READY;
                 if (!api || api.error) throw (api?.error || new Error('Firebase başlatılamadı'));
 
+                // Redirect'ten dönüşü ayırt edebilmek için bir bayrak bırakıyoruz.
+                // getRedirectResult() hem "hiç redirect olmadı" hem de
+                // "redirect oldu ama 3.taraf depolama engellendiği için sonuç kayboldu"
+                // durumlarında aynı şekilde boş/null döner; bu bayrak ikisini ayırt etmemizi sağlar.
+                sessionStorage.setItem('nvo_pending_redirect', '1');
+
                 // Mobile: redirect is the recommended Google flow.
                 // Desktop: popup keeps the user on the current page.
                 if (isMobileBrowser()) {
                     await api.signInWithRedirect(api.auth, api.provider);
                 } else {
                     await api.signInWithPopup(api.auth, api.provider);
+                    sessionStorage.removeItem('nvo_pending_redirect');
                 }
             } catch (e) {
+                sessionStorage.removeItem('nvo_pending_redirect');
                 const msg = firebaseErrorText(e);
                 authStatusText.textContent = msg;
                 log('Google giriş başarısız' + (e?.code ? ' [' + e.code + ']' : '') + ': ' + msg, 'error');
@@ -922,12 +930,28 @@
             }
 
             // Complete a mobile redirect login, if one is pending.
+            const wasPendingRedirect = sessionStorage.getItem('nvo_pending_redirect') === '1';
             try {
-                await api.getRedirectResult(api.auth);
+                const redirectResult = await api.getRedirectResult(api.auth);
+                if (wasPendingRedirect && !redirectResult?.user) {
+                    // Redirect tamamlandı ama kullanıcı gelmedi ve hata da fırlatılmadı.
+                    // Bu, klasik "üçüncü taraf çerez/depolama engellendi" belirtisidir:
+                    // authDomain (firebaseapp.com) sitenin kendi domain'inden farklı olduğu için
+                    // Firebase'in gizli iframe'i üzerinden oturum bilgisini taşıyamıyor.
+                    const hint = 'Google girişi tamamlandı ama oturum bilgisi siteye ulaşmadı. ' +
+                        'Bunun en olası sebebi tarayıcının üçüncü taraf çerez/depolamayı engellemesi: ' +
+                        'authDomain (' + api.auth.app.options.authDomain + ') sitenin kendi alan adından farklı. ' +
+                        'Kalıcı çözüm: Firebase Auth için sitenizle aynı domainde bir "custom auth domain" tanımlayın. ' +
+                        'Hızlı test: tarayıcıda üçüncü taraf çerezlere geçici izin verip tekrar deneyin.';
+                    authStatusText.textContent = 'Giriş tamamlanamadı: üçüncü taraf çerez engeli olabilir (detay için konsola bakın).';
+                    log(hint, 'error');
+                }
             } catch (e) {
                 const msg = firebaseErrorText(e);
                 authStatusText.textContent = msg;
                 log('Google redirect sonucu alınamadı: ' + msg, 'error');
+            } finally {
+                sessionStorage.removeItem('nvo_pending_redirect');
             }
 
             api.onAuthStateChanged(api.auth, user => {
