@@ -81,6 +81,35 @@
             box-shadow: 0 0 20px rgba(255, 0, 127, 0.35);
         }
 
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-left: 10px;
+            margin-bottom: 12px;
+            padding: 5px 16px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .github-link i { font-size: 0.95rem; }
+        .github-link:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0,242,254,.08);
+            transform: translateY(-1px);
+        }
+        .github-link:active {
+            transform: scale(0.96);
+            filter: brightness(0.92);
+        }
+
         h1 {
             font-size: 2.6rem;
             font-weight: 900;
@@ -596,6 +625,9 @@
 
     <header class="animate-fade">
         <span class="brand-badge"><i class="fa-solid fa-sparkles"></i> NVO TEAM • NEXT-GEN STUDIO</span>
+        <a class="github-link" href="https://github.com/nvomcskinmerger/nvomcskinmerger.github.io" target="_blank" rel="noopener noreferrer" title="GitHub deposunu görüntüle" aria-label="GitHub deposunu görüntüle">
+            <i class="fa-brands fa-github"></i> GitHub
+        </a>
         <h1>NVO MC SKIN MERGER v6.2</h1>
         <p class="subtitle">Gelişmiş UV koordinat motoru ile Minecraft skinlerinizi kusursuz biçimde harmanlayın.</p>
         <div class="usage-counter" aria-live="polite" title="Firebase üzerindeki toplam birleştirme kullanımı">
@@ -758,6 +790,7 @@
             <button type="button" class="footer-link-btn" onclick="openModal('copyrightModal')"><i class="fa-solid fa-copyright"></i> Telif Hakkı & Yasal İkaz</button>
             <button type="button" class="footer-link-btn" onclick="openModal('termsModal')"><i class="fa-solid fa-file-contract"></i> Kullanım Şartları</button>
             <button type="button" class="footer-link-btn" onclick="openModal('mitModal')"><i class="fa-solid fa-scale-balanced"></i> MIT Lisansı</button>
+            <a class="footer-link-btn" href="https://github.com/nvomcskinmerger/nvomcskinmerger.github.io" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>
         </div>
     </footer>
 
