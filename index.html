@@ -748,77 +748,47 @@
         </div>
     </div>
 
-    <script type="module">
-        // ============================================================
-        // NVO MC SKIN MERGER v6.1 - FIREBASE
-        // Firebase config: Firebase Console > Project settings > Web app
-        // Analytics deliberately NOT initialized here; it is not needed
-        // for Google Authentication or Firestore usage counter.
-        // ============================================================
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-        import {
-            getAuth,
-            GoogleAuthProvider,
-            onAuthStateChanged,
-            getRedirectResult,
-            signInWithRedirect,
-            signInWithPopup,
-            signOut,
-            setPersistence,
-            browserLocalPersistence,
-            browserSessionPersistence
-        } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-        import {
-            getFirestore,
-            doc,
-            getDoc,
-            setDoc,
-            increment,
-            serverTimestamp
-        } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
-
-        // EXACTLY the Firebase Web App configuration supplied for this project.
-        const firebaseConfig = {
-            apiKey: "AIzaSyCC2or3KD_8xKKEP01jM850UFQ_4HFym4",
-            authDomain: "nvomcskinmerger.firebaseapp.com",
-            projectId: "nvomcskinmerger",
-            storageBucket: "nvomcskinmerger.firebasestorage.app",
-            messagingSenderId: "747052660692",
-            appId: "1:747052660692:web:958b5b35e1378767d2c841",
-            measurementId: "G-RL0TBQNVTC"
-        };
-
-        try {
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-            const db = getFirestore(app);
-            const provider = new GoogleAuthProvider();
-            provider.setCustomParameters({ prompt: "select_account" });
-
-            // Persistence is optional. If browser storage is restricted,
-            // Auth itself must continue working with session persistence.
-            try {
-                await setPersistence(auth, browserLocalPersistence);
-            } catch (e) {
-                console.warn("Local persistence unavailable:", e);
-                try { await setPersistence(auth, browserSessionPersistence); }
-                catch (e2) { console.warn("Session persistence unavailable:", e2); }
-            }
-
-            window.NVO_FIREBASE_READY = Promise.resolve({
-                app, auth, db, provider,
-                onAuthStateChanged,
-                getRedirectResult,
-                signInWithRedirect,
-                signInWithPopup,
-                signOut,
-                doc, getDoc, setDoc, increment, serverTimestamp
-            });
-        } catch (error) {
-            console.error("Firebase initialization failed:", error);
-            window.NVO_FIREBASE_READY = Promise.resolve({ error });
-        }
-    </script>
+    <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
+<script>
+(function(){
+  const firebaseConfig = {
+    apiKey: "AIzaSyCC2or3KD_8xKKEP01jM850UFQ_4HFym4",
+    authDomain: "nvomcskinmerger.firebaseapp.com",
+    projectId: "nvomcskinmerger",
+    storageBucket: "nvomcskinmerger.firebasestorage.app",
+    messagingSenderId: "747052660692",
+    appId: "1:747052660692:web:958b5b35e1378767d2c841",
+    measurementId: "G-RL0TBQNVTC"
+  };
+  try {
+    if (!window.firebase) throw new Error('Firebase SDK yüklenemedi. İnternet bağlantısını kontrol edin.');
+    const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth(app);
+    const db = firebase.firestore(app);
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({prompt:'select_account'});
+    window.NVO_FIREBASE_READY = Promise.resolve({
+      app, auth, db, firebaseDb: db, provider,
+      onAuthStateChanged: firebase.auth().onAuthStateChanged.bind(firebase.auth()),
+      getRedirectResult: () => auth.getRedirectResult(),
+      signInWithRedirect: (a,p) => a.signInWithRedirect(p),
+      signInWithPopup: (a,p) => a.signInWithPopup(p),
+      signOut: () => auth.signOut(),
+      doc: (db,c,d) => db.collection(c).doc(d),
+      getDoc: async ref => { const s=await ref.get(); return {data:()=>s.data()}; },
+      setDoc: (ref,data,opts) => ref.set(data,opts),
+      increment: firebase.firestore.FieldValue.increment,
+      serverTimestamp: firebase.firestore.FieldValue.serverTimestamp
+    });
+    console.info('[NVO] Firebase hazır:', app.options.projectId);
+  } catch(error) {
+    console.error('[NVO] Firebase başlatılamadı:', error);
+    window.NVO_FIREBASE_READY = Promise.resolve({error});
+  }
+})();
+</script>
 
     <script>
         let skinViewer = null;
