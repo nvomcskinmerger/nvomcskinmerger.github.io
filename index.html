@@ -563,7 +563,7 @@
 
     <header class="animate-fade">
         <span class="brand-badge"><i class="fa-solid fa-sparkles"></i> NVO TEAM • NEXT-GEN STUDIO</span>
-        <h1>NVO MC SKIN MERGER v6.0</h1>
+        <h1>NVO MC SKIN MERGER v6.1</h1>
         <p class="subtitle">Gelişmiş UV koordinat motoru ile Minecraft skinlerinizi kusursuz biçimde harmanlayın.</p>
         <div class="usage-counter" aria-live="polite" title="Firebase üzerindeki toplam birleştirme kullanımı">
             <i class="fa-solid fa-users"></i>
@@ -719,7 +719,7 @@
     <div id="privacyModal" class="modal-overlay">
         <div class="modal-content">
             <h2>🔒 Gizlilik Politikası</h2>
-            <p><strong>NVO MC Skin Merger v6.0</strong> kullanıcı verilerine %100 saygı duyar. Yüklenen tüm dosyalar doğrudan cihazınızda işlenir ve hiçbir yere yüklenmez.</p>
+            <p><strong>NVO MC Skin Merger v6.1</strong> kullanıcı verilerine %100 saygı duyar. Yüklenen tüm dosyalar doğrudan cihazınızda işlenir ve hiçbir yere yüklenmez.</p>
             <button class="modal-close" onclick="closeModal('privacyModal')">Kapat</button>
         </div>
     </div>
@@ -750,7 +750,7 @@
 
     <script type="module">
         // ============================================================
-        // NVO MC SKIN MERGER v6.0 - FIREBASE
+        // NVO MC SKIN MERGER v6.1 - FIREBASE
         // Firebase config: Firebase Console > Project settings > Web app
         // Analytics deliberately NOT initialized here; it is not needed
         // for Google Authentication or Firestore usage counter.
@@ -779,7 +779,7 @@
 
         // EXACTLY the Firebase Web App configuration supplied for this project.
         const firebaseConfig = {
-            apiKey: "AIzaSyCC2or3KD8_8xKKEP01jM850UFQ_4HFym4M",
+            apiKey: "AIzaSyCC2or3KD_8xKKEP01jM850UFQ_4HFym4",
             authDomain: "nvomcskinmerger.firebaseapp.com",
             projectId: "nvomcskinmerger",
             storageBucket: "nvomcskinmerger.firebasestorage.app",
@@ -1182,7 +1182,7 @@
             }, 50);
         }
 
-        // ===== NVO v6.0: GERÇEK skinview3d UV GEOMETRİSİ =====
+        // ===== NVO v6.1: GERÇEK skinview3d UV GEOMETRİSİ =====
         // Minecraft/skinview3d kutu UV'si: u,v,width,height,depth.
         // Bu yardımcılar yüzleri tam olarak gerçek UV koordinatlarından çıkarır.
         function boxFaces(u, v, w, h, d) {
@@ -1354,7 +1354,7 @@
                 copyArea(ctx1, ctxOut, 0, 0, 64, 16); // Tüm Kafa ve Şapka Katmanı
 
             } else if (selectedMode === 'top_bottom') {
-                // v6.0: Gövde + kollar GERÇEK KUTU YÜKSEKLİĞİNDEN ortadan bölünür.
+                // v6.1: Gövde + kollar GERÇEK KUTU YÜKSEKLİĞİNDEN ortadan bölünür.
                 // Önce Skin 1'in tamamı alınır; sonra her dikey yüzün alt yarısı Skin 2 ile değiştirilir.
                 // Böylece UV'deki top/bottom şeritleri yanlışlıkla gövdeye yapıştırılmaz.
                 ctxOut.drawImage(canvas1, 0, 0);
@@ -1505,7 +1505,7 @@
                 copyFrontBackPhysical(ctx2, ctxOut, [48,48,model2 === 'alex' ? 3 : 4,12,4], [48,48,model1 === 'alex' ? 3 : 4,12,4]);
             }
 
-            log("🔥 [NVO MERGER ENGINE v6.0] BİRLEŞTİRME BAŞARIYLA TAMAMLANTI!", "success");
+            log("🔥 [NVO MERGER ENGINE v6.1] BİRLEŞTİRME BAŞARIYLA TAMAMLANTI!", "success");
             btnMerge.disabled = false;
             btnDownload.disabled = false;
             progressBarFill.style.width = '100%';
