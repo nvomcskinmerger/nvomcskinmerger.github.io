@@ -541,8 +541,9 @@
         .auth-bar{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:14px auto 0;max-width:680px}
         .auth-status{display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);font-size:.78rem;color:var(--text-muted)}
         .auth-status img{width:26px;height:26px;border-radius:50%;display:none}
-        .google-login{border:1px solid rgba(255,255,255,.12);background:#fff;color:#111;padding:10px 15px;border-radius:10px;font-weight:700;cursor:pointer}
+        .google-login{border:1px solid rgba(255,255,255,.12);background:#fff;color:#111;padding:9px 16px 9px 10px;border-radius:10px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:10px}
         .google-login:hover{transform:translateY(-1px)}
+        .google-login svg{width:18px;height:18px;flex-shrink:0}
         #uvOutputPanel.uv-hidden{display:none !important;}
         #uvOutputPanel.uv-hidden + .result-box{width:100%;}
         .texture-lock{margin-top:10px;padding:9px 12px;border-radius:10px;background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.18);color:#ffd76a;font-size:.76rem;line-height:1.45}
@@ -572,8 +573,16 @@
             <small>kez</small>
         </div>
         <div class="auth-bar">
-            <button class="google-login" id="googleLogin" type="button">🔐 Google ile Giriş Yap</button>
-            <div class="auth-status" id="authStatus">Texture görüntüleme: giriş gerekli</div>
+            <button class="google-login" id="googleLogin" type="button">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+                    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+                    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+                    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+                </svg>
+                <span id="googleLoginLabel">Google ile Giriş Yap</span>
+            </button>
+            <div class="auth-status" id="authStatus"><img id="authAvatar" alt=""><span id="authStatusText">Texture görüntüleme: giriş gerekli</span></div>
         </div>
     </header>
 
@@ -796,7 +805,10 @@
 
         const usageCountEl = document.getElementById('usageCount');
         const googleLoginBtn = document.getElementById('googleLogin');
+        const googleLoginLabel = document.getElementById('googleLoginLabel');
         const authStatusEl = document.getElementById('authStatus');
+        const authStatusText = document.getElementById('authStatusText');
+        const authAvatar = document.getElementById('authAvatar');
         const textureLock = document.getElementById('textureLock');
         const uvOutputPanel = document.getElementById('uvOutputPanel');
         let firebaseUser = null;
@@ -888,7 +900,7 @@
                 }
             } catch (e) {
                 const msg = firebaseErrorText(e);
-                authStatusEl.textContent = msg;
+                authStatusText.textContent = msg;
                 log('Google giriş başarısız' + (e?.code ? ' [' + e.code + ']' : '') + ': ' + msg, 'error');
             }
         }
@@ -904,7 +916,7 @@
             if (!api || api.error) {
                 const err = api?.error;
                 const msg = firebaseErrorText(err);
-                authStatusEl.textContent = msg;
+                authStatusText.textContent = msg;
                 log('Firebase başlatılamadı: ' + msg, 'error');
                 return;
             }
@@ -914,15 +926,26 @@
                 await api.getRedirectResult(api.auth);
             } catch (e) {
                 const msg = firebaseErrorText(e);
-                authStatusEl.textContent = msg;
+                authStatusText.textContent = msg;
                 log('Google redirect sonucu alınamadı: ' + msg, 'error');
             }
 
             api.onAuthStateChanged(api.auth, user => {
                 firebaseUser = user;
                 if (user) {
-                    authStatusEl.innerHTML = `✅ ${user.displayName || user.email || 'Google hesabı'} • Texture açık`;
-                    googleLoginBtn.textContent = '🚪 Google hesabından çık';
+                    // NOT: displayName/email değerleri Google hesabı tarafından belirlenir ve
+                    // teorik olarak HTML/script karakterleri içerebilir. innerHTML yerine
+                    // textContent kullanılarak XSS riski tamamen ortadan kaldırılır.
+                    authStatusText.textContent = `✅ ${user.displayName || user.email || 'Google hesabı'} • Texture açık`;
+                    if (user.photoURL) {
+                        authAvatar.src = user.photoURL;
+                        authAvatar.style.display = 'inline-block';
+                        authAvatar.referrerPolicy = 'no-referrer';
+                    } else {
+                        authAvatar.style.display = 'none';
+                        authAvatar.removeAttribute('src');
+                    }
+                    googleLoginLabel.textContent = 'Google hesabından çık';
                     googleLoginBtn.onclick = async () => {
                         try { await api.signOut(api.auth); }
                         catch (e) { log('Çıkış başarısız: ' + firebaseErrorText(e), 'error'); }
@@ -931,8 +954,10 @@
                     btnDownload.disabled = !resultReady;
                     log('Google girişi başarılı. 3D texture ve UV çıktı açıldı.', 'success');
                 } else {
-                    authStatusEl.textContent = 'Texture görüntüleme: Google girişi gerekli';
-                    googleLoginBtn.textContent = '🔐 Google ile Giriş Yap';
+                    authStatusText.textContent = 'Texture görüntüleme: Google girişi gerekli';
+                    authAvatar.style.display = 'none';
+                    authAvatar.removeAttribute('src');
+                    googleLoginLabel.textContent = 'Google ile Giriş Yap';
                     googleLoginBtn.onclick = handleGoogleLogin;
                     setTextureVisibility(false);
                     btnDownload.disabled = true;
