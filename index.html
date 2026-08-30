@@ -368,6 +368,15 @@
             transform: none !important;
             box-shadow: none !important;
         }
+        .btn:active:not(:disabled),
+        .utility-btn:active:not(:disabled),
+        .three-controls button:active:not(:disabled),
+        .google-login:active:not(:disabled),
+        .modal-close:active,
+        .footer-link-btn:active {
+            transform: scale(0.96) !important;
+            filter: brightness(0.92);
+        }
 
         /* Result & 3D Grid */
         .result-grid {
@@ -440,21 +449,35 @@
         }
 
         .footer-links {
-            margin-top: 10px;
+            margin-top: 14px;
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
-        .footer-links a {
-            color: var(--accent-cyan);
-            text-decoration: none;
+        .footer-link-btn {
+            color: var(--text-main);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--card-border);
+            padding: 7px 13px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .footer-links a:hover { text-decoration: underline; }
+        .footer-link-btn i { color: var(--accent-cyan); font-size: 0.78rem; }
+
+        .footer-link-btn:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0,242,254,.08);
+            transform: translateY(-1px);
+        }
 
         .modal-overlay {
             position: fixed;
@@ -542,8 +565,17 @@
         .auth-status{display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);font-size:.78rem;color:var(--text-muted)}
         .auth-status img{width:26px;height:26px;border-radius:50%;display:none}
         .google-login{border:1px solid rgba(255,255,255,.12);background:#fff;color:#111;padding:9px 16px 9px 10px;border-radius:10px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:10px}
-        .google-login:hover{transform:translateY(-1px)}
+        .google-login:hover:not(:disabled){transform:translateY(-1px)}
         .google-login svg{width:18px;height:18px;flex-shrink:0}
+        .google-login:disabled{opacity:.6;cursor:not-allowed;transform:none !important}
+        .google-login .btn-spinner{display:none;color:#111;font-size:15px;animation:nvo-spin .8s linear infinite}
+        .google-login.is-loading svg{opacity:.4}
+        .google-login.is-loading .btn-spinner{display:inline-block}
+        @keyframes nvo-spin{to{transform:rotate(360deg)}}
+        .auth-status i.status-icon{margin-right:6px}
+        .auth-status i.status-icon.fa-circle-check{color:var(--accent-green)}
+        .auth-status i.status-icon.fa-circle-exclamation{color:var(--accent-pink)}
+        .auth-status i.status-icon.fa-lock{color:var(--text-muted)}
         #uvOutputPanel.uv-hidden{display:none !important;}
         #uvOutputPanel.uv-hidden + .result-box{width:100%;}
         .texture-lock{margin-top:10px;padding:9px 12px;border-radius:10px;background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.18);color:#ffd76a;font-size:.76rem;line-height:1.45}
@@ -573,16 +605,21 @@
             <small>kez</small>
         </div>
         <div class="auth-bar">
-            <button class="google-login" id="googleLogin" type="button">
+            <button class="google-login is-loading" id="googleLogin" type="button" disabled>
                 <svg viewBox="0 0 48 48" aria-hidden="true">
                     <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
                     <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
                     <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
                     <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
                 </svg>
-                <span id="googleLoginLabel">Google ile Giriş Yap</span>
+                <i class="fa-solid fa-spinner btn-spinner"></i>
+                <span id="googleLoginLabel">Hazırlanıyor...</span>
             </button>
-            <div class="auth-status" id="authStatus"><img id="authAvatar" alt=""><span id="authStatusText">Texture görüntüleme: giriş gerekli</span></div>
+            <div class="auth-status" id="authStatus">
+                <img id="authAvatar" alt="">
+                <i class="fa-solid fa-lock status-icon" id="authStatusIcon" aria-hidden="true"></i>
+                <span id="authStatusText">Firebase başlatılıyor...</span>
+            </div>
         </div>
     </header>
 
@@ -701,7 +738,7 @@
 
                 <!-- 3D Canvas -->
                 <div class="result-box">
-<div class="texture-lock" id="textureLock">🔒 3D skin texture için Google ile giriş yapın. Model/animasyon yine kullanılabilir.</div>
+<div class="texture-lock" id="textureLock"><i class="fa-solid fa-lock"></i> 3D skin texture için Google ile giriş yapın. Model/animasyon yine kullanılabilir.</div>
                     <canvas id="skin_3d_canvas"></canvas>
                     <div class="three-controls">
                         <button id="animWalk"><i class="fa-solid fa-person-walking"></i> Yürü</button>
@@ -715,44 +752,47 @@
     </main>
 
     <footer>
-        Developed with ❤️ by <strong>NVO TEAM</strong> (MIT Licensed)
+        <span><i class="fa-solid fa-code"></i> Developed by <strong>NVO TEAM</strong> (MIT Licensed) • © 2026</span>
         <div class="footer-links">
-            <a onclick="openModal('privacyModal')">Gizlilik Politikası</a> • 
-            <a onclick="openModal('copyrightModal')">Telif Hakkı & Yasal İkaz</a> • 
-            <a onclick="openModal('termsModal')">Kullanım Şartları</a> • 
-            <a onclick="openModal('mitModal')">MIT Lisansı</a>
+            <button type="button" class="footer-link-btn" onclick="openModal('privacyModal')"><i class="fa-solid fa-shield-halved"></i> Gizlilik Politikası</button>
+            <button type="button" class="footer-link-btn" onclick="openModal('copyrightModal')"><i class="fa-solid fa-copyright"></i> Telif Hakkı & Yasal İkaz</button>
+            <button type="button" class="footer-link-btn" onclick="openModal('termsModal')"><i class="fa-solid fa-file-contract"></i> Kullanım Şartları</button>
+            <button type="button" class="footer-link-btn" onclick="openModal('mitModal')"><i class="fa-solid fa-scale-balanced"></i> MIT Lisansı</button>
         </div>
     </footer>
 
     <!-- Modals -->
     <div id="privacyModal" class="modal-overlay">
         <div class="modal-content">
-            <h2>🔒 Gizlilik Politikası</h2>
-            <p><strong>NVO MC Skin Merger v6.1</strong> kullanıcı verilerine %100 saygı duyar. Yüklenen tüm dosyalar doğrudan cihazınızda işlenir ve hiçbir yere yüklenmez.</p>
+            <h2><i class="fa-solid fa-shield-halved"></i> Gizlilik Politikası</h2>
+            <p><strong>NVO MC Skin Merger v6.2</strong> kullanıcı verilerine %100 saygı duyar. Yüklediğiniz skin dosyaları doğrudan cihazınızda (tarayıcınızda) işlenir; sunucularımıza hiçbir zaman yüklenmez veya iletilmez.</p>
+            <p>Google ile giriş yaptığınızda, kimlik doğrulaması Firebase Authentication üzerinden Google tarafından yapılır. Sadece ad, e-posta ve profil fotoğrafınız oturum bilgisi olarak tarayıcınızda tutulur; bu bilgiler sunucularımızda saklanmaz. Ayrıca, toplam birleştirme sayısını göstermek amacıyla Firebase Firestore'da yalnızca anonim bir sayaç tutulur — kişisel veri içermez.</p>
             <button class="modal-close" onclick="closeModal('privacyModal')">Kapat</button>
         </div>
     </div>
 
     <div id="copyrightModal" class="modal-overlay">
         <div class="modal-content">
-            <h2>📜 Telif Hakkı</h2>
-            <p>Minecraft, Mojang AB / Microsoft Corporation'ın tescilli markasıdır. Bu araç bağımsız bir NVO TEAM projesidir.</p>
+            <h2><i class="fa-solid fa-copyright"></i> Telif Hakkı</h2>
+            <p>Minecraft, Mojang AB / Microsoft Corporation'ın tescilli markasıdır. Bu araç, Mojang veya Microsoft ile bağlantılı olmayan bağımsız bir NVO TEAM projesidir.</p>
+            <p>Google ve Google logosu, Google LLC'nin ticari markalarıdır. Google ile Giriş özelliği, Google'ın kimlik doğrulama hizmetlerine uygun şekilde kullanılmaktadır.</p>
             <button class="modal-close" onclick="closeModal('copyrightModal')">Kapat</button>
         </div>
     </div>
 
     <div id="termsModal" class="modal-overlay">
         <div class="modal-content">
-            <h2>⚙️ Kullanım Şartları</h2>
-            <p>Oluşturduğunuz skinleri dilediğiniz gibi kullanabilirsiniz.</p>
+            <h2><i class="fa-solid fa-file-contract"></i> Kullanım Şartları</h2>
+            <p>Bu araçla oluşturduğunuz skinleri dilediğiniz gibi kullanabilirsiniz. Hizmet "olduğu gibi" sunulur, herhangi bir garanti verilmez.</p>
+            <p>3D önizleme ve UV çıktısı, kötüye kullanımı önlemek amacıyla Google hesabıyla giriş yapılmasını gerektirir; bu, hesabınıza yalnızca kimlik doğrulama amacıyla erişildiği anlamına gelir.</p>
             <button class="modal-close" onclick="closeModal('termsModal')">Kapat</button>
         </div>
     </div>
 
     <div id="mitModal" class="modal-overlay">
         <div class="modal-content">
-            <h2>⚖️ MIT Lisansı</h2>
-            <p>Copyright (c) 2026 NVO TEAM. Ücretsiz ve açık kaynak olarak sunulmuştur.</p>
+            <h2><i class="fa-solid fa-scale-balanced"></i> MIT Lisansı</h2>
+            <p>Copyright (c) 2026 NVO TEAM. Ücretsiz ve açık kaynak olarak sunulmuştur. Bu yazılımın kopyalarını ve ilişkili belge dosyalarını, aşağıdaki koşullar dahilinde ücretsiz olarak kullanma, kopyalama, değiştirme, birleştirme, yayımlama, dağıtma, alt lisanslama ve/veya satma izni verilmiştir: yukarıdaki telif hakkı bildirimi ve bu izin bildirimi, yazılımın tüm kopyalarında veya önemli parçalarında bulunmalıdır.</p>
             <button class="modal-close" onclick="closeModal('mitModal')">Kapat</button>
         </div>
     </div>
@@ -831,8 +871,10 @@
         const authAvatar = document.getElementById('authAvatar');
         const textureLock = document.getElementById('textureLock');
         const uvOutputPanel = document.getElementById('uvOutputPanel');
+        const authStatusIcon = document.getElementById('authStatusIcon');
         let firebaseUser = null;
         let resultReady = false;
+        let googleButtonUnlocked = false; // 5 sn Firebase yükleme kilidi geçti mi?
         if (uvOutputPanel) uvOutputPanel.classList.add('uv-hidden');
 
         function blankTextureDataUrl(){
@@ -917,8 +959,14 @@
             return raw + (code ? ' [' + code + ']' : '');
         }
 
+        function setStatusIcon(kind){
+            authStatusIcon.className = 'fa-solid status-icon ' +
+                (kind === 'success' ? 'fa-circle-check' : kind === 'error' ? 'fa-circle-exclamation' : 'fa-lock');
+        }
+
         function applySignedOutUI(){
             authStatusText.textContent = 'Texture görüntüleme: Google girişi gerekli';
+            setStatusIcon('idle');
             authAvatar.style.display = 'none';
             authAvatar.removeAttribute('src');
             googleLoginLabel.textContent = 'Google ile Giriş Yap';
@@ -931,7 +979,8 @@
             // NOT: displayName/email değerleri Google hesabı tarafından belirlenir ve
             // teorik olarak HTML/script karakteri içerebilir. innerHTML yerine
             // textContent kullanılarak XSS riski tamamen ortadan kaldırılır.
-            authStatusText.textContent = `✅ ${user.displayName || user.email || 'Google hesabı'} • Texture açık`;
+            authStatusText.textContent = `${user.displayName || user.email || 'Google hesabı'} • Texture açık`;
+            setStatusIcon('success');
             if (user.photoURL) {
                 authAvatar.src = user.photoURL;
                 authAvatar.style.display = 'inline-block';
@@ -944,6 +993,40 @@
             googleLoginBtn.onclick = handleGoogleLogout;
             setTextureVisibility(true);
             btnDownload.disabled = !resultReady;
+        }
+
+        // Google giriş butonunu Firebase tamamen hazır olana kadar (en az 5 saniye)
+        // kilitli tutar. Bu süre boyunca buton üzerinde gerçek bir dönen ikon (spinner)
+        // ve geri sayım gösterilir; emoji veya sahte animasyon kullanılmaz.
+        function lockGoogleButtonForStartup(){
+            let remaining = 5;
+            googleLoginBtn.disabled = true;
+            googleLoginBtn.classList.add('is-loading');
+            googleLoginLabel.textContent = `Hazırlanıyor... (${remaining})`;
+            const interval = setInterval(() => {
+                remaining -= 1;
+                if (remaining > 0) {
+                    googleLoginLabel.textContent = `Hazırlanıyor... (${remaining})`;
+                } else {
+                    clearInterval(interval);
+                    unlockGoogleButtonWhenReady();
+                }
+            }, 1000);
+        }
+
+        async function unlockGoogleButtonWhenReady(){
+            // 5 saniye doldu; ayrıca Firebase'in gerçekten hazır olduğundan da emin ol
+            // (yavaş bağlantılarda 5 saniyeden uzun sürebilir).
+            try {
+                await getFirebase();
+            } catch (e) {
+                // Hata varsa buton yine de kilit açılır; tıklanınca hata mesajı gösterilir.
+            }
+            googleButtonUnlocked = true;
+            googleLoginBtn.classList.remove('is-loading');
+            googleLoginBtn.disabled = false;
+            // Kilit süresince gelmiş olabilecek gerçek oturum durumunu şimdi uygula.
+            if (firebaseUser) applySignedInUI(firebaseUser); else applySignedOutUI();
         }
 
         async function handleGoogleLogout(){
@@ -1001,6 +1084,12 @@
 
         googleLoginBtn.onclick = handleGoogleLogin;
 
+        // Google giriş butonu, sayfa yüklenir yüklenmez (Firebase henüz hazır olmasa bile)
+        // 5 saniyeliğine kilitlenir; bu süre Firebase SDK'sının tamamen yüklenmesi için
+        // güvenli bir tampon sağlar. Süre dolunca ayrıca Firebase'in gerçekten hazır
+        // olup olmadığı da kontrol edilir (bkz. unlockGoogleButtonWhenReady).
+        lockGoogleButtonForStartup();
+
         (async () => {
             let fb;
             try {
@@ -1039,6 +1128,9 @@
             // sarmalayıcı/bind katmanı yok, bu yüzden parametre uyuşmazlığı riski de yok.
             auth.onAuthStateChanged(user => {
                 firebaseUser = user;
+                // Buton hâlâ 5 saniyelik başlangıç kilidindeyse metnini/durumunu değiştirme;
+                // kilit açılınca unlockGoogleButtonWhenReady() zaten firebaseUser'a göre uygulayacak.
+                if (!googleButtonUnlocked) return;
                 if (user) {
                     applySignedInUI(user);
                     log('Oturum aktif: ' + (user.displayName || user.email || 'Google hesabı') + '. 3D texture ve UV çıktı açıldı.', 'success');
@@ -1587,7 +1679,7 @@
                 copyFrontBackPhysical(ctx2, ctxOut, [48,48,model2 === 'alex' ? 3 : 4,12,4], [48,48,model1 === 'alex' ? 3 : 4,12,4]);
             }
 
-            log("🔥 [NVO MERGER ENGINE v6.2] BİRLEŞTİRME BAŞARIYLA TAMAMLANDI!", "success");
+            log("[BAŞARILI] NVO MERGER ENGINE v6.2 — birleştirme tamamlandı.", "success");
             resultReady = true; // KRİTİK: bu satır eksikti, 3D önizleme ve indirme hiç açılmıyordu.
             btnMerge.disabled = false;
             btnDownload.disabled = false;
