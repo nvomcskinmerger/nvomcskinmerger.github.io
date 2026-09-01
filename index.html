@@ -245,6 +245,36 @@
             margin-top: 10px;
         }
 
+        /* Mobilde 10 mod kartı sayfayı çok uzatıyordu ("kay kay bitmiyor" şikayeti).
+           Dar ekranlarda ızgara yerine yatay kaydırmalı (snap) bir şerit kullanılır;
+           böylece dikey uzunluk sabit kalır, kullanıcı sağa/sola kaydırarak seçer. */
+        @media (max-width: 640px) {
+            .mode-grid {
+                display: flex;
+                grid-template-columns: none;
+                overflow-x: auto;
+                overflow-y: hidden;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 6px;
+                margin-left: -4px;
+                margin-right: -4px;
+                padding-left: 4px;
+                padding-right: 4px;
+            }
+            .mode-grid .mode-card {
+                flex: 0 0 62%;
+                scroll-snap-align: start;
+                min-height: 0;
+            }
+            .mode-grid .mode-card p {
+                display: none; /* Açıklama sadece seçili kartta gösterilir, yer kazandırır */
+            }
+            .mode-grid .mode-card.active p {
+                display: block;
+            }
+        }
+
         .mode-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -611,6 +641,17 @@
             .glass-card{padding:17px}
             .btn-group{flex-direction:column}
             .utility-row{flex-direction:column}
+            /* Header'daki GitHub/Threads/Dil butonları mobilde yan yana sıkışıp
+               satır satır taşarak sayfayı gereksiz uzatıyordu; ikon-only + daha
+               küçük boşluklarla tek satıra sığdırılır. */
+            .github-link{padding:5px 10px;font-size:0.68rem;gap:5px;margin-left:4px;margin-right:4px}
+            .github-link i{font-size:0.85rem}
+            /* Footer'daki 6 buton da aynı sebeple daraltılır. */
+            .footer-link-btn{padding:6px 10px;font-size:0.7rem}
+            /* İkinci three-controls satırı (karşılaştırma butonları) dar ekranda
+               taşmasın diye satır kırılmasına izin verilir. */
+            .three-controls{flex-wrap:wrap}
+            .three-controls button{flex:1 1 30%;}
         }
 
 
