@@ -1,0 +1,2355 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NVO MC SKIN MERGER v6.3 - Mobile Safe Area</title>
+    <meta name="description" content="NVO MC Skin Merger: iki Minecraft skinini gerçek UV koordinat motoruyla kusursuz biçimde birleştirin. Yarı-yarıya, kafa değişimi, kol/bacak değişimi, dış katman, rastgele karışım ve daha fazlası — ücretsiz ve tarayıcıda çalışır.">
+    <meta name="theme-color" content="#06080e">
+    <!-- Open Graph / Sosyal Medya Paylaşım Önizlemesi -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="NVO MC Skin Merger — Minecraft Skin Birleştirici">
+    <meta property="og:description" content="İki Minecraft skinini gerçek UV koordinat motoruyla ücretsiz birleştirin.">
+    <meta property="og:image" content="https://nvomcskinmerger.github.io/og-preview.png">
+    <meta property="og:url" content="https://nvomcskinmerger.github.io/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NVO MC Skin Merger">
+    <meta name="twitter:description" content="İki Minecraft skinini gerçek UV koordinat motoruyla ücretsiz birleştirin.">
+    <!-- PWA Manifest (tek dosya olması için data URI ile gömülüdür) -->
+    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiTlZPIE1DIFNraW4gTWVyZ2VyIiwic2hvcnRfbmFtZSI6Ik5WTyBTa2luIE1lcmdlciIsInN0YXJ0X3VybCI6Ii4iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjMDYwODBlIiwidGhlbWVfY29sb3IiOiIjMDYwODBlIn0=">
+    <!-- Sekme Logosu (Favicon) -->
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAANUlEQVQ4jWNgGAWjYBSMglEwCkYBSgYGBgYAFvQAAb637/0AAAAASUVORK5CYII=">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-main: #06080e;
+            --card-bg: rgba(15, 20, 34, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent-cyan: #00f2fe;
+            --accent-purple: #8a2be2;
+            --accent-pink: #ff007f;
+            --accent-amber: #ffb703;
+            --accent-green: #00ff88;
+            --text-main: #f1f5f9;
+            --text-muted: #808ea3;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(138, 43, 226, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(0, 242, 254, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(255, 0, 127, 0.05) 0%, transparent 60%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px 15px 50px;
+            overflow-x: hidden;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .brand-badge {
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+            color: #fff;
+            padding: 5px 16px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 12px;
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.35);
+        }
+
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-left: 10px;
+            margin-bottom: 12px;
+            padding: 5px 16px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .github-link i { font-size: 0.95rem; }
+        .github-link:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0,242,254,.08);
+            transform: translateY(-1px);
+        }
+        .github-link:active {
+            transform: scale(0.96);
+            filter: brightness(0.92);
+        }
+
+        h1 {
+            font-size: 2.6rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff 20%, var(--accent-cyan) 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 6px;
+            font-weight: 300;
+        }
+
+        /* Layout Container */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media(max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+        }
+
+        .full-width { grid-column: span 2; }
+        @media(max-width: 900px) { .full-width { grid-column: span 1; } }
+
+        /* Glass Card */
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 242, 254, 0.25);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent-cyan);
+        }
+
+        .model-tag {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .model-tag.steve { background: rgba(0, 242, 254, 0.12); color: var(--accent-cyan); border-color: var(--accent-cyan); }
+        .model-tag.alex { background: rgba(138, 43, 226, 0.15); color: var(--accent-purple); border-color: var(--accent-purple); }
+
+        /* Upload Area */
+        .upload-box {
+            border: 2px dashed rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-md);
+            padding: 22px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .upload-box:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 242, 254, 0.04);
+            transform: translateY(-2px);
+        }
+
+        .upload-box input[type="file"] {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .preview-canvas {
+            width: 100px;
+            height: 100px;
+            image-rendering: pixelated;
+            background-color: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-md);
+            margin: 12px auto 0;
+            display: block;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        /* Merger Mode Selection Grid */
+        .mode-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        /* Mod kartları eski (orijinal grid) stiliyle kalır; sadece etraflarına
+           sabit yükseklikli, kendi içinde dikey kayan AYRI BİR PENCERE (kutu)
+           eklenir. Böylece kartların görünümü değişmez, sayfa da uzamaz —
+           kullanıcı sadece bu kutunun İÇİNDE yukarı/aşağı kaydırır. */
+        .mode-scroll-window {
+            max-height: 360px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding-right: 4px;
+            border-radius: var(--radius-md);
+        }
+        .mode-scroll-window::-webkit-scrollbar { width: 6px; }
+        .mode-scroll-window::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 6px; }
+
+        @media (max-width: 640px) {
+            .mode-scroll-window { max-height: 300px; }
+        }
+
+        .mode-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mode-card i {
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .mode-card span {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .mode-card p {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            line-height: 1.2;
+        }
+
+        .mode-card:hover {
+            background: rgba(0, 242, 254, 0.06);
+            border-color: rgba(0, 242, 254, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .mode-card.active {
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.25), rgba(0, 242, 254, 0.25));
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.25);
+        }
+
+        .mode-card.active i {
+            color: var(--accent-cyan);
+            transform: scale(1.15);
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: rgba(255, 183, 3, 0.08);
+            border: 1px solid var(--accent-amber);
+            color: #ffe08a;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.88rem;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+        .warning-box.active { display: flex; }
+
+        /* Progress Bar */
+        .progress-wrapper {
+            display: none;
+            margin-top: 15px;
+        }
+        .progress-wrapper.active { display: block; }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+            border-radius: 10px;
+            transition: width 0.15s linear;
+            box-shadow: 0 0 12px var(--accent-cyan);
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: right;
+            margin-top: 6px;
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Terminal */
+        .terminal {
+            background: #030407;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+            height: 130px;
+            overflow-y: auto;
+            color: var(--accent-cyan);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.9);
+        }
+
+        .terminal-line { margin-bottom: 4px; line-height: 1.4; }
+        .terminal-line.success { color: var(--accent-green); }
+        .terminal-line.error { color: #ff3366; }
+        .terminal-line.warn { color: var(--accent-amber); }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), #00b4d8);
+            color: #04060a;
+            box-shadow: 0 4px 20px rgba(0, 242, 254, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 242, 254, 0.5);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, var(--accent-green), #00b894);
+            color: #04060a;
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-download:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 255, 136, 0.5);
+        }
+
+        .btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        .btn:active:not(:disabled),
+        .utility-btn:active:not(:disabled),
+        .three-controls button:active:not(:disabled),
+        .google-login:active:not(:disabled),
+        .modal-close:active,
+        .footer-link-btn:active {
+            transform: scale(0.96) !important;
+            filter: brightness(0.92);
+        }
+
+        /* Result & 3D Grid */
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media(max-width: 768px) { .result-grid { grid-template-columns: 1fr; } }
+
+        .result-box {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #resultCanvas {
+            width: 140px;
+            height: 140px;
+            image-rendering: pixelated;
+            background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAJUlEQVR42mP8////fwYkcPbsWWQuAxMDAUC5AhZ0O42NjentBgDoDQl1lZW7lgAAAABJRU5ErkJggg==") repeat;
+            border-radius: var(--radius-md);
+            border: 2px solid var(--accent-purple);
+            box-shadow: 0 0 25px rgba(138, 43, 226, 0.3);
+            margin: 10px auto;
+        }
+
+        #skin_3d_canvas {
+            width: 100% !important;
+            height: 260px !important;
+            background: radial-gradient(circle, rgba(15,20,34,1) 0%, rgba(6,8,14,1) 100%);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255,255,255,0.08);
+            cursor: grab;
+        }
+        #skin_3d_canvas:active { cursor: grabbing; }
+
+        .three-controls {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .three-controls button {
+            flex: 1;
+            padding: 8px 4px;
+            font-size: 0.78rem;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+
+        .three-controls button:hover {
+            background: var(--accent-cyan);
+            color: #000;
+            border-color: var(--accent-cyan);
+        }
+
+        .three-controls button.active {
+            background: var(--accent-cyan);
+            color: #000;
+            border-color: var(--accent-cyan);
+            font-weight: 700;
+        }
+
+        .three-controls button:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        /* Footer & Modals */
+        footer {
+            margin-top: 50px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .footer-links {
+            margin-top: 14px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link-btn {
+            color: var(--text-main);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--card-border);
+            padding: 7px 13px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .footer-link-btn i { color: var(--accent-cyan); font-size: 0.78rem; }
+
+        .footer-link-btn:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0,242,254,.08);
+            transform: translateY(-1px);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease; }
+
+        .modal-content {
+            background: #0d111d;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            max-width: 550px;
+            width: 100%;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 { color: var(--accent-cyan); font-size: 1.3rem; margin-bottom: 12px; }
+        .modal-content p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 12px; }
+
+        .modal-close {
+            background: var(--accent-purple);
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            float: right;
+            margin-top: 10px;
+        }
+
+        /* v4.1 enhancements */
+        .upload-box.drag-over {
+            border-color: var(--accent-green);
+            background: rgba(0,255,136,.08);
+            transform: scale(1.01);
+        }
+        .file-meta {
+            display:flex; justify-content:center; gap:8px; flex-wrap:wrap;
+            margin-top:10px; font-size:.72rem; color:var(--text-muted);
+        }
+        .status-dot {
+            width:8px;height:8px;border-radius:50%;display:inline-block;
+            background:var(--accent-green);box-shadow:0 0 8px var(--accent-green);
+        }
+        .utility-row { display:flex; gap:8px; margin-top:10px; }
+        .utility-btn {
+            flex:1; padding:9px 10px; border-radius:9px; border:1px solid var(--card-border);
+            background:rgba(255,255,255,.04); color:var(--text-main); cursor:pointer;
+            font-weight:600; transition:var(--transition);
+        }
+        .utility-btn:hover { border-color:var(--accent-cyan); background:rgba(0,242,254,.08); }
+        .mode-card:focus-visible,.btn:focus-visible,.utility-btn:focus-visible,.three-controls button:focus-visible {
+            outline:2px solid var(--accent-cyan); outline-offset:2px;
+        }
+        .result-info {
+            width:100%; margin-top:10px; padding:9px 12px; border-radius:9px;
+            background:rgba(255,255,255,.03); color:var(--text-muted); font-size:.75rem; line-height:1.45;
+        }
+        /* Mobil kamera/damlacık güvenli alanı: üst orta kamera için içerik üstten uzak tutulur.
+           env() destekleyen cihazlarda gerçek safe-area da hesaba katılır. */
+        @media(max-width:600px){
+            body{padding: max(42px, env(safe-area-inset-top)) 10px 35px}
+            header{margin-top:4px}
+            main{padding-top:6px}
+            h1{font-size:2rem}
+            .glass-card{padding:17px}
+            .btn-group{flex-direction:column}
+            .utility-row{flex-direction:column}
+            /* Header'daki GitHub/Threads/Dil butonları mobilde yan yana sıkışıp
+               satır satır taşarak sayfayı gereksiz uzatıyordu; ikon-only + daha
+               küçük boşluklarla tek satıra sığdırılır. */
+            .github-link{padding:5px 10px;font-size:0.68rem;gap:5px;margin-left:4px;margin-right:4px}
+            .github-link i{font-size:0.85rem}
+            /* Footer'daki 6 buton da aynı sebeple daraltılır. */
+            .footer-link-btn{padding:6px 10px;font-size:0.7rem}
+            /* İkinci three-controls satırı (karşılaştırma butonları) dar ekranda
+               taşmasın diye satır kırılmasına izin verilir. */
+            .three-controls{flex-wrap:wrap}
+            .three-controls button{flex:1 1 30%;}
+        }
+
+
+
+        .auth-bar{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:14px auto 0;max-width:680px}
+        .auth-status{display:flex;align-items:center;gap:8px;padding:9px 13px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);font-size:.78rem;color:var(--text-muted)}
+        .auth-status img{width:26px;height:26px;border-radius:50%;display:none}
+        .google-login{border:1px solid rgba(255,255,255,.12);background:#fff;color:#111;padding:9px 16px 9px 10px;border-radius:10px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:10px}
+        .google-login:hover:not(:disabled){transform:translateY(-1px)}
+        .google-login svg{width:18px;height:18px;flex-shrink:0}
+        .google-login:disabled{opacity:.6;cursor:not-allowed;transform:none !important}
+        .google-login .btn-spinner{display:none;color:#111;font-size:15px;animation:nvo-spin .8s linear infinite}
+        .google-login.is-loading svg{opacity:.4}
+        .google-login.is-loading .btn-spinner{display:inline-block}
+        @keyframes nvo-spin{to{transform:rotate(360deg)}}
+        .auth-status i.status-icon{margin-right:6px}
+        .auth-status i.status-icon.fa-circle-check{color:var(--accent-green)}
+        .auth-status i.status-icon.fa-circle-exclamation{color:var(--accent-pink)}
+        .auth-status i.status-icon.fa-lock{color:var(--text-muted)}
+        #uvOutputPanel.uv-hidden{display:none !important;}
+        #uvOutputPanel.uv-hidden + .result-box{width:100%;}
+        .texture-lock{margin-top:10px;padding:9px 12px;border-radius:10px;background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.18);color:#ffd76a;font-size:.76rem;line-height:1.45}
+        .texture-lock.hidden{display:none}
+
+        .usage-counter{display:flex;align-items:center;justify-content:center;gap:10px;margin:18px auto 0;padding:10px 16px;width:max-content;max-width:calc(100% - 20px);border:1px solid rgba(255,255,255,.09);border-radius:999px;background:rgba(255,255,255,.04);color:var(--text-muted);font-size:.82rem;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+        .usage-counter i{color:var(--accent-cyan)}
+        .usage-counter strong{color:var(--text);font-size:.95rem;font-variant-numeric:tabular-nums}
+        .usage-counter small{opacity:.7}
+        @media(max-width:600px){.usage-counter{font-size:.75rem;padding:9px 13px;margin-top:14px}}
+
+    </style>
+
+    <!-- skinview3d Library -->
+    <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.4.2/bundles/skinview3d.bundle.js"></script>
+</head>
+<body>
+
+    <header class="animate-fade">
+        <span class="brand-badge"><i class="fa-solid fa-sparkles"></i> NVO TEAM • NEXT-GEN STUDIO</span>
+        <a class="github-link" href="https://github.com/nvomcskinmerger/nvomcskinmerger.github.io" target="_blank" rel="noopener noreferrer" title="GitHub deposunu görüntüle" aria-label="GitHub deposunu görüntüle">
+            <i class="fa-brands fa-github"></i> GitHub
+        </a>
+        <a class="github-link threads-link" href="https://www.threads.com/@necronvoo" target="_blank" rel="noopener noreferrer" title="Geliştiricinin Threads hesabı" aria-label="Geliştiricinin Threads hesabı">
+            <i class="fa-brands fa-threads"></i> Threads
+        </a>
+        <button class="github-link" id="langToggle" type="button" title="Switch language / Dili değiştir" aria-label="Switch language">
+            <i class="fa-solid fa-language"></i> <span id="langToggleLabel">EN</span>
+        </button>
+        <h1 data-i18n="title">NVO MC SKIN MERGER v6.3</h1>
+        <p class="subtitle" data-i18n="subtitle">Gelişmiş UV koordinat motoru ile Minecraft skinlerinizi kusursuz biçimde harmanlayın.</p>
+        <div class="usage-counter" aria-live="polite" title="Firebase üzerindeki toplam birleştirme kullanımı">
+            <i class="fa-solid fa-users"></i>
+            <span>Toplam kullanım:</span>
+            <strong id="usageCount">0</strong>
+            <small>kez</small>
+        </div>
+        <div class="auth-bar">
+            <button class="google-login is-loading" id="googleLogin" type="button" disabled>
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+                    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+                    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+                    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+                </svg>
+                <i class="fa-solid fa-spinner btn-spinner"></i>
+                <span id="googleLoginLabel">Hazırlanıyor...</span>
+            </button>
+            <div class="auth-status" id="authStatus">
+                <img id="authAvatar" alt="">
+                <i class="fa-solid fa-lock status-icon" id="authStatusIcon" aria-hidden="true"></i>
+                <span id="authStatusText">Firebase başlatılıyor...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Sol Skin -->
+        <div class="glass-card animate-fade">
+            <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="skin1CardTitle">Ana Skin (Skin 1)</span></div>
+                <span class="model-tag" id="tagSkin1" data-i18n="modelPending">Model: Bekleniyor</span>
+            </div>
+            <div class="upload-box">
+                <input type="file" id="inputSkin1" accept="image/png">
+                <p id="label1" style="font-size:0.9rem; color:var(--text-muted);" data-i18n="uploadPlaceholder">Görsel Seç veya Sürükle</p>
+                <canvas id="canvas1" class="preview-canvas" width="64" height="64"></canvas>
+                <div class="file-meta" id="meta1"><span><span class="status-dot"></span> <span data-i18n="pendingLabel">Bekleniyor</span></span></div>
+                <div class="utility-row"><button class="utility-btn" id="clear1" type="button"><i class="fa-solid fa-trash"></i> <span data-i18n="clearBtn">Temizle</span></button></div>
+            </div>
+        </div>
+
+        <!-- Sağ Skin -->
+        <div class="glass-card animate-fade">
+            <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-arrow-right"></i> <span data-i18n="skin2CardTitle">İkincil Skin (Skin 2)</span></div>
+                <span class="model-tag" id="tagSkin2" data-i18n="modelPending">Model: Bekleniyor</span>
+            </div>
+            <div class="upload-box">
+                <input type="file" id="inputSkin2" accept="image/png">
+                <p id="label2" style="font-size:0.9rem; color:var(--text-muted);" data-i18n="uploadPlaceholder">Görsel Seç veya Sürükle</p>
+                <canvas id="canvas2" class="preview-canvas" width="64" height="64"></canvas>
+                <div class="file-meta" id="meta2"><span><span class="status-dot"></span> <span data-i18n="pendingLabel">Bekleniyor</span></span></div>
+                <div class="utility-row"><button class="utility-btn" id="clear2" type="button"><i class="fa-solid fa-trash"></i> <span data-i18n="clearBtn">Temizle</span></button></div>
+            </div>
+        </div>
+
+        <!-- Birleştirme Modu Seçimi -->
+        <div class="glass-card full-width animate-fade">
+            <div class="card-title" style="margin-bottom:12px;"><i class="fa-solid fa-sliders"></i> <span data-i18n="modeSectionTitle">Birleştirme (Merger) Modunu Seçin</span></div>
+            <div class="mode-scroll-window">
+            <div class="mode-grid">
+                <div class="mode-card active" data-mode="half" role="button" tabindex="0" aria-pressed="true">
+                    <i class="fa-solid fa-columns"></i>
+                    <span data-i18n="mode_half_title">50/50 Yarı Yarıya</span>
+                    <p data-i18n="mode_half_desc">Sol yarısı Skin 1, sağ yarısı Skin 2 simetrik harmanlama.</p>
+                </div>
+                <div class="mode-card" data-mode="head_swap" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span data-i18n="mode_head_swap_title">Kafa Değişimi</span>
+                    <p data-i18n="mode_head_swap_desc">Skin 1'in kafası ve şapkası, Skin 2'nin vücudu.</p>
+                </div>
+                <div class="mode-card" data-mode="top_bottom" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-arrows-up-down"></i>
+                    <span data-i18n="mode_top_bottom_title">Üst / Alt Bölme</span>
+                    <p data-i18n="mode_top_bottom_desc">Gövde ve iki kol tam ortadan 6+6 piksel bölünür; üst Skin 1, alt Skin 2. Bacaklar Skin 2.</p>
+                </div>
+                <div class="mode-card" data-mode="arm_swap" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-arrows-left-right"></i>
+                    <span data-i18n="mode_arm_swap_title">Kol Değişimi</span>
+                    <p data-i18n="mode_arm_swap_desc">Skin 1'in kafa, gövde ve bacakları korunur; iki kol Skin 2'den alınır.</p>
+                </div>
+                <div class="mode-card" data-mode="leg_swap" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-person-walking-arrow-right"></i>
+                    <span data-i18n="mode_leg_swap_title">Bacak Değişimi</span>
+                    <p data-i18n="mode_leg_swap_desc">Skin 1'in kafa, gövde ve kolları korunur; iki bacak Skin 2'den alınır.</p>
+                </div>
+                <div class="mode-card" data-mode="outer_overlay" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-shirt"></i>
+                    <span data-i18n="mode_outer_overlay_title">Ceket & Zırh Katmanı</span>
+                    <p data-i18n="mode_outer_overlay_desc">Temel vücut Skin 1, dış kıyafet/katman Skin 2.</p>
+                </div>
+                <div class="mode-card" data-mode="base_only" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-regular fa-square"></i>
+                    <span data-i18n="mode_base_only_title">Sadece Temel Katman</span>
+                    <p data-i18n="mode_base_only_desc">50/50 harmanlama yapılır, ardından şapka/ceket/kol kılıfı gibi tüm dış katmanlar temizlenir.</p>
+                </div>
+                <div class="mode-card" data-mode="front_back" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-repeat"></i>
+                    <span data-i18n="mode_front_back_title">Ön / Arka Bölme</span>
+                    <p data-i18n="mode_front_back_desc">Karakterin ön yüzü Skin 1, sırt kısmı Skin 2.</p>
+                </div>
+                <div class="mode-card" data-mode="blend" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-droplet"></i>
+                    <span data-i18n="mode_blend_title">Opacity Blend</span>
+                    <p data-i18n="mode_blend_desc">İki texture %50 saydamlıkla üst üste bindirilir; hayalet/karışım efekti.</p>
+                </div>
+                <div class="mode-card" data-mode="chimera" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-shuffle"></i>
+                    <span data-i18n="mode_chimera_title">Rastgele Karışım</span>
+                    <p data-i18n="mode_chimera_desc">Kafa, gövde, kollar ve bacaklar için her parça rastgele Skin 1 veya Skin 2'den seçilir.</p>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Uyumsuzluk Uyarı Kutusu -->
+        <div class="glass-card full-width warning-box" id="warningBox">
+            <span style="font-size:1.3rem;"><i class="fa-solid fa-triangle-exclamation"></i></span>
+            <div>
+                <strong>Model Farkı Algılandı!</strong><br>
+                Skin 1: <span id="warningModel1">?</span> • Skin 2: <span id="warningModel2">?</span>. UV/kol genişliği farkı otomatik uyarlanacaktır.
+            </div>
+        </div>
+
+        <!-- Console & Progress Bar -->
+        <div class="glass-card full-width animate-fade">
+            <div class="card-title"><i class="fa-solid fa-terminal"></i> Derin Tarama Konsolu</div>
+            <div class="terminal" id="terminal">
+                <div class="terminal-line">[INFO] Sistem hazır. 64×64 PNG skin yükleyin; sürükle-bırak da desteklenir.</div>
+            </div>
+
+            <div class="progress-wrapper" id="progressWrapper">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progressBarFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">0%</div>
+            </div>
+        </div>
+
+        <!-- Sonuç Gösterim, İndirme ve 3D Canlı Önizleme -->
+        <div class="glass-card full-width animate-fade">
+            <div class="card-title" style="margin-bottom: 20px;"><i class="fa-solid fa-cube"></i> Sonuç & 3D Canlı İnteraktif Model</div>
+            
+            <div class="result-grid">
+                <!-- 2D Canvas & Buttons -->
+                <div class="result-box" id="uvOutputPanel">
+                    <p style="font-size: 0.85rem; color: var(--text-muted);" data-i18n="uvOutputTitle">64x64 UV Harita Çıktısı</p>
+                    <canvas id="resultCanvas" width="64" height="64"></canvas>
+                    
+                    <div class="result-info" id="resultInfo" data-i18n="resultDefault">Birleştirme sonucu burada görünecek.</div>
+                    <div class="btn-group" style="width: 100%;">
+                        <button id="btnMerge" class="btn btn-primary" disabled>
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="mergeBtn">BİRLEŞTİR (10s)</span>
+                        </button>
+                        <button id="btnDownload" class="btn btn-download" disabled>
+                            <i class="fa-solid fa-download"></i> <span data-i18n="downloadBtn">İNDİR</span>
+                        </button>
+                    </div>
+                    <div class="utility-row" style="width:100%;">
+                        <button id="btnUseAsSkin1" class="utility-btn" disabled title="Birleştirme sonucunu yeni Skin 1 olarak yükleyip zincirleme birleştirme yapın">
+                            <i class="fa-solid fa-link"></i> <span data-i18n="useAsSkin1Btn">Sonucu Skin 1 Yap</span>
+                        </button>
+                        <button id="btnResetAll" class="utility-btn" type="button" title="Her şeyi baştan başlat">
+                            <i class="fa-solid fa-rotate-left"></i> <span data-i18n="resetBtn">Sıfırla</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3D Canvas -->
+                <div class="result-box">
+<div class="texture-lock" id="textureLock"><i class="fa-solid fa-lock"></i> <span data-i18n="textureLockMsg">3D skin texture için Google ile giriş yapın. Model/animasyon yine kullanılabilir.</span></div>
+                    <canvas id="skin_3d_canvas"></canvas>
+                    <div class="three-controls">
+                        <button id="animWalk"><i class="fa-solid fa-person-walking"></i> <span data-i18n="animWalkBtn">Yürü</span></button>
+                        <button id="animRun"><i class="fa-solid fa-person-running"></i> <span data-i18n="animRunBtn">Koş</span></button>
+                        <button id="animIdle"><i class="fa-solid fa-pause"></i> <span data-i18n="animIdleBtn">Dur</span></button>
+                        <button id="toggleRotate"><i class="fa-solid fa-rotate"></i> <span data-i18n="animRotateBtn">Dön</span></button>
+                    </div>
+                    <div class="three-controls" style="margin-top:6px;">
+                        <button id="compareSkin1" disabled title="3D modelde Skin 1'i (orijinal) göster"><i class="fa-solid fa-eye"></i> Skin 1</button>
+                        <button id="compareSkin2" disabled title="3D modelde Skin 2'yi (orijinal) göster"><i class="fa-solid fa-eye"></i> Skin 2</button>
+                        <button id="compareResult" disabled title="3D modelde birleştirme sonucunu göster"><i class="fa-solid fa-eye"></i> <span data-i18n="compareResultBtn">Sonuç</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <span><i class="fa-solid fa-code"></i> <span data-i18n="footerDeveloped">Developed by</span> <strong>NVO TEAM</strong> (MIT Licensed) • © 2026</span>
+        <div class="footer-links">
+            <button type="button" class="footer-link-btn" onclick="openModal('privacyModal')"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="privacyModalTitle">Gizlilik Politikası</span></button>
+            <button type="button" class="footer-link-btn" onclick="openModal('copyrightModal')"><i class="fa-solid fa-copyright"></i> <span data-i18n="copyrightFooterLink">Telif Hakkı & Yasal İkaz</span></button>
+            <button type="button" class="footer-link-btn" onclick="openModal('termsModal')"><i class="fa-solid fa-file-contract"></i> <span data-i18n="termsModalTitle">Kullanım Şartları</span></button>
+            <button type="button" class="footer-link-btn" onclick="openModal('mitModal')"><i class="fa-solid fa-scale-balanced"></i> <span data-i18n="mitModalTitle">MIT Lisansı</span></button>
+            <a class="footer-link-btn" href="https://github.com/nvomcskinmerger/nvomcskinmerger.github.io" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>
+            <a class="footer-link-btn" href="https://www.threads.com/@necronvoo" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-threads"></i> <span data-i18n="footerDeveloperLink">Geliştirici</span></a>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="privacyModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2><i class="fa-solid fa-shield-halved"></i> <span data-i18n="privacyModalTitle">Gizlilik Politikası</span></h2>
+            <p data-i18n="privacyP1"><strong>NVO MC Skin Merger v6.3</strong> kullanıcı verilerine %100 saygı duyar. Yüklediğiniz skin dosyaları doğrudan cihazınızda (tarayıcınızda) işlenir; sunucularımıza hiçbir zaman yüklenmez veya iletilmez.</p>
+            <p data-i18n="privacyP2">Google ile giriş yaptığınızda, kimlik doğrulaması Firebase Authentication üzerinden Google tarafından yapılır. Sadece ad, e-posta ve profil fotoğrafınız oturum bilgisi olarak tarayıcınızda tutulur; bu bilgiler sunucularımızda saklanmaz. Ayrıca, toplam birleştirme sayısını göstermek amacıyla Firebase Firestore'da yalnızca anonim bir sayaç tutulur — kişisel veri içermez.</p>
+            <button class="modal-close" onclick="closeModal('privacyModal')" data-i18n="closeBtn">Kapat</button>
+        </div>
+    </div>
+
+    <div id="copyrightModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2><i class="fa-solid fa-copyright"></i> <span data-i18n="copyrightModalTitle">Telif Hakkı</span></h2>
+            <p data-i18n="copyrightP1">Minecraft, Mojang AB / Microsoft Corporation'ın tescilli markasıdır. Bu araç, Mojang veya Microsoft ile bağlantılı olmayan bağımsız bir NVO TEAM projesidir.</p>
+            <p data-i18n="copyrightP2">Google ve Google logosu, Google LLC'nin ticari markalarıdır. Google ile Giriş özelliği, Google'ın kimlik doğrulama hizmetlerine uygun şekilde kullanılmaktadır.</p>
+            <button class="modal-close" onclick="closeModal('copyrightModal')" data-i18n="closeBtn">Kapat</button>
+        </div>
+    </div>
+
+    <div id="termsModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2><i class="fa-solid fa-file-contract"></i> <span data-i18n="termsModalTitle">Kullanım Şartları</span></h2>
+            <p data-i18n="termsP1">Bu araçla oluşturduğunuz skinleri dilediğiniz gibi kullanabilirsiniz. Hizmet "olduğu gibi" sunulur, herhangi bir garanti verilmez.</p>
+            <p data-i18n="termsP2">3D önizleme ve UV çıktısı, kötüye kullanımı önlemek amacıyla Google hesabıyla giriş yapılmasını gerektirir; bu, hesabınıza yalnızca kimlik doğrulama amacıyla erişildiği anlamına gelir.</p>
+            <button class="modal-close" onclick="closeModal('termsModal')" data-i18n="closeBtn">Kapat</button>
+        </div>
+    </div>
+
+    <div id="mitModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2><i class="fa-solid fa-scale-balanced"></i> <span data-i18n="mitModalTitle">MIT Lisansı</span></h2>
+            <p data-i18n="mitP1">Copyright (c) 2026 NVO TEAM. Ücretsiz ve açık kaynak olarak sunulmuştur. Bu yazılımın kopyalarını ve ilişkili belge dosyalarını, aşağıdaki koşullar dahilinde ücretsiz olarak kullanma, kopyalama, değiştirme, birleştirme, yayımlama, dağıtma, alt lisanslama ve/veya satma izni verilmiştir: yukarıdaki telif hakkı bildirimi ve bu izin bildirimi, yazılımın tüm kopyalarında veya önemli parçalarında bulunmalıdır.</p>
+            <button class="modal-close" onclick="closeModal('mitModal')" data-i18n="closeBtn">Kapat</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics-compat.js"></script>
+<script>
+(function(){
+  // Sayfa üzerindeki terminale erken aşamada bile yazabilmek için
+  // bağımsız, küçük bir log yardımcı fonksiyonu (asıl log() fonksiyonu
+  // henüz tanımlanmadığı için buna ihtiyaç var).
+  function nvoLog(msg, type){
+    const term = document.getElementById('terminal');
+    if (!term) { console.log('[NVO]', msg); return; }
+    const div = document.createElement('div');
+    div.className = 'terminal-line ' + (type || 'normal');
+    div.textContent = '> ' + msg;
+    term.appendChild(div);
+    term.scrollTop = term.scrollHeight;
+  }
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCC2or3KD_8xKKEP01jM850UFQ_4HFym4M",
+    authDomain: "nvomcskinmerger.firebaseapp.com",
+    projectId: "nvomcskinmerger",
+    storageBucket: "nvomcskinmerger.firebasestorage.app",
+    messagingSenderId: "747052660692",
+    appId: "1:747052660692:web:958b5b35e1378767d2c841",
+    measurementId: "G-RL0TBQNVTC"
+  };
+
+  try {
+    if (!window.firebase) throw new Error('Firebase SDK yüklenemedi. İnternet bağlantısını kontrol edin.');
+
+    const app  = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth(app);
+    const db   = firebase.firestore(app);
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+
+    // Oturumun sayfa yenilemeleri / redirect dönüşleri arasında kalıcı olmasını garanti et.
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(e){
+      console.warn('[NVO] setPersistence başarısız:', e);
+    });
+
+    // Not: Önceki sürümde burada auth/db metotlarını saran ekstra bir "wrapper"
+    // katmanı vardı (onAuthStateChanged, getRedirectResult vb. için özel fonksiyonlar).
+    // O katmandaki yanlış bind() kullanımı "n is not a function" hatasına sebep oluyordu.
+    // Artık ham firebase nesneleri doğrudan dışa açılıyor; her yerde native SDK
+    // metotları kullanılıyor, ekstra indirection yok.
+    // Firebase Analytics: measurementId zaten config'te tanımlıydı ama SDK hiç
+    // yüklenmiyor/başlatılmıyordu (ölü konfigürasyon). Artık gerçekten etkin;
+    // sadece localhost/file:// gibi ölçüm yapılamayacak ortamlarda sessizce atlanır.
+    let analytics = null;
+    try {
+        if (firebase.analytics && location.protocol.startsWith('http')) {
+            analytics = firebase.analytics(app);
+        }
+    } catch (e) {
+        console.warn('[NVO] Firebase Analytics başlatılamadı:', e);
+    }
+
+    window.NVO = { app: app, auth: auth, db: db, provider: provider, analytics: analytics };
+    window.NVO_FIREBASE_READY = Promise.resolve(window.NVO);
+
+    if (app.options.authDomain && location.hostname && !location.hostname.endsWith('firebaseapp.com') && !location.hostname.endsWith('web.app')) {
+      nvoLog('Uyarı: authDomain (' + app.options.authDomain + ') site domaininden (' + location.hostname + ') farklı. Google girişi sonrası oturum senkronize olmazsa (redirect tamamlanır ama giriş görünmezse) Firebase Console > Authentication > Settings kısmından bu site domaini için "custom auth domain" tanımlamanız gerekir.', 'warn');
+    }
+    console.info('[NVO] Firebase hazır:', app.options.projectId, '| authDomain:', app.options.authDomain, '| site:', location.hostname);
+  } catch (error) {
+    console.error('[NVO] Firebase başlatılamadı:', error);
+    window.NVO_FIREBASE_READY = Promise.resolve({ error: error });
+    nvoLog('Firebase başlatılamadı: ' + (error && error.message ? error.message : error), 'error');
+  }
+})();
+</script>
+
+    <script>
+        let skinViewer = null;
+        let selectedMode = 'half'; // Varsayılan mod
+
+        // ===================== TR / EN Dil Desteği (i18n) =====================
+        // Not: Bu sözlük arayüzün STATİK metinlerini kapsar (başlıklar, butonlar,
+        // mod açıklamaları, modal başlıkları). Terminal/log satırları ve
+        // birleştirme motorunun canlı ilerleme mesajları kapsam dışıdır ve
+        // her zaman Türkçe kalır — bunları da çevirmek çok daha büyük bir refactor
+        // gerektirir, bu sürümde bilinçli olarak dışarıda bırakıldı.
+        const I18N = {
+            tr: {
+                title: 'NVO MC SKIN MERGER v6.3',
+                subtitle: 'Gelişmiş UV koordinat motoru ile Minecraft skinlerinizi kusursuz biçimde harmanlayın.',
+                skin1CardTitle: 'Ana Skin (Skin 1)',
+                skin2CardTitle: 'İkincil Skin (Skin 2)',
+                modelPending: 'Model: Bekleniyor',
+                uploadPlaceholder: 'Görsel Seç veya Sürükle',
+                pendingLabel: 'Bekleniyor',
+                clearBtn: 'Temizle',
+                modeSectionTitle: 'Birleştirme (Merger) Modunu Seçin',
+                mode_half_title: '50/50 Yarı Yarıya',
+                mode_half_desc: 'Sol yarısı Skin 1, sağ yarısı Skin 2 simetrik harmanlama.',
+                mode_head_swap_title: 'Kafa Değişimi',
+                mode_head_swap_desc: "Skin 1'in kafası ve şapkası, Skin 2'nin vücudu.",
+                mode_top_bottom_title: 'Üst / Alt Bölme',
+                mode_top_bottom_desc: 'Gövde ve iki kol tam ortadan 6+6 piksel bölünür; üst Skin 1, alt Skin 2. Bacaklar Skin 2.',
+                mode_arm_swap_title: 'Kol Değişimi',
+                mode_arm_swap_desc: "Skin 1'in kafa, gövde ve bacakları korunur; iki kol Skin 2'den alınır.",
+                mode_leg_swap_title: 'Bacak Değişimi',
+                mode_leg_swap_desc: "Skin 1'in kafa, gövde ve kolları korunur; iki bacak Skin 2'den alınır.",
+                mode_outer_overlay_title: 'Ceket & Zırh Katmanı',
+                mode_outer_overlay_desc: 'Temel vücut Skin 1, dış kıyafet/katman Skin 2.',
+                mode_base_only_title: 'Sadece Temel Katman',
+                mode_base_only_desc: '50/50 harmanlama yapılır, ardından şapka/ceket/kol kılıfı gibi tüm dış katmanlar temizlenir.',
+                mode_front_back_title: 'Ön / Arka Bölme',
+                mode_front_back_desc: 'Karakterin ön yüzü Skin 1, sırt kısmı Skin 2.',
+                mode_blend_title: 'Opacity Blend',
+                mode_blend_desc: 'İki texture %50 saydamlıkla üst üste bindirilir; hayalet/karışım efekti.',
+                mode_chimera_title: 'Rastgele Karışım',
+                mode_chimera_desc: 'Kafa, gövde, kollar ve bacaklar için her parça rastgele Skin 1 veya Skin 2\'den seçilir.',
+                uvOutputTitle: '64x64 UV Harita Çıktısı',
+                resultDefault: 'Birleştirme sonucu burada görünecek.',
+                mergeBtn: 'BİRLEŞTİR (10s)',
+                downloadBtn: 'İNDİR',
+                useAsSkin1Btn: 'Sonucu Skin 1 Yap',
+                resetBtn: 'Sıfırla',
+                textureLockMsg: '3D skin texture için Google ile giriş yapın. Model/animasyon yine kullanılabilir.',
+                animWalkBtn: 'Yürü',
+                animRunBtn: 'Koş',
+                animIdleBtn: 'Dur',
+                animRotateBtn: 'Dön',
+                compareResultBtn: 'Sonuç',
+                footerDeveloped: 'Developed by',
+                footerDeveloperLink: 'Geliştirici',
+                privacyModalTitle: 'Gizlilik Politikası',
+                copyrightFooterLink: 'Telif Hakkı & Yasal İkaz',
+                termsModalTitle: 'Kullanım Şartları',
+                mitModalTitle: 'MIT Lisansı',
+                closeBtn: 'Kapat',
+                copyrightModalTitle: 'Telif Hakkı',
+                privacyP1: "NVO MC Skin Merger v6.3 kullanıcı verilerine %100 saygı duyar. Yüklediğiniz skin dosyaları doğrudan cihazınızda (tarayıcınızda) işlenir; sunucularımıza hiçbir zaman yüklenmez veya iletilmez.",
+                privacyP2: "Google ile giriş yaptığınızda, kimlik doğrulaması Firebase Authentication üzerinden Google tarafından yapılır. Sadece ad, e-posta ve profil fotoğrafınız oturum bilgisi olarak tarayıcınızda tutulur; bu bilgiler sunucularımızda saklanmaz. Ayrıca, toplam birleştirme sayısını göstermek amacıyla Firebase Firestore'da yalnızca anonim bir sayaç tutulur — kişisel veri içermez.",
+                copyrightP1: "Minecraft, Mojang AB / Microsoft Corporation'ın tescilli markasıdır. Bu araç, Mojang veya Microsoft ile bağlantılı olmayan bağımsız bir NVO TEAM projesidir.",
+                copyrightP2: "Google ve Google logosu, Google LLC'nin ticari markalarıdır. Google ile Giriş özelliği, Google'ın kimlik doğrulama hizmetlerine uygun şekilde kullanılmaktadır.",
+                termsP1: 'Bu araçla oluşturduğunuz skinleri dilediğiniz gibi kullanabilirsiniz. Hizmet "olduğu gibi" sunulur, herhangi bir garanti verilmez.',
+                termsP2: "3D önizleme ve UV çıktısı, kötüye kullanımı önlemek amacıyla Google hesabıyla giriş yapılmasını gerektirir; bu, hesabınıza yalnızca kimlik doğrulama amacıyla erişildiği anlamına gelir.",
+                mitP1: "Copyright (c) 2026 NVO TEAM. Ücretsiz ve açık kaynak olarak sunulmuştur. Bu yazılımın kopyalarını ve ilişkili belge dosyalarını, aşağıdaki koşullar dahilinde ücretsiz olarak kullanma, kopyalama, değiştirme, birleştirme, yayımlama, dağıtma, alt lisanslama ve/veya satma izni verilmiştir: yukarıdaki telif hakkı bildirimi ve bu izin bildirimi, yazılımın tüm kopyalarında veya önemli parçalarında bulunmalıdır.",
+                googlePreparing: 'Hazırlanıyor...',
+                googlePreparingCountdown: (n) => `Hazırlanıyor... (${n})`,
+                firebaseInitializing: 'Firebase başlatılıyor...',
+                loginPrompt: 'Google ile Giriş Yap',
+                logoutPrompt: 'Google hesabından çık',
+                signedOutStatus: 'Texture görüntüleme: Google girişi gerekli',
+                signedInStatus: (name) => `${name} • Texture açık`,
+            },
+            en: {
+                title: 'NVO MC SKIN MERGER v6.3',
+                subtitle: 'Blend your Minecraft skins flawlessly with an advanced UV coordinate engine.',
+                skin1CardTitle: 'Primary Skin (Skin 1)',
+                skin2CardTitle: 'Secondary Skin (Skin 2)',
+                modelPending: 'Model: Pending',
+                uploadPlaceholder: 'Choose or Drop an Image',
+                pendingLabel: 'Pending',
+                clearBtn: 'Clear',
+                modeSectionTitle: 'Choose a Merger Mode',
+                mode_half_title: '50/50 Split',
+                mode_half_desc: 'Left half from Skin 1, right half from Skin 2 — symmetric blend.',
+                mode_head_swap_title: 'Head Swap',
+                mode_head_swap_desc: "Skin 1's head and hat, Skin 2's body.",
+                mode_top_bottom_title: 'Top / Bottom Split',
+                mode_top_bottom_desc: 'Torso and both arms are split exactly in half (6+6px); top from Skin 1, bottom from Skin 2. Legs from Skin 2.',
+                mode_arm_swap_title: 'Arm Swap',
+                mode_arm_swap_desc: "Skin 1's head, body and legs stay; both arms come from Skin 2.",
+                mode_leg_swap_title: 'Leg Swap',
+                mode_leg_swap_desc: "Skin 1's head, body and arms stay; both legs come from Skin 2.",
+                mode_outer_overlay_title: 'Jacket & Armor Layer',
+                mode_outer_overlay_desc: 'Base body from Skin 1, outer clothing/overlay layer from Skin 2.',
+                mode_base_only_title: 'Base Layer Only',
+                mode_base_only_desc: 'Performs the standard 50/50 blend, then clears all outer layers (hat, jacket, sleeves, pants overlay).',
+                mode_front_back_title: 'Front / Back Split',
+                mode_front_back_desc: "The character's front is Skin 1, the back is Skin 2.",
+                mode_blend_title: 'Opacity Blend',
+                mode_blend_desc: 'Both textures are overlaid at 50% opacity for a ghost/blend effect.',
+                mode_chimera_title: 'Random Mix',
+                mode_chimera_desc: 'Head, body, arms and legs are each randomly picked from Skin 1 or Skin 2.',
+                uvOutputTitle: '64x64 UV Map Output',
+                resultDefault: 'Your merged result will appear here.',
+                mergeBtn: 'MERGE (10s)',
+                downloadBtn: 'DOWNLOAD',
+                useAsSkin1Btn: 'Use Result as Skin 1',
+                resetBtn: 'Reset',
+                textureLockMsg: 'Sign in with Google to view the 3D skin texture. The model/animation still works without it.',
+                animWalkBtn: 'Walk',
+                animRunBtn: 'Run',
+                animIdleBtn: 'Idle',
+                animRotateBtn: 'Rotate',
+                compareResultBtn: 'Result',
+                footerDeveloped: 'Developed by',
+                footerDeveloperLink: 'Developer',
+                privacyModalTitle: 'Privacy Policy',
+                copyrightFooterLink: 'Copyright & Legal Notice',
+                termsModalTitle: 'Terms of Use',
+                mitModalTitle: 'MIT License',
+                closeBtn: 'Close',
+                copyrightModalTitle: 'Copyright',
+                privacyP1: "NVO MC Skin Merger v6.3 fully respects your data. Skin files you upload are processed entirely on your device (in your browser); they are never uploaded or transmitted to our servers.",
+                privacyP2: "When you sign in with Google, authentication is handled by Google via Firebase Authentication. Only your name, email and profile photo are kept as session info in your browser; this data is not stored on our servers. Additionally, an anonymous counter of total merges is kept in Firebase Firestore purely to display usage stats — it contains no personal data.",
+                copyrightP1: "Minecraft is a registered trademark of Mojang AB / Microsoft Corporation. This tool is an independent NVO TEAM project not affiliated with Mojang or Microsoft.",
+                copyrightP2: "Google and the Google logo are trademarks of Google LLC. The Google Sign-In feature is used in accordance with Google's authentication service guidelines.",
+                termsP1: 'You may use the skins created with this tool however you like. The service is provided "as is", without any warranty.',
+                termsP2: "The 3D preview and UV output require signing in with a Google account to prevent abuse; this means your account is accessed solely for authentication purposes.",
+                mitP1: "Copyright (c) 2026 NVO TEAM. Provided free and open-source. Permission is hereby granted, free of charge, to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of this software and its documentation, subject to the following conditions: the above copyright notice and this permission notice shall be included in all copies or substantial portions of the software.",
+                googlePreparing: 'Preparing...',
+                googlePreparingCountdown: (n) => `Preparing... (${n})`,
+                firebaseInitializing: 'Initializing Firebase...',
+                loginPrompt: 'Sign in with Google',
+                logoutPrompt: 'Sign out',
+                signedOutStatus: 'Texture view: Google sign-in required',
+                signedInStatus: (name) => `${name} • Texture unlocked`,
+            }
+        };
+
+        let currentLang = (function(){
+            try { return localStorage.getItem('nvo_lang') === 'en' ? 'en' : 'tr'; }
+            catch (e) { return 'tr'; }
+        })();
+
+        function t(key, ...args){
+            const dict = I18N[currentLang] || I18N.tr;
+            const val = dict[key] !== undefined ? dict[key] : (I18N.tr[key] !== undefined ? I18N.tr[key] : key);
+            return typeof val === 'function' ? val(...args) : val;
+        }
+
+        function applyLanguage(){
+            document.documentElement.lang = currentLang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                el.textContent = t(el.getAttribute('data-i18n'));
+            });
+            const langBtnLabel = document.getElementById('langToggleLabel');
+            const langBtn = document.getElementById('langToggle');
+            if (langBtnLabel) langBtnLabel.textContent = currentLang === 'en' ? 'TR' : 'EN';
+            if (langBtn) langBtn.title = currentLang === 'en' ? 'Dili değiştir' : 'Switch language';
+        }
+
+        document.getElementById('langToggle').addEventListener('click', () => {
+            currentLang = currentLang === 'en' ? 'tr' : 'en';
+            try { localStorage.setItem('nvo_lang', currentLang); } catch (e) { /* yoksay */ }
+            applyLanguage();
+            // refreshAuthLanguage aşağıda tanımlanır; fonksiyon deklarasyonları
+            // hoisting sayesinde burada güvenle çağrılabilir (bu callback yalnızca
+            // gerçek bir tıklamada, tüm script çalıştıktan sonra tetiklenir).
+            if (typeof refreshAuthLanguage === 'function') refreshAuthLanguage();
+        });
+
+        applyLanguage();
+        // ===================== /i18n =====================
+
+
+        const usageCountEl = document.getElementById('usageCount');
+        const googleLoginBtn = document.getElementById('googleLogin');
+        const googleLoginLabel = document.getElementById('googleLoginLabel');
+        const authStatusEl = document.getElementById('authStatus');
+        const authStatusText = document.getElementById('authStatusText');
+        const authAvatar = document.getElementById('authAvatar');
+        const textureLock = document.getElementById('textureLock');
+        const uvOutputPanel = document.getElementById('uvOutputPanel');
+        const authStatusIcon = document.getElementById('authStatusIcon');
+        let firebaseUser = null;
+        let resultReady = false;
+        let googleButtonUnlocked = false; // 5 sn Firebase yükleme kilidi geçti mi?
+        if (uvOutputPanel) uvOutputPanel.classList.add('uv-hidden');
+
+        function blankTextureDataUrl(){
+            // Girişsiz kullanıcıda gerçek yüklenen skin ASLA gösterilmez.
+            // Model geometrisi görünür kalması için nötr, tek renkli bir 64x64 texture kullanılır.
+            const c = document.createElement('canvas'); c.width = 64; c.height = 64;
+            const x = c.getContext('2d');
+            x.fillStyle = '#777';
+            x.fillRect(0, 0, 64, 64);
+            return c.toDataURL('image/png');
+        }
+
+        function setTextureVisibility(visible){
+            textureLock.classList.toggle('hidden', visible);
+            // Google girişi yoksa 2D UV çıktı da tamamen gizlenir.
+            // 3D model ise HER ZAMAN görünür; yalnızca gerçek texture yerine nötr texture kullanılır.
+            if (uvOutputPanel) uvOutputPanel.classList.toggle('uv-hidden', !visible);
+            if (btnDownload) btnDownload.disabled = !visible || !resultReady;
+            if (!skinViewer) return;
+            if (visible) {
+                // Karşılaştırma modu (Skin 1 / Skin 2 / Sonuç) seçili olan texture'ı gösterir.
+                const src = typeof currentCompareCanvas === 'function' ? currentCompareCanvas() : resultCanvas;
+                skinViewer.loadSkin(src.toDataURL('image/png'));
+            } else {
+                // Model kaybolmaz; sadece texture yerine şeffaf/boş texture kullanılır.
+                skinViewer.loadSkin(blankTextureDataUrl());
+            }
+        }
+
+        // Firebase hazır olana kadar bekleyip {app, auth, db, provider} döndürür.
+        // Başlatma başarısızsa hatayı fırlatır.
+        async function getFirebase(){
+            const ready = await window.NVO_FIREBASE_READY;
+            if (!ready || ready.error) throw (ready && ready.error) || new Error('Firebase kullanılamıyor');
+            return ready;
+        }
+
+        // Analytics olayı: sessizce başarısız olur, hiçbir zaman ana akışı bozmaz.
+        function trackEvent(name, params){
+            if (window.NVO && window.NVO.analytics) {
+                try { window.NVO.analytics.logEvent(name, params || {}); } catch (e) { /* yoksay */ }
+            }
+        }
+
+        async function updateGlobalUsage(){
+            try {
+                const { db } = await getFirebase();
+                const ref = db.collection('stats').doc('usage');
+                await ref.set({
+                    totalMerges: firebase.firestore.FieldValue.increment(1),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                const snap = await ref.get();
+                usageCountEl.textContent = Number(snap.data()?.totalMerges || 0).toLocaleString('tr-TR');
+            } catch (e) {
+                console.warn('Firebase kullanım sayacı güncellenemedi:', e);
+                usageCountEl.textContent = '—';
+            }
+        }
+
+        async function loadGlobalUsage(){
+            try {
+                const { db } = await getFirebase();
+                const snap = await db.collection('stats').doc('usage').get();
+                usageCountEl.textContent = Number(snap.data()?.totalMerges || 0).toLocaleString('tr-TR');
+            } catch (e) {
+                usageCountEl.textContent = '—';
+            }
+        }
+
+        function isMobileBrowser(){
+            return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+        }
+
+        function firebaseErrorText(error){
+            const code = error?.code || '';
+            const raw = error?.message || 'Bilinmeyen Firebase hatası';
+            if (code === 'auth/api-key-not-valid') {
+                return 'Firebase API anahtarı geçersiz. Firebase Console > Project settings > Web app bölümündeki güncel Web config kullanılmalı ve API anahtarının kısıtlamaları kontrol edilmelidir.';
+            }
+            if (code === 'auth/unauthorized-domain') {
+                return 'Bu alan adı (' + location.hostname + ') Firebase Authentication > Settings > Authorized domains listesinde yok. Oraya eklemeden Google girişi çalışmaz.';
+            }
+            if (code === 'auth/operation-not-allowed') {
+                return 'Firebase Authentication > Sign-in method bölümünde Google sağlayıcısını etkinleştirin.';
+            }
+            if (code === 'auth/popup-blocked') return 'Google giriş penceresi tarayıcı tarafından engellendi.';
+            if (code === 'auth/popup-closed-by-user') return 'Google giriş penceresi kapatıldı.';
+            if (code === 'auth/network-request-failed') return 'Firebase ağ isteği başarısız. İnternet bağlantısını kontrol edin.';
+            if (code === 'auth/cancelled-popup-request') return 'Önceki giriş penceresi hâlâ açıktı, yeni istek iptal edildi. Tekrar deneyin.';
+            return raw + (code ? ' [' + code + ']' : '');
+        }
+
+        function setStatusIcon(kind){
+            authStatusIcon.className = 'fa-solid status-icon ' +
+                (kind === 'success' ? 'fa-circle-check' : kind === 'error' ? 'fa-circle-exclamation' : 'fa-lock');
+        }
+
+        function applySignedOutUI(){
+            authStatusText.textContent = t('signedOutStatus');
+            setStatusIcon('idle');
+            authAvatar.style.display = 'none';
+            authAvatar.removeAttribute('src');
+            googleLoginLabel.textContent = t('loginPrompt');
+            googleLoginBtn.onclick = handleGoogleLogin;
+            setTextureVisibility(false);
+            btnDownload.disabled = true;
+        }
+
+        function applySignedInUI(user){
+            // NOT: displayName/email değerleri Google hesabı tarafından belirlenir ve
+            // teorik olarak HTML/script karakteri içerebilir. innerHTML yerine
+            // textContent kullanılarak XSS riski tamamen ortadan kaldırılır.
+            authStatusText.textContent = t('signedInStatus', user.displayName || user.email || 'Google');
+            setStatusIcon('success');
+            if (user.photoURL) {
+                authAvatar.src = user.photoURL;
+                authAvatar.style.display = 'inline-block';
+                authAvatar.referrerPolicy = 'no-referrer';
+            } else {
+                authAvatar.style.display = 'none';
+                authAvatar.removeAttribute('src');
+            }
+            googleLoginLabel.textContent = t('logoutPrompt');
+            googleLoginBtn.onclick = handleGoogleLogout;
+            setTextureVisibility(true);
+            btnDownload.disabled = !resultReady;
+        }
+
+        // Dil değiştirildiğinde Google giriş butonu ve durum metnini o anki
+        // oturum/kilit durumuna göre yeniden çevirir. langToggle tıklamasından
+        // çağrılır (bkz. i18n bloğu, en üstte).
+        function refreshAuthLanguage(){
+            if (!googleButtonUnlocked) {
+                googleLoginLabel.textContent = t('googlePreparing');
+                authStatusText.textContent = t('firebaseInitializing');
+                return;
+            }
+            if (firebaseUser) applySignedInUI(firebaseUser); else applySignedOutUI();
+        }
+
+        // Google giriş butonunu Firebase tamamen hazır olana kadar (en az 5 saniye)
+        // kilitli tutar. Bu süre boyunca buton üzerinde gerçek bir dönen ikon (spinner)
+        // ve geri sayım gösterilir; emoji veya sahte animasyon kullanılmaz.
+        function lockGoogleButtonForStartup(){
+            let remaining = 5;
+            googleLoginBtn.disabled = true;
+            googleLoginBtn.classList.add('is-loading');
+            googleLoginLabel.textContent = t('googlePreparingCountdown', remaining);
+            const interval = setInterval(() => {
+                remaining -= 1;
+                if (remaining > 0) {
+                    googleLoginLabel.textContent = t('googlePreparingCountdown', remaining);
+                } else {
+                    clearInterval(interval);
+                    unlockGoogleButtonWhenReady();
+                }
+            }, 1000);
+        }
+
+        async function unlockGoogleButtonWhenReady(){
+            // 5 saniye doldu; ayrıca Firebase'in gerçekten hazır olduğundan da emin ol
+            // (yavaş bağlantılarda 5 saniyeden uzun sürebilir).
+            try {
+                await getFirebase();
+            } catch (e) {
+                // Hata varsa buton yine de kilit açılır; tıklanınca hata mesajı gösterilir.
+            }
+            googleButtonUnlocked = true;
+            googleLoginBtn.classList.remove('is-loading');
+            googleLoginBtn.disabled = false;
+            // Kilit süresince gelmiş olabilecek gerçek oturum durumunu şimdi uygula.
+            if (firebaseUser) applySignedInUI(firebaseUser); else applySignedOutUI();
+        }
+
+        async function handleGoogleLogout(){
+            try {
+                const { auth } = await getFirebase();
+                await auth.signOut();
+                log('Çıkış yapıldı.', 'warn');
+            } catch (e) {
+                log('Çıkış başarısız: ' + firebaseErrorText(e), 'error');
+            }
+        }
+
+        async function handleGoogleLogin(){
+            googleLoginBtn.disabled = true;
+            try {
+                const { auth, provider } = await getFirebase();
+                log('Google giriş penceresi açılıyor (popup)...', 'normal');
+
+                // ÖNEMLİ MİMARİ DEĞİŞİKLİK:
+                // Önceki sürümlerde mobilde signInWithRedirect kullanılıyordu.
+                // authDomain (nvomcskinmerger.firebaseapp.com) sitenin kendi domaininden
+                // (örn. *.github.io) FARKLI olduğu için redirect akışı, oturum sonucunu
+                // taşımak amacıyla gizli bir iframe + paylaşımlı depolama (storage) kullanır.
+                // Tarayıcılar (Chrome Privacy Sandbox, Safari ITP vb.) bu üçüncü taraf
+                // depolamayı giderek daha agresif şekilde engelliyor: redirect görünüşte
+                // tamamlanıyor (Google'a gidip geri dönüyorsun) ama oturum bilgisi SİTEYE
+                // HİÇ ULAŞMIYOR — tam senin yaşadığın belirti buydu.
+                //
+                // signInWithPopup ise sonucu window.postMessage ile doğrudan açan pencereye
+                // iletir; paylaşımlı depolamaya ihtiyaç duymaz ve bu yüzden bu senaryoda
+                // çok daha güvenilirdir. Bu yüzden artık HEM masaüstü HEM mobilde önce popup
+                // deneniyor; sadece popup fiilen engellenirse (auth/popup-blocked) redirect'e
+                // geri düşülüyor.
+                try {
+                    const result = await auth.signInWithPopup(provider);
+                    log('Google girişi tamamlandı: ' + (result.user?.displayName || result.user?.email || ''), 'success');
+                } catch (popupErr) {
+                    if (popupErr?.code === 'auth/popup-blocked' || popupErr?.code === 'auth/operation-not-supported-in-this-environment') {
+                        log('Popup engellendi/desteklenmiyor, redirect yöntemine geçiliyor...', 'warn');
+                        sessionStorage.setItem('nvo_pending_redirect', '1');
+                        await auth.signInWithRedirect(provider);
+                        // Bu satırdan sonrası genelde çalışmaz çünkü tarayıcı sayfadan ayrılır.
+                    } else {
+                        throw popupErr;
+                    }
+                }
+            } catch (e) {
+                const msg = firebaseErrorText(e);
+                authStatusText.textContent = msg;
+                log('Google giriş başarısız' + (e?.code ? ' [' + e.code + ']' : '') + ': ' + msg, 'error');
+            } finally {
+                googleLoginBtn.disabled = false;
+            }
+        }
+
+        googleLoginBtn.onclick = handleGoogleLogin;
+
+        // Google giriş butonu, sayfa yüklenir yüklenmez (Firebase henüz hazır olmasa bile)
+        // 5 saniyeliğine kilitlenir; bu süre Firebase SDK'sının tamamen yüklenmesi için
+        // güvenli bir tampon sağlar. Süre dolunca ayrıca Firebase'in gerçekten hazır
+        // olup olmadığı da kontrol edilir (bkz. unlockGoogleButtonWhenReady).
+        lockGoogleButtonForStartup();
+
+        (async () => {
+            let fb;
+            try {
+                fb = await getFirebase();
+            } catch (e) {
+                const msg = firebaseErrorText(e);
+                authStatusText.textContent = msg;
+                log('Firebase başlatılamadı: ' + msg, 'error');
+                return;
+            }
+
+            const { auth } = fb;
+
+            // Sadece redirect fallback'inden dönüşü ayırt etmek için bayrak kullanılıyor
+            // (artık normal akışta redirect kullanılmıyor, sadece popup engellenirse devreye girer).
+            const wasPendingRedirect = sessionStorage.getItem('nvo_pending_redirect') === '1';
+            sessionStorage.removeItem('nvo_pending_redirect');
+
+            try {
+                const redirectResult = await auth.getRedirectResult();
+                if (redirectResult?.user) {
+                    log('Google redirect girişi tamamlandı: ' + (redirectResult.user.displayName || redirectResult.user.email || ''), 'success');
+                } else if (wasPendingRedirect) {
+                    log('Google girişi tamamlandı ama oturum bilgisi siteye ulaşmadı. authDomain (' +
+                        auth.app.options.authDomain + ') ile site domaini (' + location.hostname +
+                        ') farklı olduğu için tarayıcının üçüncü taraf depolama/çerez engeli buna sebep olabilir; ' +
+                        'ayrıca bu domainin Firebase Authentication > Settings > Authorized domains listesinde olduğundan emin olun.', 'error');
+                }
+            } catch (e) {
+                const msg = firebaseErrorText(e);
+                authStatusText.textContent = msg;
+                log('Google redirect sonucu alınamadı: ' + msg, 'error');
+            }
+
+            // onAuthStateChanged, Firebase Auth'un kendi native metodu; ekstra
+            // sarmalayıcı/bind katmanı yok, bu yüzden parametre uyuşmazlığı riski de yok.
+            auth.onAuthStateChanged(user => {
+                firebaseUser = user;
+                // Buton hâlâ 5 saniyelik başlangıç kilidindeyse metnini/durumunu değiştirme;
+                // kilit açılınca unlockGoogleButtonWhenReady() zaten firebaseUser'a göre uygulayacak.
+                if (!googleButtonUnlocked) return;
+                if (user) {
+                    applySignedInUI(user);
+                    log('Oturum aktif: ' + (user.displayName || user.email || 'Google hesabı') + '. 3D texture ve UV çıktı açıldı.', 'success');
+                    trackEvent('login', { method: 'google' });
+                } else {
+                    applySignedOutUI();
+                }
+            }, error => {
+                log('onAuthStateChanged hatası: ' + firebaseErrorText(error), 'error');
+            });
+
+            loadGlobalUsage();
+        })();
+
+        const inputSkin1 = document.getElementById('inputSkin1');
+        const inputSkin2 = document.getElementById('inputSkin2');
+        const canvas1 = document.getElementById('canvas1');
+        const canvas2 = document.getElementById('canvas2');
+        const resultCanvas = document.getElementById('resultCanvas');
+        const btnMerge = document.getElementById('btnMerge');
+        const btnDownload = document.getElementById('btnDownload');
+        const btnUseAsSkin1 = document.getElementById('btnUseAsSkin1');
+        const btnResetAll = document.getElementById('btnResetAll');
+        const compareSkin1Btn = document.getElementById('compareSkin1');
+        const compareSkin2Btn = document.getElementById('compareSkin2');
+        const compareResultBtn = document.getElementById('compareResult');
+        const terminal = document.getElementById('terminal');
+        const warningBox = document.getElementById('warningBox');
+        const resultInfo = document.getElementById('resultInfo');
+        const uploadBoxes = document.querySelectorAll('.upload-box');
+        const meta1 = document.getElementById('meta1');
+        const meta2 = document.getElementById('meta2');
+
+        const tagSkin1 = document.getElementById('tagSkin1');
+        const tagSkin2 = document.getElementById('tagSkin2');
+
+        const progressWrapper = document.getElementById('progressWrapper');
+        const progressBarFill = document.getElementById('progressBarFill');
+        const progressText = document.getElementById('progressText');
+
+        const ctx1 = canvas1.getContext('2d');
+        const ctx2 = canvas2.getContext('2d');
+        const ctxOut = resultCanvas.getContext('2d');
+
+        let model1 = null; 
+        let model2 = null;
+
+        // Mod Seçimi Tıklama Olayları
+        function selectModeCard(card){
+            document.querySelectorAll('.mode-card').forEach(c => { c.classList.remove('active'); c.setAttribute('aria-pressed','false'); });
+            card.classList.add('active');
+            card.setAttribute('aria-pressed','true');
+            selectedMode = card.getAttribute('data-mode');
+            resultInfo.removeAttribute('data-i18n');
+            resultInfo.textContent = `Seçilen mod: ${selectedMode.toUpperCase()}`;
+            log(`Birleştirme modu değiştirildi: [${selectedMode.toUpperCase()}]`, "warn");
+        }
+
+        document.querySelectorAll('.mode-card').forEach(card => {
+            card.addEventListener('click', () => selectModeCard(card));
+            // Erişilebilirlik: klavye ile (Enter / Boşluk) de seçilebilsin.
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+                    e.preventDefault();
+                    selectModeCard(card);
+                }
+            });
+        });
+
+        function init3DViewer() {
+            const canvasElement = document.getElementById('skin_3d_canvas');
+            skinViewer = new skinview3d.SkinViewer({
+                canvas: canvasElement,
+                width: canvasElement.clientWidth,
+                height: 260,
+                skin: blankTextureDataUrl()
+            });
+
+            skinViewer.autoRotate = true;
+            skinViewer.autoRotateSpeed = 1.5;
+            skinViewer.animation = new skinview3d.WalkingAnimation();
+        }
+
+        function log(msg, type = 'normal') {
+            const div = document.createElement('div');
+            div.className = `terminal-line ${type}`;
+            div.textContent = `> ${msg}`;
+            terminal.appendChild(div);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function detectSkinModel(ctx) {
+            // Minecraft 64x64 model detection. The arm width is the reliable discriminator:
+            // Steve = 4px arm, Alex = 3px arm. We inspect the canonical right-arm front
+            // face and its unused 4th column. Unlike the previous detector, this does NOT
+            // sample x=54, which belongs to the back-face area and can be opaque on Alex skins.
+            const p = ctx.getImageData(0, 0, 64, 64).data;
+            const alpha = (x, y) => p[(y * 64 + x) * 4 + 3];
+            const countOpaque = (x0, x1, y0, y1) => {
+                let n = 0;
+                for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++)
+                    if (alpha(x, y) > 8) n++;
+                return n;
+            };
+
+            // Right-arm front face starts at x=44 for Steve and x=43 for Alex.
+            // Compare the two possible 4th-column strips. Alex's x=47 strip is unused;
+            // Steve's x=47 is part of the 4px front face and is normally opaque.
+            const x47 = countOpaque(47, 48, 20, 32);
+            const x46 = countOpaque(46, 47, 20, 32);
+            const x43 = countOpaque(43, 44, 20, 32);
+            const x44 = countOpaque(44, 45, 20, 32);
+
+            // Prefer the canonical unused-column signal, but tolerate transparent custom skins.
+            if (x47 <= 2 && x46 > 2 && x43 > 2) return 'alex';
+            if (x47 > 2) return 'steve';
+
+            // Fallback: Alex front begins one pixel earlier (x43).
+            return (x43 > x44 * 0.25) ? 'alex' : 'steve';
+        }
+
+        function updateModelTag(tagEl, model) {
+            // Gerçek model tespit edilince bu etiket artık "Model: Bekleniyor" placeholder'ı
+            // değil; data-i18n kaldırılır ki dil değiştirme bu gerçek değeri silmesin.
+            tagEl.removeAttribute('data-i18n');
+            if (model === "alex") {
+                tagEl.textContent = "Alex (3px)";
+                tagEl.className = "model-tag alex";
+            } else {
+                tagEl.textContent = "Steve (4px)";
+                tagEl.className = "model-tag steve";
+            }
+        }
+
+        function checkModelMismatch() {
+            if (model1 && model2) {
+                btnMerge.disabled = false;
+                resultInfo.removeAttribute('data-i18n');
+                resultInfo.textContent = `Hazır: ${model1.toUpperCase()} + ${model2.toUpperCase()} • ${selectedMode.toUpperCase()}`;
+                if (model1 !== model2) {
+                    warningBox.classList.add('active');
+                    const w1 = document.getElementById('warningModel1');
+                    const w2 = document.getElementById('warningModel2');
+                    if (w1) w1.textContent = model1.toUpperCase();
+                    if (w2) w2.textContent = model2.toUpperCase();
+                } else {
+                    warningBox.classList.remove('active');
+                }
+            }
+        }
+
+        function handleFile(file, ctx, labelId, isFirst) {
+            if (!file) return;
+            if (file.type !== "image/png") {
+                log("HATA: Yalnızca PNG Minecraft skin dosyası kabul edilir.", "error");
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                log("HATA: Dosya 5 MB'dan büyük olamaz.", "error");
+                return;
+            }
+
+            const img = new Image();
+            const objectUrl = URL.createObjectURL(file);
+            img.onload = function() {
+                URL.revokeObjectURL(objectUrl);
+
+                if (img.naturalWidth === 64 && img.naturalHeight === 32) {
+                    // Eski (pre-1.8 / legacy) 64x32 skin formatı: dış katman (overlay)
+                    // hiç yok, sadece temel katman var. 64x64'e otomatik dönüştürülür;
+                    // eksik overlay bölgeleri şeffaf bırakılır, sol kol/bacak base'i
+                    // sağdan simetrik olarak kopyalanır (eski istemcinin yaptığı gibi).
+                    const legacyCanvas = document.createElement('canvas');
+                    legacyCanvas.width = 64; legacyCanvas.height = 64;
+                    const lctx = legacyCanvas.getContext('2d');
+                    lctx.imageSmoothingEnabled = false;
+                    lctx.drawImage(img, 0, 0, 64, 32); // Üst yarı: kafa + gövde + sağ kol/bacak base
+                    // Sol kol base'ini sağ kol base'inden yatay ayna ile türet.
+                    lctx.save();
+                    lctx.translate(32 + 48, 16); lctx.scale(-1, 1);
+                    lctx.drawImage(legacyCanvas, 40, 16, 8, 12, 0, 0, 8, 12);
+                    lctx.restore();
+                    // Sol bacak base'ini sağ bacak base'inden yatay ayna ile türet.
+                    lctx.save();
+                    lctx.translate(16 + 32, 48); lctx.scale(-1, 1);
+                    lctx.drawImage(legacyCanvas, 0, 16, 8, 12, 0, 0, 8, 12);
+                    lctx.restore();
+                    log(`${file.name}: eski 64x32 skin formatı algılandı, 64x64'e otomatik dönüştürüldü (dış katmanlar boş).`, "warn");
+                    finishLoadSkin(legacyCanvas, ctx, labelId, isFirst, file);
+                    return;
+                }
+
+                if (img.naturalWidth !== 64 || img.naturalHeight !== 64) {
+                    log(`HATA: Skin 64x64 (veya eski format için 64x32) olmalı. Seçilen görsel: ${img.naturalWidth}x${img.naturalHeight}`, "error");
+                    return;
+                }
+
+                ctx.clearRect(0, 0, 64, 64);
+                ctx.imageSmoothingEnabled = false;
+                ctx.drawImage(img, 0, 0, 64, 64);
+                finishLoadSkin(null, ctx, labelId, isFirst, file);
+            };
+            img.onerror = function(){
+                URL.revokeObjectURL(objectUrl);
+                log(`HATA: ${file.name} bir görsel olarak okunamadı.`, "error");
+            };
+            img.src = objectUrl;
+        }
+
+        // Skin canvas'a çizildikten sonra ortak devam adımları (etiket, model tespiti,
+        // uyarı kutusu vb.). 64x32→64x64 dönüştürme ve normal 64x64 yükleme aynı
+        // devam mantığını paylaşır.
+        function finishLoadSkin(sourceCanvasOrNull, ctx, labelId, isFirst, file){
+            if (sourceCanvasOrNull) {
+                ctx.clearRect(0, 0, 64, 64);
+                ctx.imageSmoothingEnabled = false;
+                ctx.drawImage(sourceCanvasOrNull, 0, 0);
+            }
+            const labelEl = document.getElementById(labelId);
+            labelEl.removeAttribute('data-i18n'); // Artık placeholder değil, gerçek dosya adı gösteriliyor.
+            labelEl.textContent = file.name;
+
+            const detected = detectSkinModel(ctx);
+            const sizeLabel = `${Math.round(file.size/1024)} KB`;
+            const formatLabel = sourceCanvasOrNull ? '64×32→64×64' : '64×64';
+            if (isFirst) {
+                model1 = detected;
+                updateModelTag(tagSkin1, model1);
+                meta1.innerHTML = `<span><span class="status-dot"></span> ${formatLabel} PNG • ${sizeLabel}</span>`;
+                log(`Skin 1 yüklendi: ${file.name} [${model1.toUpperCase()}]`, "success");
+            } else {
+                model2 = detected;
+                updateModelTag(tagSkin2, model2);
+                meta2.innerHTML = `<span><span class="status-dot"></span> ${formatLabel} PNG • ${sizeLabel}</span>`;
+                log(`Skin 2 yüklendi: ${file.name} [${model2.toUpperCase()}]`, "success");
+            }
+            checkModelMismatch();
+        }
+
+        inputSkin1.addEventListener('change', (e) => handleFile(e.target.files[0], ctx1, 'label1', true));
+        inputSkin2.addEventListener('change', (e) => handleFile(e.target.files[0], ctx2, 'label2', false));
+
+        // Yardımcı Alan Kopyalama Fonksiyonu
+        function copyArea(srcCtx, dstCtx, x, y, w, h) {
+            const imgData = srcCtx.getImageData(x, y, w, h);
+            dstCtx.putImageData(imgData, x, y);
+        }
+
+        async function startAnimatedMerge() {
+            btnMerge.disabled = true;
+            btnDownload.disabled = true;
+            progressWrapper.classList.add('active');
+            progressBarFill.style.width = '0%';
+
+            log(`10s İşlem Başlatıldı - Seçilen Mod: [${selectedMode.toUpperCase()}]`, "info");
+
+            const totalDuration = 6000;
+            const startTime = Date.now();
+
+            const steps = [
+                { time: 900, msg: "[%15] 64x64 UV Haritası Taranıyor...", logType: "normal" },
+                { time: 2100, msg: "[%35] Gövde ve Kol UV Merkezleri Hizalanıyor...", logType: "normal" },
+                { time: 3600, msg: `[%60] ${selectedMode.toUpperCase()} Algoritması Uygulanıyor...`, logType: "normal" },
+                { time: 5100, msg: "[%85] Katman Geçişleri ve Model UV Farkları Derleniyor...", logType: "normal" },
+                { time: 5880, msg: "[%98] Render Matrisi Tamamlandı!", logType: "success" }
+            ];
+
+            let stepIndex = 0;
+
+            const timer = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(100, Math.floor((elapsed / totalDuration) * 100));
+
+                progressBarFill.style.width = `${progress}%`;
+                progressText.textContent = `${progress}%`;
+
+                if (stepIndex < steps.length && elapsed >= steps[stepIndex].time) {
+                    log(steps[stepIndex].msg, steps[stepIndex].logType);
+                    stepIndex++;
+                }
+
+                if (elapsed >= totalDuration) {
+                    clearInterval(timer);
+                    executeMergeLogic();
+                }
+            }, 50);
+        }
+
+        // ===== NVO v6.1: GERÇEK skinview3d UV GEOMETRİSİ =====
+        // Minecraft/skinview3d kutu UV'si: u,v,width,height,depth.
+        // Bu yardımcılar yüzleri tam olarak gerçek UV koordinatlarından çıkarır.
+        function boxFaces(u, v, w, h, d) {
+            return {
+                top:    [u + d,         v,         w, d],
+                bottom: [u + w + d,     v,         w, d],
+                left:   [u,             v + d,     d, h],
+                front:  [u + d,         v + d,     w, h],
+                right:  [u + w + d,     v + d,     d, h],
+                back:   [u + w + d * 2, v + d,     w, h]
+            };
+        }
+
+        function copyRect(srcCtx, dstCtx, srcRect, dstRect = srcRect) {
+            const [sx, sy, sw, sh] = srcRect;
+            const [dx, dy, dw, dh] = dstRect;
+            const tmp = document.createElement('canvas');
+            tmp.width = sw; tmp.height = sh;
+            const t = tmp.getContext('2d');
+            t.imageSmoothingEnabled = false;
+            t.putImageData(srcCtx.getImageData(sx, sy, sw, sh), 0, 0);
+            dstCtx.imageSmoothingEnabled = false;
+            dstCtx.drawImage(tmp, 0, 0, sw, sh, dx, dy, dw, dh);
+        }
+
+        function copyFace(srcCtx, dstCtx, srcFace, dstFace = srcFace) {
+            copyRect(srcCtx, dstCtx, srcFace, dstFace);
+        }
+
+        function copyWholeBox(srcCtx, dstCtx, srcBox, dstBox) {
+            const sf = boxFaces(...srcBox);
+            const df = boxFaces(...dstBox);
+            for (const name of ['top','bottom','left','front','right','back']) {
+                copyFace(srcCtx, dstCtx, sf[name], df[name]);
+            }
+        }
+
+        // Bir kutunun fiziksel ALT yarısını, iç skin + dış kıyafet/overlay dahil,
+        // gerçek UV yüzleri üzerinden taşır. 6 yüzün yalnızca Y ekseninde alanı olan
+        // dört dikey yüzü (ön/arka/sağ/sol) 6+6 olarak bölünür; üst ve alt kapaklar
+        // fiziksel olarak yatay yüzler olduğu için bölünmez. Alt kapak ise Skin 2'den
+        // tamamen alınır. Böylece tişört, ceket, kol kılıfı ve pantolon da aynı
+        // fiziksel orta çizgiyi takip eder.
+        function copyBottomPhysicalHalf(srcCtx, dstCtx, srcBox, dstBox, srcModel, dstModel) {
+            const sf = boxFaces(...srcBox);
+            const df = boxFaces(...dstBox);
+            const srcH = srcBox[3], dstH = dstBox[3];
+            const srcHalf = Math.ceil(srcH / 2);
+            const dstHalf = Math.ceil(dstH / 2);
+
+            // ALT yarı: UV satırlarının son yarısı = fiziksel kutunun alt yarısı.
+            // 12 px yükseklikte tam olarak 6 px Skin 2'ye gider.
+            for (const faceName of ['left', 'front', 'right', 'back']) {
+                const [sx, sy, sw, sh] = sf[faceName];
+                const [dx, dy, dw, dh] = df[faceName];
+                const srcY = sy + (sh - srcHalf);
+                const dstY = dy + (dh - dstHalf);
+                copyRect(srcCtx, dstCtx,
+                    [sx, srcY, sw, srcHalf],
+                    [dx, dstY, dw, dstHalf]
+                );
+            }
+
+            // Alt kapak Skin 2'den tamamen gelir.
+            copyFace(srcCtx, dstCtx, sf.bottom, df.bottom);
+        }
+
+        function copyBoxScaled(srcCtx, dstCtx, srcBox, dstBox) {
+            const sf = boxFaces(...srcBox);
+            const df = boxFaces(...dstBox);
+            for (const name of ['top','bottom','left','front','right','back']) {
+                copyRect(srcCtx, dstCtx, sf[name], df[name]);
+            }
+        }
+
+        function copyArmFull(srcCtx, dstCtx, srcBox, dstBox) {
+            // Steve(4px) <-> Alex(3px) kol genişliklerini hedef UV'ye ölçekleyerek eşleştir.
+            const sf = boxFaces(...srcBox);
+            const df = boxFaces(...dstBox);
+            for (const name of ['top','bottom','left','front','right','back']) {
+                copyRect(srcCtx, dstCtx, sf[name], df[name]);
+            }
+        }
+
+        function copyFrontBackPhysical(srcCtx, dstCtx, srcBox, dstBox) {
+            const sf = boxFaces(...srcBox);
+            const df = boxFaces(...dstBox);
+
+            // Ön yüz Skin 1'de bırakılır. Arka yüz tamamen Skin 2'den gelir.
+            copyFace(srcCtx, dstCtx, sf.back, df.back);
+
+            // Yan yüzlerin derinlik yönündeki yarısı: gerçek kutu UV'sindeki d/2.
+            const halfD = srcBox[4] / 2;
+            const targetHalfD = dstBox[4] / 2;
+
+            // Sol yüz: UV'de ilk yarı arka tarafa karşılık gelir.
+            copyRect(srcCtx, dstCtx,
+                [sf.left[0], sf.left[1], halfD, sf.left[3]],
+                [df.left[0], df.left[1], targetHalfD, df.left[3]]
+            );
+            // Sağ yüz: UV'de son yarı arka tarafa karşılık gelir.
+            copyRect(srcCtx, dstCtx,
+                [sf.right[0] + sf.right[2] - halfD, sf.right[1], halfD, sf.right[3]],
+                [df.right[0] + df.right[2] - targetHalfD, df.right[1], targetHalfD, df.right[3]]
+            );
+
+            // Üst/alt yüzler için de arka yarıyı doğru derinlik şeridinden al.
+            copyRect(srcCtx, dstCtx,
+                [sf.top[0], sf.top[1], sf.top[2], halfD],
+                [df.top[0], df.top[1], df.top[2], targetHalfD]
+            );
+            copyRect(srcCtx, dstCtx,
+                [sf.bottom[0], sf.bottom[1], sf.bottom[2], halfD],
+                [df.bottom[0], df.bottom[1], df.bottom[2], targetHalfD]
+            );
+        }
+
+        // KUSURSUZ UV KOORDİNAT BIRLEŞTİRME MOTORU
+        // 50/50 harmanlama: Skin 1 tabana çizilir, Skin 2'nin sağ yarısı (kullanıcıya göre sol)
+        // kol, bacak, kafa ve gövde parçaları (iç + dış katmanlar dahil) üzerine bindirilir.
+        // Bu fonksiyon, 'half' ve 'base_only' modları arasında paylaşılır.
+        function executeHalfMerge(){
+            ctxOut.drawImage(canvas1, 0, 0);
+
+            const swHalf = model2 === 'alex' ? 3 : 4;
+            const dwHalf = model1 === 'alex' ? 3 : 4;
+            copyWholeBox(ctx2, ctxOut, [32,48,swHalf,12,4], [32,48,dwHalf,12,4]);
+            copyWholeBox(ctx2, ctxOut, [48,48,swHalf,12,4], [48,48,dwHalf,12,4]);
+
+            copyArea(ctx2, ctxOut, 16, 48, 16, 16);
+            copyArea(ctx2, ctxOut, 0, 48, 16, 16);
+
+            copyArea(ctx2, ctxOut, 12, 0, 4, 8);
+            copyArea(ctx2, ctxOut, 20, 0, 4, 8);
+            copyArea(ctx2, ctxOut, 12, 8, 4, 8);
+            copyArea(ctx2, ctxOut, 16, 8, 8, 8);
+            copyArea(ctx2, ctxOut, 24, 8, 4, 8);
+
+            copyArea(ctx2, ctxOut, 44, 0, 4, 8);
+            copyArea(ctx2, ctxOut, 52, 0, 4, 8);
+            copyArea(ctx2, ctxOut, 44, 8, 4, 8);
+            copyArea(ctx2, ctxOut, 48, 8, 8, 8);
+            copyArea(ctx2, ctxOut, 56, 8, 4, 8);
+
+            copyArea(ctx2, ctxOut, 24, 16, 4, 4);
+            copyArea(ctx2, ctxOut, 32, 16, 4, 4);
+            copyArea(ctx2, ctxOut, 24, 20, 4, 12);
+            copyArea(ctx2, ctxOut, 28, 20, 4, 12);
+            copyArea(ctx2, ctxOut, 32, 20, 4, 12);
+
+            copyArea(ctx2, ctxOut, 24, 32, 4, 4);
+            copyArea(ctx2, ctxOut, 32, 32, 4, 4);
+            copyArea(ctx2, ctxOut, 24, 36, 4, 12);
+            copyArea(ctx2, ctxOut, 28, 36, 4, 12);
+            copyArea(ctx2, ctxOut, 32, 36, 4, 12);
+        }
+
+        // Şapka, ceket, kol kılıfı ve pantolon gibi tüm "dış katman" (overlay) UV
+        // bölgelerini tamamen şeffaflaştırır. 'base_only' modu tarafından kullanılır.
+        function clearOverlayLayers(ctx){
+            ctx.clearRect(32, 0, 32, 16); // Şapka katmanı (tüm kafa dış katmanı)
+            ctx.clearRect(16, 32, 32, 16); // Ceket katmanı (gövde dış katmanı)
+            ctx.clearRect(40, 32, 16, 16); // Sağ kol kılıfı
+            ctx.clearRect(48, 48, 16, 16); // Sol kol kılıfı
+            ctx.clearRect(0, 32, 16, 16);  // Sağ pantolon
+            ctx.clearRect(0, 48, 16, 16);  // Sol pantolon
+        }
+
+        function executeMergeLogic() {
+            ctxOut.clearRect(0, 0, 64, 64);
+            const armW = (model1 === "alex") ? 3 : 4;
+
+            if (selectedMode === 'half') {
+                executeHalfMerge();
+
+            } else if (selectedMode === 'head_swap') {
+                // Skin 2 Vücut + Skin 1 Kafa
+                ctxOut.drawImage(canvas2, 0, 0);
+                copyArea(ctx1, ctxOut, 0, 0, 64, 16); // Tüm Kafa ve Şapka Katmanı
+
+            } else if (selectedMode === 'top_bottom') {
+                // v6.1: Gövde + kollar GERÇEK KUTU YÜKSEKLİĞİNDEN ortadan bölünür.
+                // Önce Skin 1'in tamamı alınır; sonra her dikey yüzün alt yarısı Skin 2 ile değiştirilir.
+                // Böylece UV'deki top/bottom şeritleri yanlışlıkla gövdeye yapıştırılmaz.
+                ctxOut.drawImage(canvas1, 0, 0);
+
+                const dstModel = model1;
+                const srcModel = model2;
+                const sw = srcModel === 'alex' ? 3 : 4;
+                const dw = dstModel === 'alex' ? 3 : 4;
+
+                // GÖVDE — iç skin + CEKET/DIŞ KATMAN.
+                // Her ikisi de aynı 6 px fiziksel orta çizgisinden bölünür.
+                copyBottomPhysicalHalf(ctx2, ctxOut,
+                    [16, 16, 8, 12, 4], [16, 16, 8, 12, 4], srcModel, dstModel);
+                copyBottomPhysicalHalf(ctx2, ctxOut,
+                    [16, 32, 8, 12, 4], [16, 32, 8, 12, 4], srcModel, dstModel);
+
+                // SAĞ KOL — iç skin + kol kılıfı.
+                copyBottomPhysicalHalf(ctx2, ctxOut,
+                    [40, 16, sw, 12, 4], [40, 16, dw, 12, 4], srcModel, dstModel);
+                copyBottomPhysicalHalf(ctx2, ctxOut,
+                    [40, 32, sw, 12, 4], [40, 32, dw, 12, 4], srcModel, dstModel);
+
+                // SOL KOL — iç skin + kol kılıfı.
+                copyBottomPhysicalHalf(ctx2, ctxOut,
+                    [32, 48, sw, 12, 4], [32, 48, dw, 12, 4], srcModel, dstModel);
+                copyBottomPhysicalHalf(ctx2, ctxOut,
+                    [48, 48, sw, 12, 4], [48, 48, dw, 12, 4], srcModel, dstModel);
+
+                // BACAKLAR — hem iç skin hem DIŞ PANTOLON KATMANI %100 SKIN 2.
+                // Minecraft 64x64 UV'de:
+                // Sağ bacak base  = (0,16), outer = (0,32)
+                // Sol bacak base  = (16,48), outer = (0,48)
+                // copyWholeBox ile kutu yüzlerini taşımakla kalmıyoruz; son aşamada
+                // dış pantolonun tamamını doğrudan da kopyalıyoruz. Böylece Skin 1'in
+                // eski outer pantolon piksellerinin sonuçta kalması mümkün olmuyor.
+                copyWholeBox(ctx2, ctxOut, [0,16,4,12,4], [0,16,4,12,4]);
+                copyWholeBox(ctx2, ctxOut, [16,48,4,12,4], [16,48,4,12,4]);
+
+                // Dış pantolon: Skin 2'den tamamı.
+                copyArea(ctx2, ctxOut, 0, 32, 16, 16); // Sağ bacak pantolon
+                copyArea(ctx2, ctxOut, 0, 48, 16, 16); // Sol bacak pantolon
+
+                // Tekrar base kutularını Skin 2'den güvenceye al.
+                copyWholeBox(ctx2, ctxOut, [0,16,4,12,4], [0,16,4,12,4]);
+                copyWholeBox(ctx2, ctxOut, [16,48,4,12,4], [16,48,4,12,4]);
+
+                log('MERGER 5.4: Bacak iç katmanları ve dış pantolon katmanları tamamen Skin 2’den alındı; Skin 1 pantolonu artık sonuçta kalamaz.', 'success');
+
+            } else if (selectedMode === 'arm_swap') {
+                // Yeni merger: Skin 1'in kafa + gövde + bacakları, Skin 2'nin iki kolu.
+                ctxOut.drawImage(canvas1, 0, 0);
+                const srcW = model2 === 'alex' ? 3 : 4;
+                const dstW = model1 === 'alex' ? 3 : 4;
+
+                // Sağ kol iç/dış katman
+                copyArmFull(ctx2, ctxOut, [40,16,srcW,12,4], [40,16,dstW,12,4]);
+                copyArmFull(ctx2, ctxOut, [40,32,srcW,12,4], [40,32,dstW,12,4]);
+                // Sol kol iç/dış katman
+                copyArmFull(ctx2, ctxOut, [32,48,srcW,12,4], [32,48,dstW,12,4]);
+                copyArmFull(ctx2, ctxOut, [48,48,srcW,12,4], [48,48,dstW,12,4]);
+                log('KOL DEĞİŞİMİ: İki kol Skin 2’den hedef modele uyarlandı.', 'success');
+
+            } else if (selectedMode === 'outer_overlay') {
+                // Skin 1 İç Beden + Skin 2 Dış Ceket/Zırh
+                ctxOut.drawImage(canvas1, 0, 0);
+
+                // Dış Katmanları Skin 2'den Kopyala
+                copyArea(ctx2, ctxOut, 32, 0, 32, 16);  // Hat
+                copyArea(ctx2, ctxOut, 16, 32, 24, 16); // Jacket
+                copyArea(ctx2, ctxOut, 40, 32, 16, 16); // Right Sleeve
+                copyArea(ctx2, ctxOut, 0, 32, 16, 16);  // Right Pants
+                copyArea(ctx2, ctxOut, 0, 48, 16, 16);  // Left Pants
+                copyArea(ctx2, ctxOut, 48, 48, 16, 16); // Left Sleeve
+
+            } else if (selectedMode === 'front_back') {
+                // Skin 1 ön yüz olarak taranır, arkaya kalan her şey Skin 2'den 3D Z-Ekseninde çekilir.
+                //
+                // NOT: Bu fonksiyon Mojang'ın gerçek "box UV" (kutu UV) matematiğine göre
+                // yeniden yazıldı (bkz. skinview3d/model.ts setUVs formülü). Her kutu için
+                // (u, v, w=genişlik, h=yükseklik, d=derinlik) verildiğinde 6 yüz şu şekilde dizilir:
+                //   Üst    = (u+d,       v,       w, d)
+                //   Alt    = (u+w+d,     v,       w, d)
+                //   SağYan = (u,         v+d,     d, h)   // Sağ (izleyiciye göre) yüz
+                //   Ön     = (u+d,       v+d,     w, h)
+                //   SolYan = (u+w+d,     v+d,     d, h)   // Sol (izleyiciye göre) yüz
+                //   Arka   = (u+w+2d,    v+d,     w, h)
+                //
+                // Ön/Arka ayrım ekseni (three.js BoxGeometry.js'in buildPlane() fonksiyonu
+                // satır satır çözülüp gerçek vertex koordinatlarıyla doğrulandı - artık varsayım
+                // değil, kaynak koddan ispat):
+                //   - Üst yüzde:  satırlar (Y ekseni) böler -> ilk yarı (v..v+d/2) ARKA, ikinci yarı ÖN
+                //   - Alt yüzde:  YİNE satırlar (Y ekseni) böler, ama ÜST İLE TERS YÖNDE
+                //                 -> ilk yarı (v..v+d/2) ÖN, ikinci yarı (v+d/2..v+d) ARKA
+                //     (Bunun sebebi: ny yüzeyi py'ye göre V ekseni ters çevrilerek (vdir=-1)
+                //     üretiliyor, bu yüzden alt yüzey üst yüzeyin ayna simetriğidir.)
+                //   - Sağ yan yüzde: sütunlar (X ekseni) böler -> ilk yarı ARKA, ikinci yarı ÖN
+                //   - Sol yan yüzde: sütunlar (X ekseni) böler -> ilk yarı ÖN, ikinci yarı ARKA
+                //   - Ön yüz: tamamen Skin 1 kalır (zaten taban olarak çizili)
+                //   - Arka yüz: tamamen Skin 2'den kopyalanır
+                function copyFrontBackHalf(u, v, w, h, d) {
+                    const dHalf = d / 2;
+
+                    // Üst yüzey - Arka yarısı (ilk d/2 satır, tüm genişlik)
+                    copyArea(ctx2, ctxOut, u + d, v, w, dHalf);
+
+                    // Alt yüzey: UV yönü üst yüzeyin tersidir.
+                    // Bu yüzden alt yüzeyde ARKA yarısı ilk d/2 satırdır.
+                    // Önceki sürüm ikinci yarıyı seçtiği için alt/arka yüzeyler ters görünüyordu.
+                    copyArea(ctx2, ctxOut, u + w + d, v, w, dHalf);
+
+                    // Sağ yan yüzey - Arka yarısı (ilk d/2 sütun)
+                    copyArea(ctx2, ctxOut, u, v + d, dHalf, h);
+
+                    // Tam Arka yüzey
+                    copyArea(ctx2, ctxOut, u + w + 2 * d, v + d, w, h);
+
+                    // Sol yan yüzey - Arka yarısı (ikinci d/2 sütun).
+                    // Kaynak UV yönünü değiştirmeden aynı koordinata aktarılır.
+                    copyArea(ctx2, ctxOut, u + w + d + dHalf, v + d, dHalf, h);
+                }
+
+                ctxOut.drawImage(canvas1, 0, 0);
+
+                const isAlex1 = (model1 === "alex");
+
+                // --- 1. KAFA (HEAD) ---
+                copyFrontBackHalf(0, 0, 8, 8, 8);   // İç Katman
+                copyFrontBackHalf(32, 0, 8, 8, 8);  // Dış Katman (Şapka)
+
+                // --- 2. GÖVDE (TORSO) ---
+                copyFrontBackHalf(16, 16, 8, 12, 4); // İç Katman
+                copyFrontBackHalf(16, 32, 8, 12, 4); // Dış Katman (Ceket)
+
+                // --- 3. SAĞ BACAK (RIGHT LEG) ---
+                copyFrontBackHalf(0, 16, 4, 12, 4);  // İç Katman
+                copyFrontBackHalf(0, 32, 4, 12, 4);  // Dış Katman (Pantolon)
+
+                // --- 4. SOL BACAK (LEFT LEG) ---
+                copyFrontBackHalf(16, 48, 4, 12, 4); // İç Katman
+                copyFrontBackHalf(0, 48, 4, 12, 4);  // Dış Katman (Pantolon)
+
+                // --- 5. SAĞ KOL (RIGHT ARM) ---
+                copyFrontBackPhysical(ctx2, ctxOut, [40,16,model2 === 'alex' ? 3 : 4,12,4], [40,16,model1 === 'alex' ? 3 : 4,12,4]);
+                copyFrontBackPhysical(ctx2, ctxOut, [40,32,model2 === 'alex' ? 3 : 4,12,4], [40,32,model1 === 'alex' ? 3 : 4,12,4]);
+
+                // --- 6. SOL KOL (LEFT ARM) ---
+                copyFrontBackPhysical(ctx2, ctxOut, [32,48,model2 === 'alex' ? 3 : 4,12,4], [32,48,model1 === 'alex' ? 3 : 4,12,4]);
+                copyFrontBackPhysical(ctx2, ctxOut, [48,48,model2 === 'alex' ? 3 : 4,12,4], [48,48,model1 === 'alex' ? 3 : 4,12,4]);
+
+            } else if (selectedMode === 'leg_swap') {
+                // Skin 1'in kafa, gövde ve kolları korunur; iki bacak Skin 2'den alınır.
+                // Bacak genişliği Steve/Alex ayrımı olmaksızın her zaman 4px'tir, bu yüzden
+                // kol değişiminin aksine ölçekleme gerekmez.
+                ctxOut.drawImage(canvas1, 0, 0);
+
+                // Sağ bacak: iç katman + dış pantolon katmanı
+                copyWholeBox(ctx2, ctxOut, [0,16,4,12,4], [0,16,4,12,4]);
+                copyWholeBox(ctx2, ctxOut, [0,32,4,12,4], [0,32,4,12,4]);
+                // Sol bacak: iç katman + dış pantolon katmanı
+                copyWholeBox(ctx2, ctxOut, [16,48,4,12,4], [16,48,4,12,4]);
+                copyWholeBox(ctx2, ctxOut, [0,48,4,12,4], [0,48,4,12,4]);
+                log('BACAK DEĞİŞİMİ: İki bacak Skin 2’den alındı.', 'success');
+
+            } else if (selectedMode === 'base_only') {
+                // Önce standart 50/50 harmanlamayı uygula (kod tekrarını önlemek için
+                // executeHalfMerge() paylaşılan fonksiyonu kullanılır), sonra hat/ceket/
+                // kol kılıfı/pantolon gibi TÜM dış katmanları şeffaflaştırarak temizle.
+                executeHalfMerge();
+                clearOverlayLayers(ctxOut);
+                log('SADECE TEMEL KATMAN: Dış katmanlar (şapka, ceket, kol kılıfı, pantolon) temizlendi.', 'success');
+
+            } else if (selectedMode === 'blend') {
+                // İki texture'ı, model/UV farklarını hiçe sayarak doğrudan %50 saydamlıkla
+                // üst üste bindirir. Kasıtlı olarak "hayalet" / karışım efekti üretir.
+                ctxOut.clearRect(0, 0, 64, 64);
+                ctxOut.globalAlpha = 1.0;
+                ctxOut.drawImage(canvas1, 0, 0);
+                ctxOut.globalAlpha = 0.5;
+                ctxOut.drawImage(canvas2, 0, 0);
+                ctxOut.globalAlpha = 1.0;
+                log('OPACITY BLEND: İki texture %50 saydamlıkla harmanlandı.', 'success');
+
+            } else if (selectedMode === 'chimera') {
+                // Her ana vücut parçası (kafa, gövde, sağ/sol kol, sağ/sol bacak) için
+                // rastgele Skin 1 veya Skin 2 seçilir. Kol genişlikleri her zaman
+                // model1'in (hedef) UV şablonuna göre ölçeklenir.
+                ctxOut.clearRect(0, 0, 64, 64);
+                const pick = () => (Math.random() < 0.5 ? 1 : 2);
+                const srcCtxOf = (n) => (n === 1 ? ctx1 : ctx2);
+                const armWOf = (n) => ((n === 1 ? model1 : model2) === 'alex' ? 3 : 4);
+                const dstArmW = model1 === 'alex' ? 3 : 4;
+
+                const headSrc = pick();
+                const torsoSrc = pick();
+                const rightArmSrc = pick();
+                const leftArmSrc = pick();
+                const rightLegSrc = pick();
+                const leftLegSrc = pick();
+
+                // KAFA — iç katman + şapka katmanı birlikte (0,0,64,16 tüm baş bölgesi).
+                copyArea(srcCtxOf(headSrc), ctxOut, 0, 0, 64, 16);
+
+                // GÖVDE — iç katman + ceket katmanı.
+                copyWholeBox(srcCtxOf(torsoSrc), ctxOut, [16,16,8,12,4], [16,16,8,12,4]);
+                copyWholeBox(srcCtxOf(torsoSrc), ctxOut, [16,32,8,12,4], [16,32,8,12,4]);
+
+                // SAĞ KOL — iç katman + kol kılıfı.
+                copyArmFull(srcCtxOf(rightArmSrc), ctxOut, [40,16,armWOf(rightArmSrc),12,4], [40,16,dstArmW,12,4]);
+                copyArmFull(srcCtxOf(rightArmSrc), ctxOut, [40,32,armWOf(rightArmSrc),12,4], [40,32,dstArmW,12,4]);
+
+                // SOL KOL — iç katman + kol kılıfı.
+                copyArmFull(srcCtxOf(leftArmSrc), ctxOut, [32,48,armWOf(leftArmSrc),12,4], [32,48,dstArmW,12,4]);
+                copyArmFull(srcCtxOf(leftArmSrc), ctxOut, [48,48,armWOf(leftArmSrc),12,4], [48,48,dstArmW,12,4]);
+
+                // SAĞ BACAK — iç katman + pantolon.
+                copyWholeBox(srcCtxOf(rightLegSrc), ctxOut, [0,16,4,12,4], [0,16,4,12,4]);
+                copyWholeBox(srcCtxOf(rightLegSrc), ctxOut, [0,32,4,12,4], [0,32,4,12,4]);
+
+                // SOL BACAK — iç katman + pantolon.
+                copyWholeBox(srcCtxOf(leftLegSrc), ctxOut, [16,48,4,12,4], [16,48,4,12,4]);
+                copyWholeBox(srcCtxOf(leftLegSrc), ctxOut, [0,48,4,12,4], [0,48,4,12,4]);
+
+                log(`RASTGELE KARIŞIM → Kafa: Skin${headSrc} · Gövde: Skin${torsoSrc} · Sağ Kol: Skin${rightArmSrc} · Sol Kol: Skin${leftArmSrc} · Sağ Bacak: Skin${rightLegSrc} · Sol Bacak: Skin${leftLegSrc}`, 'success');
+            }
+
+            log("[BAŞARILI] NVO MERGER ENGINE v6.3 — birleştirme tamamlandı.", "success");
+            resultReady = true; // KRİTİK: bu satır eksikti, 3D önizleme ve indirme hiç açılmıyordu.
+            btnMerge.disabled = false;
+            btnDownload.disabled = false;
+            btnUseAsSkin1.disabled = false;
+            compareSkin1Btn.disabled = false;
+            compareSkin2Btn.disabled = false;
+            compareResultBtn.disabled = false;
+            setCompareActive('result');
+            progressBarFill.style.width = '100%';
+            progressText.textContent = '100%';
+            resultInfo.removeAttribute('data-i18n');
+            resultInfo.textContent = `Tamamlandı • ${selectedMode.toUpperCase()} • ${model1?.toUpperCase()} + ${model2?.toUpperCase()}`;
+            trackEvent('skin_merge_completed', { mode: selectedMode, model1: model1, model2: model2 });
+
+            // 3D Model Güncelle
+            if (skinViewer) setTextureVisibility(!!firebaseUser);
+        }
+
+        function clearSkin(which) {
+            const ctx = which === 1 ? ctx1 : ctx2;
+            const canvas = which === 1 ? canvas1 : canvas2;
+            ctx.clearRect(0, 0, 64, 64);
+            if (which === 1) {
+                model1 = null;
+                tagSkin1.setAttribute('data-i18n', 'modelPending');
+                tagSkin1.textContent = t('modelPending');
+                tagSkin1.className = "model-tag";
+                const label1El = document.getElementById('label1');
+                label1El.setAttribute('data-i18n', 'uploadPlaceholder');
+                label1El.textContent = t('uploadPlaceholder');
+                meta1.innerHTML = `<span><span class="status-dot"></span> <span data-i18n="pendingLabel">${t('pendingLabel')}</span></span>`;
+                inputSkin1.value = "";
+            } else {
+                model2 = null;
+                tagSkin2.setAttribute('data-i18n', 'modelPending');
+                tagSkin2.textContent = t('modelPending');
+                tagSkin2.className = "model-tag";
+                const label2El = document.getElementById('label2');
+                label2El.setAttribute('data-i18n', 'uploadPlaceholder');
+                label2El.textContent = t('uploadPlaceholder');
+                meta2.innerHTML = `<span><span class="status-dot"></span> <span data-i18n="pendingLabel">${t('pendingLabel')}</span></span>`;
+                inputSkin2.value = "";
+            }
+            btnMerge.disabled = true;
+            btnDownload.disabled = true;
+            btnUseAsSkin1.disabled = true;
+            compareSkin1Btn.disabled = true;
+            compareSkin2Btn.disabled = true;
+            compareResultBtn.disabled = true;
+            resultReady = false;
+            if (skinViewer) skinViewer.loadSkin(blankTextureDataUrl());
+            warningBox.classList.remove('active');
+            log(`Skin ${which} temizlendi.`, "warn");
+        }
+
+        document.getElementById('clear1').addEventListener('click', () => clearSkin(1));
+        document.getElementById('clear2').addEventListener('click', () => clearSkin(2));
+
+        // ===== Öncesi/Sonrası Karşılaştırma (3D önizlemede Skin1 / Skin2 / Sonuç arası geçiş) =====
+        let compareMode = 'result';
+
+        function currentCompareCanvas(){
+            if (compareMode === 'skin1') return canvas1;
+            if (compareMode === 'skin2') return canvas2;
+            return resultCanvas;
+        }
+
+        function setCompareActive(kind){
+            compareMode = kind;
+            [compareSkin1Btn, compareSkin2Btn, compareResultBtn].forEach(b => b.classList.remove('active'));
+            const btnMap = { skin1: compareSkin1Btn, skin2: compareSkin2Btn, result: compareResultBtn };
+            if (btnMap[kind]) btnMap[kind].classList.add('active');
+            if (skinViewer && firebaseUser) {
+                skinViewer.loadSkin(currentCompareCanvas().toDataURL('image/png'));
+            }
+        }
+
+        compareSkin1Btn.addEventListener('click', () => setCompareActive('skin1'));
+        compareSkin2Btn.addEventListener('click', () => setCompareActive('skin2'));
+        compareResultBtn.addEventListener('click', () => setCompareActive('result'));
+
+        // ===== Zincirleme Birleştirme: Sonucu yeni Skin 1 olarak kullan =====
+        btnUseAsSkin1.addEventListener('click', () => {
+            if (!resultReady) return;
+            ctx1.clearRect(0, 0, 64, 64);
+            ctx1.imageSmoothingEnabled = false;
+            ctx1.drawImage(resultCanvas, 0, 0);
+            model1 = detectSkinModel(ctx1);
+            updateModelTag(tagSkin1, model1);
+            const label1El = document.getElementById('label1');
+            label1El.removeAttribute('data-i18n');
+            label1El.textContent = `Önceki sonuç (${selectedMode})`;
+            meta1.innerHTML = '<span><span class="status-dot"></span> 64×64 PNG • birleştirme sonucu</span>';
+            checkModelMismatch();
+            setCompareActive('result');
+            log('Birleştirme sonucu yeni Skin 1 olarak ayarlandı. Yeni bir Skin 2 yükleyip zincirleme birleştirme yapabilirsiniz.', 'success');
+        });
+
+        // ===== Sıfırla: Her şeyi başlangıç durumuna döndür =====
+        btnResetAll.addEventListener('click', () => {
+            clearSkin(1);
+            clearSkin(2);
+            ctxOut.clearRect(0, 0, 64, 64);
+            resultInfo.setAttribute('data-i18n', 'resultDefault');
+            resultInfo.textContent = t('resultDefault');
+            progressWrapper.classList.remove('active');
+            progressBarFill.style.width = '0%';
+            progressText.textContent = '0%';
+            terminal.innerHTML = '';
+            setCompareActive('result');
+            const defaultCard = document.querySelector('.mode-card[data-mode="half"]');
+            if (defaultCard) selectModeCard(defaultCard);
+            log('Her şey sıfırlandı. Yeniden başlayabilirsiniz.', 'warn');
+        });
+
+        uploadBoxes.forEach((box, index) => {
+            const input = box.querySelector('input[type="file"]');
+            box.addEventListener('dragover', e => {
+                e.preventDefault();
+                box.classList.add('drag-over');
+            });
+            box.addEventListener('dragleave', () => box.classList.remove('drag-over'));
+            box.addEventListener('drop', e => {
+                e.preventDefault();
+                box.classList.remove('drag-over');
+                handleFile(e.dataTransfer.files[0],
+                    index === 0 ? ctx1 : ctx2,
+                    index === 0 ? 'label1' : 'label2',
+                    index === 0);
+            });
+        });
+
+        btnMerge.addEventListener('click', async () => { await startAnimatedMerge(); updateGlobalUsage(); });
+
+        btnDownload.addEventListener('click', () => {
+            if (!firebaseUser) {
+                log('İndirme için Google ile giriş yapmalısınız. Texture ve çıktı gizli.', 'warn');
+                return;
+            }
+            if (!resultReady) return;
+            const link = document.createElement('a');
+            link.download = `nvo_${selectedMode}_skin.png`;
+            link.href = resultCanvas.toDataURL('image/png');
+            link.click();
+            log('Skin başarıyla indirildi!', 'success');
+        });
+
+        // 3D Kontroller
+        document.getElementById('animWalk').addEventListener('click', () => {
+            if(skinViewer) skinViewer.animation = new skinview3d.WalkingAnimation();
+        });
+        document.getElementById('animRun').addEventListener('click', () => {
+            if(skinViewer) skinViewer.animation = new skinview3d.RunningAnimation();
+        });
+        document.getElementById('animIdle').addEventListener('click', () => {
+            if(skinViewer) skinViewer.animation = null;
+        });
+
+        let isRotating = true;
+        document.getElementById('toggleRotate').addEventListener('click', () => {
+            if(skinViewer) {
+                isRotating = !isRotating;
+                skinViewer.autoRotate = isRotating;
+            }
+        });
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', e => {
+                if (e.target === modal) modal.classList.remove('active');
+            });
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+        });
+        window.addEventListener('resize', () => {
+            if (skinViewer) skinViewer.resize(document.getElementById('skin_3d_canvas').clientWidth, 260);
+        });
+        window.addEventListener('DOMContentLoaded', () => {
+            init3DViewer();
+        });
+    </script>
+</body>
+</html>
