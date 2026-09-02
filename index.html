@@ -1795,6 +1795,13 @@
             t.imageSmoothingEnabled = false;
             t.putImageData(srcCtx.getImageData(sx, sy, sw, sh), 0, 0);
             dstCtx.imageSmoothingEnabled = false;
+            // KRİTİK DÜZELTME: drawImage varsayılan "source-over" harmanlama kullanır —
+            // kaynak piksel şeffafsa hedefi SİLMEZ, olduğu gibi bırakır. Bu yüzden Skin 2'nin
+            // boş/şeffaf olduğu her yerde (çoğu skin dış katmanı tam kullanmaz) Skin 1'in eski
+            // pikselleri (siyah bileklik, çizgiler vb.) yanlışlıkla sonuçta kalıyordu. Önce
+            // hedef dikdörtgeni tamamen temizleyip SONRA çizerek gerçek bir "değiştirme"
+            // (silme + yapıştırma) sağlanıyor, sadece "üzerine ekleme" değil.
+            dstCtx.clearRect(dx, dy, dw, dh);
             dstCtx.drawImage(tmp, 0, 0, sw, sh, dx, dy, dw, dh);
         }
 
