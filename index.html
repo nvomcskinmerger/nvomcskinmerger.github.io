@@ -94,32 +94,36 @@
             box-shadow: 0 0 20px rgba(255, 0, 127, 0.35);
         }
 
-        .github-link {
+        .header-links {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 10px 0 4px;
+        }
+        .icon-link {
             display: inline-flex;
             align-items: center;
-            gap: 7px;
-            margin-left: 10px;
-            margin-bottom: 12px;
-            padding: 5px 16px;
-            border-radius: 30px;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
             background: rgba(255,255,255,0.06);
             border: 1px solid var(--card-border);
             color: var(--text-main);
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 700;
-            letter-spacing: 0.5px;
             text-decoration: none;
             cursor: pointer;
             transition: var(--transition);
         }
-        .github-link i { font-size: 0.95rem; }
-        .github-link:hover {
+        .icon-link i { font-size: 0.9rem; }
+        .icon-link:hover {
             border-color: var(--accent-cyan);
             background: rgba(0,242,254,.08);
             transform: translateY(-1px);
         }
-        .github-link:active {
-            transform: scale(0.96);
+        .icon-link:active {
+            transform: scale(0.92);
             filter: brightness(0.92);
         }
 
@@ -613,6 +617,31 @@
             font-weight:600; transition:var(--transition);
         }
         .utility-btn:hover { border-color:var(--accent-cyan); background:rgba(0,242,254,.08); }
+        /* İkincil/ileri düzey özellikler (zincirleme birleştirme, karşılaştırma) varsayılan
+           kapalı bir <details> içine alınarak arayüz sade tutulur; isteyen açar. */
+        .advanced-section {
+            margin-top: 10px;
+            width: 100%;
+        }
+        .advanced-section summary {
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            padding: 6px 2px;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .advanced-section summary::before {
+            content: '▸';
+            display: inline-block;
+            transition: transform 0.2s;
+            font-size: 0.7rem;
+        }
+        .advanced-section[open] summary::before { transform: rotate(90deg); }
+        .advanced-section summary::-webkit-details-marker { display: none; }
         .mode-card:focus-visible,.btn:focus-visible,.utility-btn:focus-visible,.three-controls button:focus-visible {
             outline:2px solid var(--accent-cyan); outline-offset:2px;
         }
@@ -633,14 +662,16 @@
             /* Header'daki GitHub/Threads/Dil butonları mobilde yan yana sıkışıp
                satır satır taşarak sayfayı gereksiz uzatıyordu; ikon-only + daha
                küçük boşluklarla tek satıra sığdırılır. */
-            .github-link{padding:5px 10px;font-size:0.68rem;gap:5px;margin-left:4px;margin-right:4px}
-            .github-link i{font-size:0.85rem}
+            /* Sade header ikon-linkleri zaten kompakt; mobilde ek küçültme gerekmiyor. */
             /* Footer'daki 6 buton da aynı sebeple daraltılır. */
             .footer-link-btn{padding:6px 10px;font-size:0.7rem}
             /* İkinci three-controls satırı (karşılaştırma butonları) dar ekranda
                taşmasın diye satır kırılmasına izin verilir. */
-            .three-controls{flex-wrap:wrap}
-            .three-controls button{flex:1 1 30%;}
+            /* NOT: .three-controls'a flex-wrap eklemek 4 butonluk (Yürü/Koş/Dur/Dön)
+               satırı bozuyordu (4. buton yalnız kalıp tuhaf duruyordu). Orijinal
+               tek-satır flex:1 davranışı korunuyor; sadece font/padding küçültülerek
+               dar ekranda sıkışma önleniyor. */
+            .three-controls button{font-size:0.7rem;padding:8px 2px;}
         }
 
 
@@ -679,18 +710,15 @@
 <body>
 
     <header class="animate-fade">
-        <span class="brand-badge"><i class="fa-solid fa-sparkles"></i> NVO TEAM • NEXT-GEN STUDIO</span>
-        <a class="github-link" href="https://github.com/nvomcskinmerger/nvomcskinmerger.github.io" target="_blank" rel="noopener noreferrer" title="GitHub deposunu görüntüle" aria-label="GitHub deposunu görüntüle">
-            <i class="fa-brands fa-github"></i> GitHub
-        </a>
-        <a class="github-link threads-link" href="https://www.threads.com/@necronvoo" target="_blank" rel="noopener noreferrer" title="Geliştiricinin Threads hesabı" aria-label="Geliştiricinin Threads hesabı">
-            <i class="fa-brands fa-threads"></i> Threads
-        </a>
-        <button class="github-link" id="langToggle" type="button" title="Switch language / Dili değiştir" aria-label="Switch language">
-            <i class="fa-solid fa-language"></i> <span id="langToggleLabel">EN</span>
-        </button>
         <h1 data-i18n="title">NVO MC SKIN MERGER v6.3</h1>
         <p class="subtitle" data-i18n="subtitle">Gelişmiş UV koordinat motoru ile Minecraft skinlerinizi kusursuz biçimde harmanlayın.</p>
+        <div class="header-links">
+            <a class="icon-link" href="https://github.com/nvomcskinmerger/nvomcskinmerger.github.io" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+            <a class="icon-link" href="https://www.threads.com/@necronvoo" target="_blank" rel="noopener noreferrer" title="Threads" aria-label="Threads"><i class="fa-brands fa-threads"></i></a>
+            <button class="icon-link" id="langToggle" type="button" title="Switch language / Dili değiştir" aria-label="Switch language">
+                <span id="langToggleLabel">EN</span>
+            </button>
+        </div>
         <div class="usage-counter" aria-live="polite" title="Firebase üzerindeki toplam birleştirme kullanımı">
             <i class="fa-solid fa-users"></i>
             <span>Toplam kullanım:</span>
@@ -843,20 +871,23 @@
                     <div class="result-info" id="resultInfo" data-i18n="resultDefault">Birleştirme sonucu burada görünecek.</div>
                     <div class="btn-group" style="width: 100%;">
                         <button id="btnMerge" class="btn btn-primary" disabled>
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="mergeBtn">BİRLEŞTİR (10s)</span>
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="mergeBtn">BİRLEŞTİR</span>
                         </button>
                         <button id="btnDownload" class="btn btn-download" disabled>
                             <i class="fa-solid fa-download"></i> <span data-i18n="downloadBtn">İNDİR</span>
                         </button>
                     </div>
                     <div class="utility-row" style="width:100%;">
-                        <button id="btnUseAsSkin1" class="utility-btn" disabled title="Birleştirme sonucunu yeni Skin 1 olarak yükleyip zincirleme birleştirme yapın">
-                            <i class="fa-solid fa-link"></i> <span data-i18n="useAsSkin1Btn">Sonucu Skin 1 Yap</span>
-                        </button>
                         <button id="btnResetAll" class="utility-btn" type="button" title="Her şeyi baştan başlat">
                             <i class="fa-solid fa-rotate-left"></i> <span data-i18n="resetBtn">Sıfırla</span>
                         </button>
                     </div>
+                    <details class="advanced-section">
+                        <summary data-i18n="advancedToggle">Gelişmiş</summary>
+                        <button id="btnUseAsSkin1" class="utility-btn" disabled style="width:100%;margin-top:8px;" title="Birleştirme sonucunu yeni Skin 1 olarak yükleyip zincirleme birleştirme yapın">
+                            <i class="fa-solid fa-link"></i> <span data-i18n="useAsSkin1Btn">Sonucu Skin 1 Yap</span>
+                        </button>
+                    </details>
                 </div>
 
                 <!-- 3D Canvas -->
@@ -869,11 +900,14 @@
                         <button id="animIdle"><i class="fa-solid fa-pause"></i> <span data-i18n="animIdleBtn">Dur</span></button>
                         <button id="toggleRotate"><i class="fa-solid fa-rotate"></i> <span data-i18n="animRotateBtn">Dön</span></button>
                     </div>
-                    <div class="three-controls" style="margin-top:6px;">
-                        <button id="compareSkin1" disabled title="3D modelde Skin 1'i (orijinal) göster"><i class="fa-solid fa-eye"></i> Skin 1</button>
-                        <button id="compareSkin2" disabled title="3D modelde Skin 2'yi (orijinal) göster"><i class="fa-solid fa-eye"></i> Skin 2</button>
-                        <button id="compareResult" disabled title="3D modelde birleştirme sonucunu göster"><i class="fa-solid fa-eye"></i> <span data-i18n="compareResultBtn">Sonuç</span></button>
-                    </div>
+                    <details class="advanced-section">
+                        <summary data-i18n="advancedToggle">Gelişmiş</summary>
+                        <div class="three-controls" style="margin-top:8px;">
+                            <button id="compareSkin1" disabled title="3D modelde Skin 1'i (orijinal) göster"><i class="fa-solid fa-eye"></i> Skin 1</button>
+                            <button id="compareSkin2" disabled title="3D modelde Skin 2'yi (orijinal) göster"><i class="fa-solid fa-eye"></i> Skin 2</button>
+                            <button id="compareResult" disabled title="3D modelde birleştirme sonucunu göster"><i class="fa-solid fa-eye"></i> <span data-i18n="compareResultBtn">Sonuç</span></button>
+                        </div>
+                    </details>
                 </div>
             </div>
         </div>
@@ -1045,10 +1079,11 @@
                 mode_chimera_desc: 'Kafa, gövde, kollar ve bacaklar için her parça rastgele Skin 1 veya Skin 2\'den seçilir.',
                 uvOutputTitle: '64x64 UV Harita Çıktısı',
                 resultDefault: 'Birleştirme sonucu burada görünecek.',
-                mergeBtn: 'BİRLEŞTİR (10s)',
+                mergeBtn: 'BİRLEŞTİR',
                 downloadBtn: 'İNDİR',
                 useAsSkin1Btn: 'Sonucu Skin 1 Yap',
                 resetBtn: 'Sıfırla',
+                advancedToggle: 'Gelişmiş',
                 textureLockMsg: '3D skin texture için Google ile giriş yapın. Model/animasyon yine kullanılabilir.',
                 animWalkBtn: 'Yürü',
                 animRunBtn: 'Koş',
@@ -1110,10 +1145,11 @@
                 mode_chimera_desc: 'Head, body, arms and legs are each randomly picked from Skin 1 or Skin 2.',
                 uvOutputTitle: '64x64 UV Map Output',
                 resultDefault: 'Your merged result will appear here.',
-                mergeBtn: 'MERGE (10s)',
+                mergeBtn: 'MERGE',
                 downloadBtn: 'DOWNLOAD',
                 useAsSkin1Btn: 'Use Result as Skin 1',
                 resetBtn: 'Reset',
+                advancedToggle: 'Advanced',
                 textureLockMsg: 'Sign in with Google to view the 3D skin texture. The model/animation still works without it.',
                 animWalkBtn: 'Walk',
                 animRunBtn: 'Run',
@@ -1563,9 +1599,7 @@
 
         function detectSkinModel(ctx) {
             // Minecraft 64x64 model detection. The arm width is the reliable discriminator:
-            // Steve = 4px arm, Alex = 3px arm. We inspect the canonical right-arm front
-            // face and its unused 4th column. Unlike the previous detector, this does NOT
-            // sample x=54, which belongs to the back-face area and can be opaque on Alex skins.
+            // Steve = 4px arm, Alex = 3px arm.
             const p = ctx.getImageData(0, 0, 64, 64).data;
             const alpha = (x, y) => p[(y * 64 + x) * 4 + 3];
             const countOpaque = (x0, x1, y0, y1) => {
@@ -1575,20 +1609,18 @@
                 return n;
             };
 
-            // Right-arm front face starts at x=44 for Steve and x=43 for Alex.
-            // Compare the two possible 4th-column strips. Alex's x=47 strip is unused;
-            // Steve's x=47 is part of the 4px front face and is normally opaque.
-            const x47 = countOpaque(47, 48, 20, 32);
-            const x46 = countOpaque(46, 47, 20, 32);
-            const x43 = countOpaque(43, 44, 20, 32);
-            const x44 = countOpaque(44, 45, 20, 32);
+            // En güvenilir ayraç: sağ kolun UV kutusunun kuyruğu (x=54-55, y=20-32).
+            // 4px (Steve) kolda bu, "back" yüzünün gerçek/boyanabilir son sütunlarıdır.
+            // 3px (Alex) kolda ise bu UV konumunun HİÇBİR geçerli 3D yüzey karşılığı
+            // yoktur — hangi araçla üretilirse üretilsin bu bölge her zaman şeffaf kalır.
+            // (Önceki sürüm x=47 sütununu kontrol ediyordu, ama x=47 aslında "right"
+            // yüzünün BAŞLANGICIDIR ve dolu Alex derilerinde de boyalı olabilir —
+            // bu yüzden bazı Alex skinlerini yanlışlıkla Steve olarak algılıyordu.)
+            const baseTail = countOpaque(54, 56, 20, 32);   // temel katman kuyruğu (maks 24px)
+            const sleeveTail = countOpaque(54, 56, 36, 48); // dış katman (kol kılıfı) kuyruğu
 
-            // Prefer the canonical unused-column signal, but tolerate transparent custom skins.
-            if (x47 <= 2 && x46 > 2 && x43 > 2) return 'alex';
-            if (x47 > 2) return 'steve';
-
-            // Fallback: Alex front begins one pixel earlier (x43).
-            return (x43 > x44 * 0.25) ? 'alex' : 'steve';
+            if (baseTail > 2 || sleeveTail > 2) return 'steve';
+            return 'alex';
         }
 
         function updateModelTag(tagEl, model) {
@@ -1648,13 +1680,20 @@
                     lctx.imageSmoothingEnabled = false;
                     lctx.drawImage(img, 0, 0, 64, 32); // Üst yarı: kafa + gövde + sağ kol/bacak base
                     // Sol kol base'ini sağ kol base'inden yatay ayna ile türet.
+                    // Kaynak: sağ kol base UV'si (40,16,8,12). Hedef: sol kol base UV'si (32,48,8,12).
+                    // NOT: Önceki sürümdeki translate(32+48,16) değerleri tamamen hatalıydı
+                    // (hedef dikdörtgenin sağ kenarına değil, ekran dışına gidiyordu) —
+                    // sonuç %100 şeffaf/boş çıkıyordu. Doğru değer: translate(dx+dw, dy).
                     lctx.save();
-                    lctx.translate(32 + 48, 16); lctx.scale(-1, 1);
+                    lctx.translate(32 + 8, 48);
+                    lctx.scale(-1, 1);
                     lctx.drawImage(legacyCanvas, 40, 16, 8, 12, 0, 0, 8, 12);
                     lctx.restore();
                     // Sol bacak base'ini sağ bacak base'inden yatay ayna ile türet.
+                    // Kaynak: sağ bacak base UV'si (0,16,8,12). Hedef: sol bacak base UV'si (16,48,8,12).
                     lctx.save();
-                    lctx.translate(16 + 32, 48); lctx.scale(-1, 1);
+                    lctx.translate(16 + 8, 48);
+                    lctx.scale(-1, 1);
                     lctx.drawImage(legacyCanvas, 0, 16, 8, 12, 0, 0, 8, 12);
                     lctx.restore();
                     log(`${file.name}: eski 64x32 skin formatı algılandı, 64x64'e otomatik dönüştürüldü (dış katmanlar boş).`, "warn");
@@ -1722,40 +1761,15 @@
             btnMerge.disabled = true;
             btnDownload.disabled = true;
             progressWrapper.classList.add('active');
-            progressBarFill.style.width = '0%';
+            progressBarFill.style.width = '100%';
+            progressText.textContent = '100%';
 
-            log(`10s İşlem Başlatıldı - Seçilen Mod: [${selectedMode.toUpperCase()}]`, "info");
+            log(`İşlem başlatıldı - Seçilen Mod: [${selectedMode.toUpperCase()}]`, "info");
 
-            const totalDuration = 6000;
-            const startTime = Date.now();
-
-            const steps = [
-                { time: 900, msg: "[%15] 64x64 UV Haritası Taranıyor...", logType: "normal" },
-                { time: 2100, msg: "[%35] Gövde ve Kol UV Merkezleri Hizalanıyor...", logType: "normal" },
-                { time: 3600, msg: `[%60] ${selectedMode.toUpperCase()} Algoritması Uygulanıyor...`, logType: "normal" },
-                { time: 5100, msg: "[%85] Katman Geçişleri ve Model UV Farkları Derleniyor...", logType: "normal" },
-                { time: 5880, msg: "[%98] Render Matrisi Tamamlandı!", logType: "success" }
-            ];
-
-            let stepIndex = 0;
-
-            const timer = setInterval(() => {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(100, Math.floor((elapsed / totalDuration) * 100));
-
-                progressBarFill.style.width = `${progress}%`;
-                progressText.textContent = `${progress}%`;
-
-                if (stepIndex < steps.length && elapsed >= steps[stepIndex].time) {
-                    log(steps[stepIndex].msg, steps[stepIndex].logType);
-                    stepIndex++;
-                }
-
-                if (elapsed >= totalDuration) {
-                    clearInterval(timer);
-                    executeMergeLogic();
-                }
-            }, 50);
+            // NOT: Önceki sürümde burada gerçek bir işlem yapmayan, sadece bekleten
+            // sahte 6 saniyelik bir "10s" ilerleme animasyonu vardı. Kullanıcı isteği
+            // üzerine kaldırıldı — birleştirme artık gecikmeden anında çalışıyor.
+            executeMergeLogic();
         }
 
         // ===== NVO v6.1: GERÇEK skinview3d UV GEOMETRİSİ =====
