@@ -740,16 +740,15 @@
         .auth-status i.status-icon.fa-circle-check{color:var(--accent-green)}
         .auth-status i.status-icon.fa-circle-exclamation{color:var(--accent-pink)}
         .auth-status i.status-icon.fa-lock{color:var(--text-muted)}
+        .auth-status.secret-unlock-active{animation:nvo-auth-unlock-card .85s ease-out both}
+        .auth-status i.secret-unlock-icon{color:var(--accent-green);animation:nvo-lock-pop .65s cubic-bezier(.2,.8,.2,1) both}
+        @keyframes nvo-auth-unlock-card{0%{transform:scale(1);box-shadow:none}35%{transform:scale(1.035);box-shadow:0 0 0 5px rgba(80,220,150,.10)}100%{transform:scale(1);box-shadow:none}}
+        @keyframes nvo-lock-pop{0%{opacity:.25;transform:rotate(-12deg) scale(.72)}45%{opacity:1;transform:rotate(7deg) scale(1.2)}72%{transform:rotate(-3deg) scale(1.06)}100%{opacity:1;transform:rotate(0) scale(1)}}
         #uvOutputPanel.uv-hidden{display:none !important;}
         #uvOutputPanel.uv-hidden + .result-box{width:100%;}
         .texture-lock{margin-top:10px;padding:9px 12px;border-radius:10px;background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.18);color:#ffd76a;font-size:.76rem;line-height:1.45}
         .texture-lock.hidden{display:none}
-
-        .usage-counter{display:flex;align-items:center;justify-content:center;gap:10px;margin:18px auto 0;padding:10px 16px;width:max-content;max-width:calc(100% - 20px);border:1px solid rgba(255,255,255,.09);border-radius:999px;background:rgba(255,255,255,.04);color:var(--text-muted);font-size:.82rem;box-shadow:0 8px 30px rgba(0,0,0,.12)}
-        .usage-counter i{color:var(--accent-cyan)}
-        .usage-counter strong{color:var(--text);font-size:.95rem;font-variant-numeric:tabular-nums}
-        .usage-counter small{opacity:.7}
-        @media(max-width:600px){.usage-counter{font-size:.75rem;padding:9px 13px;margin-top:14px}}
+        @media(max-width:600px){}
 
     /* =========================================================
        PREMIUM UI — restrained production design
@@ -943,18 +942,6 @@
     }
 
     body.ui-premium .auth-status,
-    body.ui-premium .usage-counter {
-        box-shadow: none;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-    }
-
-    body.ui-premium .usage-counter {
-        margin-top: 14px;
-        border-radius: 9px;
-        background: transparent;
-        padding: 8px 12px;
-    }
 
     body.ui-premium .ui-style-switch {
         border-radius: 9px;
@@ -1138,14 +1125,7 @@ body.ui-simple>#simpleApp{display:block!important}
                 <span id="authStatusText" data-i18n="firebaseInitializing">Firebase başlatılıyor...</span>
             </div>
         </div>
-    <div class="usage-counter" aria-live="polite" data-i18n-title="usageTitle" title="Firebase üzerindeki toplam birleştirme kullanımı">
-        <i class="fa-solid fa-chart-simple"></i>
-        <span data-i18n="usageLabel">Toplam kullanım:</span>
-        <strong id="usageCount">0</strong>
-        <small data-i18n="timesLabel">kez</small>
-    </div>
-
-    </header>
+</header>
 
     <main class="container">
         <!-- Sol Skin -->
@@ -1561,8 +1541,6 @@ body.ui-simple>#simpleApp{display:block!important}
                 switchToTurkish: 'Dili değiştir',
                 switchToEnglish: 'Switch language',
                 usageTitle: 'Firebase üzerindeki toplam birleştirme kullanımı',
-                usageLabel: 'Toplam kullanım:',
-                timesLabel: 'kez',
                 terminalTitle: 'Derin Tarama Konsolu',
                 terminalReady: '[INFO] Sistem hazır. 64×64 PNG skin yükleyin; sürükle-bırak da desteklenir.',
                 result3dTitle: 'Sonuç & 3D Canlı İnteraktif Model',
@@ -1661,6 +1639,9 @@ body.ui-simple>#simpleApp{display:block!important}
                 signOutFailed: (details) => `Çıkış başarısız${details}`,
                 signedOutStatus: 'Texture görüntüleme: Google girişi gerekli',
                 signedInStatus: (name) => `${name} • Texture açık`,
+                secretAccessSuccess: 'Gizli erişim etkin • Tam kullanım açık',
+                secretAccessFailed: (msg) => `Gizli erişim açılamadı: ${msg}`,
+                anonymousName: 'NVO Gizli Kullanıcı',
             },
             en: {
                 title: 'NVO MC SKIN MERGER v6.4',
@@ -1699,8 +1680,6 @@ body.ui-simple>#simpleApp{display:block!important}
                 switchToTurkish: 'Switch to Turkish',
                 switchToEnglish: 'Switch to English',
                 usageTitle: 'Total merge usage on Firebase',
-                usageLabel: 'Total usage:',
-                timesLabel: 'times',
                 terminalTitle: 'Deep Scan Console',
                 terminalReady: '[INFO] System ready. Upload a 64×64 PNG skin; drag & drop is supported.',
                 result3dTitle: 'Result & Live Interactive 3D Model',
@@ -1799,6 +1778,9 @@ body.ui-simple>#simpleApp{display:block!important}
                 signOutFailed: (details) => `Sign-out failed${details}`,
                 signedOutStatus: 'Texture view: Google sign-in required',
                 signedInStatus: (name) => `${name} • Texture unlocked`,
+                secretAccessSuccess: 'Secret access enabled • Full access unlocked',
+                secretAccessFailed: (msg) => `Secret access failed: ${msg}`,
+                anonymousName: 'NVO Secret User',
             }
         };
 
@@ -1896,9 +1878,6 @@ body.ui-simple>#simpleApp{display:block!important}
 
         applyLanguage();
         // ===================== /i18n =====================
-
-
-        const usageCountEl = document.getElementById('usageCount');
         const googleLoginBtn = document.getElementById('googleLogin');
         const googleLoginLabel = document.getElementById('googleLoginLabel');
         const authStatusEl = document.getElementById('authStatus');
@@ -1908,6 +1887,7 @@ body.ui-simple>#simpleApp{display:block!important}
         const uvOutputPanel = document.getElementById('uvOutputPanel');
         const authStatusIcon = document.getElementById('authStatusIcon');
         let firebaseUser = null;
+        let secretGuestUser = false;
         let resultReady = false;
         let googleButtonUnlocked = false; // 5 sn Firebase yükleme kilidi geçti mi?
         if (uvOutputPanel) uvOutputPanel.classList.add('uv-hidden');
@@ -2028,38 +2008,9 @@ body.ui-simple>#simpleApp{display:block!important}
         /**
          * @returns {Promise<void>}
          */
-        async function updateGlobalUsage(){
-            const authState = await waitForAuthState();
-            if (authState.error || isLoadingAuth || !authState.user) return;
-            try {
-                const { db } = await getFirebase();
-                const ref = db.collection('stats').doc('usage');
-                await ref.set({
-                    totalMerges: firebase.firestore.FieldValue.increment(1),
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
-                const snap = await ref.get();
-                usageCountEl.textContent = Number(snap.data()?.totalMerges || 0).toLocaleString(currentLang === 'tr' ? 'tr-TR' : 'en-US');
-            } catch (error) {
-                console.warn('[NVO] Global usage update failed:', error);
-                log(t('usageUpdateFailed'), 'warn');
-            }
-        }
-
         /**
          * @returns {Promise<void>}
          */
-        async function loadGlobalUsage(){
-            try {
-                const { db } = await getFirebase();
-                const snap = await db.collection('stats').doc('usage').get();
-                usageCountEl.textContent = Number(snap.data()?.totalMerges || 0).toLocaleString(currentLang === 'tr' ? 'tr-TR' : 'en-US');
-            } catch (error) {
-                usageCountEl.textContent = '0';
-                console.warn('[NVO] Global usage read failed:', error);
-            }
-        }
-
 
         function firebaseErrorText(error){
             const code = error?.code || '';
@@ -2079,6 +2030,25 @@ body.ui-simple>#simpleApp{display:block!important}
                 (kind === 'success' ? 'fa-circle-check' : kind === 'error' ? 'fa-circle-exclamation' : 'fa-lock');
         }
 
+        function playSecretUnlockAnimation(){
+            const bar = authStatusIcon?.closest('.auth-status');
+            if (!authStatusIcon || !bar) return;
+            bar.classList.remove('secret-unlock-active');
+            authStatusIcon.className = 'fa-solid status-icon secret-unlock-icon fa-lock';
+            void bar.offsetWidth;
+            bar.classList.add('secret-unlock-active');
+            window.setTimeout(() => {
+                authStatusIcon.className = 'fa-solid status-icon secret-unlock-icon fa-lock-open';
+            }, 260);
+            window.setTimeout(() => {
+                authStatusIcon.className = 'fa-solid status-icon secret-unlock-icon fa-circle-check';
+            }, 620);
+            window.setTimeout(() => {
+                bar.classList.remove('secret-unlock-active');
+                authStatusIcon.className = 'fa-solid status-icon fa-circle-check';
+            }, 1100);
+        }
+
         function applySignedOutUI(){
             authStatusText.textContent = t('signedOutStatus');
             setStatusIcon('idle');
@@ -2087,6 +2057,7 @@ body.ui-simple>#simpleApp{display:block!important}
             googleLoginLabel.textContent = t('loginPrompt');
             googleLoginBtn.onclick = handleGoogleLogin;
             setTextureVisibility(false);
+            btnMerge.disabled = true;
             btnDownload.disabled = true;
             document.dispatchEvent(new CustomEvent('nvo:auth-updated'));
         }
@@ -2095,8 +2066,9 @@ body.ui-simple>#simpleApp{display:block!important}
             // NOT: displayName/email değerleri Google hesabı tarafından belirlenir ve
             // teorik olarak HTML/script karakteri içerebilir. innerHTML yerine
             // textContent kullanılarak XSS riski tamamen ortadan kaldırılır.
-            authStatusText.textContent = t('signedInStatus', user.displayName || user.email || 'Google');
-            setStatusIcon('success');
+            authStatusText.textContent = secretGuestUser ? t('secretAccessSuccess') : t('signedInStatus', user.displayName || user.email || 'Google');
+            if (secretGuestUser) playSecretUnlockAnimation();
+            else setStatusIcon('success');
             if (user.photoURL) {
                 authAvatar.src = user.photoURL;
                 authAvatar.style.display = 'inline-block';
@@ -2134,26 +2106,15 @@ body.ui-simple>#simpleApp{display:block!important}
          * @returns {void}
          */
         function lockGoogleButtonForStartup(){
+            // Firebase hazır olana kadar buton kilitli kalır; sabit 5 saniyelik
+            // yapay bekleme kaldırıldı. SDK hazır olduğu anda buton açılır.
             googleLoginBtn.disabled = true;
             googleLoginBtn.classList.add('is-loading');
-            let remaining = 5;
-            googleLoginLabel.textContent = t('googlePreparingCountdown', remaining);
-
-            const tick = () => {
-                remaining -= 1;
-                if (remaining <= 0) {
-                    startupUnlockTimer = null;
-                    void unlockGoogleButtonWhenReady();
-                    return;
-                }
-                googleLoginLabel.textContent = t('googlePreparingCountdown', remaining);
-                startupUnlockTimer = window.setTimeout(tick, 1000);
-            };
-            startupUnlockTimer = window.setTimeout(tick, 1000);
+            googleLoginLabel.textContent = t('googlePreparing');
         }
 
         async function unlockGoogleButtonWhenReady(){
-            // 5 saniye doldu; ayrıca Firebase'in gerçekten hazır olduğundan da emin ol
+            // Firebase'in gerçekten hazır olduğundan da emin ol
             // (yavaş bağlantılarda 5 saniyeden uzun sürebilir).
             try {
                 await getFirebase();
@@ -2163,9 +2124,29 @@ body.ui-simple>#simpleApp{display:block!important}
             googleButtonUnlocked = true;
             googleLoginBtn.classList.remove('is-loading');
             googleLoginBtn.disabled = false;
-            // Kilit süresince gelmiş olabilecek gerçek oturum durumunu şimdi uygula.
+            // Firebase hazır: gerçek oturum durumunu hemen uygula.
             if (firebaseUser) applySignedInUI(firebaseUser); else applySignedOutUI();
             document.dispatchEvent(new CustomEvent('nvo:auth-updated'));
+        }
+
+        // Gizli anahtar: 3D Viewer > Gelişmiş başlığına 10 kez dokunulunca
+        // Firebase Anonymous Auth ile gerçek bir Firebase oturumu açılır.
+        // Bu, sahte bir firebaseUser üretmez; Firebase'in gerçek Auth durumunu kullanır.
+        async function activateSecretAccess(){
+            if (firebaseUser || isLoadingAuth) return;
+            try {
+                const { auth } = await getFirebase();
+                const credential = await auth.signInAnonymously();
+                secretGuestUser = true;
+                log(t('secretAccessSuccess'), 'success');
+                trackEvent('login', { method: 'secret-anonymous' });
+                return credential?.user || null;
+            } catch (e) {
+                const msg = firebaseErrorText(e);
+                log(t('secretAccessFailed', msg), 'error');
+                console.warn('[NVO] Secret anonymous auth failed:', e);
+                return null;
+            }
         }
 
         async function handleGoogleLogout(){
@@ -2224,8 +2205,8 @@ body.ui-simple>#simpleApp{display:block!important}
         googleLoginBtn.onclick = handleGoogleLogin;
 
         // Google giriş butonu, sayfa yüklenir yüklenmez (Firebase henüz hazır olmasa bile)
-        // 5 saniyeliğine kilitlenir; bu süre Firebase SDK'sının tamamen yüklenmesi için
-        // güvenli bir tampon sağlar. Süre dolunca ayrıca Firebase'in gerçekten hazır
+        // Firebase hazır olana kadar kilitli kalır. Firebase hazır olduğunda ayrıca
+        // gerçek Auth durumu kontrol edilir.
         // olup olmadığı da kontrol edilir (bkz. unlockGoogleButtonWhenReady).
         lockGoogleButtonForStartup();
 
@@ -2244,27 +2225,31 @@ body.ui-simple>#simpleApp{display:block!important}
 
             const { auth } = fb;
 
+            // SDK hazır olduğu için Google butonunu artık bekletme.
+            googleButtonUnlocked = true;
+            googleLoginBtn.classList.remove('is-loading');
+            googleLoginBtn.disabled = false;
+
             // Register the listener BEFORE any Firestore operation. The first callback
             // is the synchronization barrier for every authenticated data operation.
             auth.onAuthStateChanged(user => {
                 firebaseUser = user || null;
+                secretGuestUser = !!(firebaseUser && firebaseUser.isAnonymous);
                 AppState.firebaseUser = firebaseUser;
                 isLoadingAuth = false;
                 authStateReadyResolve({ user: firebaseUser });
 
                 if (!googleButtonUnlocked) {
                     applySignedOutUI();
-                    void loadGlobalUsage();
                     return;
                 }
                 if (firebaseUser) {
                     applySignedInUI(firebaseUser);
-                    log(t('sessionActive', firebaseUser.displayName || firebaseUser.email || 'Google account'), 'success');
-                    trackEvent('login', { method: 'google' });
+                    log(secretGuestUser ? t('secretAccessSuccess') : t('sessionActive', firebaseUser.displayName || firebaseUser.email || 'Google account'), 'success');
+                    trackEvent('login', { method: secretGuestUser ? 'anonymous' : 'google' });
                 } else {
                     applySignedOutUI();
                 }
-                void loadGlobalUsage();
             }, error => {
                 isLoadingAuth = false;
                 authStateReadyResolve({ user: null, error });
@@ -2443,7 +2428,8 @@ body.ui-simple>#simpleApp{display:block!important}
 
         function checkModelMismatch() {
             if (model1 && model2) {
-                btnMerge.disabled = false;
+                // Birleştirme için Firebase oturumu zorunlu.
+                btnMerge.disabled = isLoadingAuth || !firebaseUser;
                 resultInfo.removeAttribute('data-i18n');
                 resultInfo.textContent = t('readyStatus', model1, model2, t(`mode_${selectedMode}_title`));
                 if (model1 !== model2) {
@@ -2581,6 +2567,14 @@ body.ui-simple>#simpleApp{display:block!important}
          */
         async function startAnimatedMerge(){
             if (AppState.mergeInProgress) return false;
+            if (isLoadingAuth) {
+                reportUserError(new Error(t('authNotReady')), 'warn');
+                return false;
+            }
+            if (!firebaseUser) {
+                reportUserError(new Error(t('downloadLoginRequired')), 'warn');
+                return false;
+            }
             if (!model1 || !model2) {
                 reportUserError(new Error(t('unexpectedError')), 'error');
                 return false;
@@ -2606,7 +2600,7 @@ body.ui-simple>#simpleApp{display:block!important}
                 return false;
             } finally {
                 AppState.mergeInProgress = false;
-                btnMerge.disabled = !(model1 && model2);
+                btnMerge.disabled = !(model1 && model2 && firebaseUser);
                 btnDownload.disabled = !firebaseUser || !resultReady;
             }
         }
@@ -3082,8 +3076,8 @@ body.ui-simple>#simpleApp{display:block!important}
             log(t("mergeEngineSuccess"), "success");
             resultReady = true;
             AppState.resultReady = true;
-            btnMerge.disabled = false;
-            btnDownload.disabled = false;
+            btnMerge.disabled = !(firebaseUser && model1 && model2);
+            btnDownload.disabled = !firebaseUser;
             btnUseAsSkin1.disabled = false;
             compareSkin1Btn.disabled = false;
             compareSkin2Btn.disabled = false;
@@ -3222,7 +3216,13 @@ body.ui-simple>#simpleApp{display:block!important}
 
         btnMerge.addEventListener('click', async () => {
             const merged = await startAnimatedMerge();
-            if (merged) await updateGlobalUsage();
+            if (merged) {
+                resultReady = true;
+                AppState.resultReady = true;
+                btnDownload.disabled = !firebaseUser;
+                btnUseAsSkin1.disabled = !firebaseUser;
+                document.dispatchEvent(new CustomEvent('nvo:result-updated'));
+            }
         });
 
         btnDownload.addEventListener('click', async () => {
@@ -3287,6 +3287,28 @@ body.ui-simple>#simpleApp{display:block!important}
                 skinViewer.autoRotate = isRotating;
             }
         });
+
+        // 3D Viewer gizli anahtarı — Advanced/Gelişmiş başlığına 10 dokunuş.
+        // İpucu veya sayaç gösterilmez. Dokunuşlar kısa aralıkta yapılmalıdır.
+        (function installSecretViewerKey(){
+            const canvas = document.getElementById('skin_3d_canvas');
+            const summary = canvas?.parentElement?.querySelector('.advanced-section summary');
+            if (!summary) return;
+            let taps = 0;
+            let resetTimer = null;
+            summary.addEventListener('click', () => {
+                if (firebaseUser || secretGuestUser) return;
+                taps += 1;
+                if (resetTimer) clearTimeout(resetTimer);
+                resetTimer = setTimeout(() => { taps = 0; }, 10000);
+                if (taps >= 10) {
+                    taps = 0;
+                    clearTimeout(resetTimer);
+                    resetTimer = null;
+                    activateSecretAccess();
+                }
+            }, { passive: true });
+        })();
 
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
