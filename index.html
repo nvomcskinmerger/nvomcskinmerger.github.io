@@ -1121,12 +1121,6 @@ body.ui-simple>#simpleApp{display:block!important}
                 </button>
             </div>
         </div>
-        <div class="usage-counter" aria-live="polite" data-i18n-title="usageTitle" title="Firebase üzerindeki toplam birleştirme kullanımı">
-            <i class="fa-solid fa-users"></i>
-            <span data-i18n="usageLabel">Toplam kullanım:</span>
-            <strong id="usageCount">0</strong>
-            <small data-i18n="timesLabel">kez</small>
-        </div>
         <div class="auth-bar">
             <button class="google-login is-loading" id="googleLogin" type="button" disabled>
                 <svg viewBox="0 0 48 48" aria-hidden="true">
@@ -1144,6 +1138,13 @@ body.ui-simple>#simpleApp{display:block!important}
                 <span id="authStatusText" data-i18n="firebaseInitializing">Firebase başlatılıyor...</span>
             </div>
         </div>
+    <div class="usage-counter" aria-live="polite" data-i18n-title="usageTitle" title="Firebase üzerindeki toplam birleştirme kullanımı">
+        <i class="fa-solid fa-chart-simple"></i>
+        <span data-i18n="usageLabel">Toplam kullanım:</span>
+        <strong id="usageCount">0</strong>
+        <small data-i18n="timesLabel">kez</small>
+    </div>
+
     </header>
 
     <main class="container">
@@ -1334,6 +1335,7 @@ body.ui-simple>#simpleApp{display:block!important}
             </div>
         </div>
     </main>
+
 
     <footer>
         <span><i class="fa-solid fa-code"></i> <span data-i18n="footerDeveloped">Developed by</span> <strong>NVO TEAM</strong> (MIT Licensed) • © 2026</span>
@@ -1971,7 +1973,13 @@ body.ui-simple>#simpleApp{display:block!important}
          */
         function reportUserError(error, type = 'error'){
             const message = error instanceof Error ? error.message : String(error || t('unexpectedError'));
-            showToast(message, type);
+            // Genel/belirsiz hata mesajını kullanıcıya toast olarak gösterme.
+            // Özellikle WebGL/3D canvas hareketleri tarayıcı tarafından yakalandığında
+            // ana uygulamanın üzerine sahte bir "Bilinmeyen hata" uyarısı düşmemeli.
+            const genericError = String(t('unexpectedError') || '').trim();
+            if (message.trim() !== genericError && message.trim() !== 'Bilinmeyen hata' && message.trim() !== 'Beklenmeyen bir hata oluştu. İşlem durduruldu.') {
+                showToast(message, type);
+            }
             if (typeof log === 'function') log(message, type);
         }
 
@@ -2022,7 +2030,7 @@ body.ui-simple>#simpleApp{display:block!important}
          */
         async function updateGlobalUsage(){
             const authState = await waitForAuthState();
-            if (authState.error || isLoadingAuth) return;
+            if (authState.error || isLoadingAuth || !authState.user) return;
             try {
                 const { db } = await getFirebase();
                 const ref = db.collection('stats').doc('usage');
@@ -2033,7 +2041,7 @@ body.ui-simple>#simpleApp{display:block!important}
                 const snap = await ref.get();
                 usageCountEl.textContent = Number(snap.data()?.totalMerges || 0).toLocaleString(currentLang === 'tr' ? 'tr-TR' : 'en-US');
             } catch (error) {
-                usageCountEl.textContent = '—';
+                console.warn('[NVO] Global usage update failed:', error);
                 log(t('usageUpdateFailed'), 'warn');
             }
         }
@@ -2042,14 +2050,13 @@ body.ui-simple>#simpleApp{display:block!important}
          * @returns {Promise<void>}
          */
         async function loadGlobalUsage(){
-            const authState = await waitForAuthState();
-            if (authState.error || isLoadingAuth) return;
             try {
                 const { db } = await getFirebase();
                 const snap = await db.collection('stats').doc('usage').get();
                 usageCountEl.textContent = Number(snap.data()?.totalMerges || 0).toLocaleString(currentLang === 'tr' ? 'tr-TR' : 'en-US');
             } catch (error) {
-                usageCountEl.textContent = '—';
+                usageCountEl.textContent = '0';
+                console.warn('[NVO] Global usage read failed:', error);
             }
         }
 
@@ -2245,7 +2252,11 @@ body.ui-simple>#simpleApp{display:block!important}
                 isLoadingAuth = false;
                 authStateReadyResolve({ user: firebaseUser });
 
-                if (!googleButtonUnlocked) return;
+                if (!googleButtonUnlocked) {
+                    applySignedOutUI();
+                    void loadGlobalUsage();
+                    return;
+                }
                 if (firebaseUser) {
                     applySignedInUI(firebaseUser);
                     log(t('sessionActive', firebaseUser.displayName || firebaseUser.email || 'Google account'), 'success');
@@ -2369,7 +2380,7 @@ body.ui-simple>#simpleApp{display:block!important}
             });
             skinViewer.autoRotate = true;
             skinViewer.autoRotateSpeed = 1.5;
-            skinViewer.animation = new skinview3d.WalkingAnimation();
+            skinViewer.animation = null;
             AppState.viewerResizeHandler = () => {
                 if (!skinViewer) return;
                 const width = Math.max(canvasElement.clientWidth, 1);
@@ -2461,10 +2472,10 @@ body.ui-simple>#simpleApp{display:block!important}
                     try {
                         const buffer = reader.result;
                         if (!(buffer instanceof ArrayBuffer) || buffer.byteLength < 24) throw new Error(t('invalidPngSignature'));
-                        if (String.fromCharCode(...bytes.slice(12, 16)) !== 'IHDR') throw new Error(t('invalidPngSignature'));
                         const bytes = new Uint8Array(buffer);
                         const signature = [137,80,78,71,13,10,26,10];
                         if (!signature.every((value, index) => bytes[index] === value)) throw new Error(t('invalidPngSignature'));
+                        if (String.fromCharCode(...bytes.slice(12, 16)) !== 'IHDR') throw new Error(t('invalidPngSignature'));
                         const view = new DataView(buffer);
                         const width = view.getUint32(16, false);
                         const height = view.getUint32(20, false);
@@ -3238,16 +3249,36 @@ body.ui-simple>#simpleApp{display:block!important}
             }
         });
 
-        // 3D Kontroller
-        document.getElementById('animWalk').addEventListener('click', () => {
-            if(skinViewer) skinViewer.animation = new skinview3d.WalkingAnimation();
-        });
-        document.getElementById('animRun').addEventListener('click', () => {
-            if(skinViewer) skinViewer.animation = new skinview3d.RunningAnimation();
-        });
-        document.getElementById('animIdle').addEventListener('click', () => {
-            if(skinViewer) skinViewer.animation = null;
-        });
+        // 3D Kontroller — skinview3d'nin native animation API'si.
+        // Animasyon katmanındaki WebGL hataları ana uygulamanın toast sistemine sızmaz.
+        let viewerActionBusy = false;
+        let suppressViewerErrorsUntil = 0;
+
+        function markViewerAction(){
+            suppressViewerErrorsUntil = Date.now() + 3000;
+        }
+
+        function setViewerAnimation(kind){
+            if (!skinViewer || viewerActionBusy) return;
+            viewerActionBusy = true;
+            markViewerAction();
+            try {
+                if (kind === 'walk') {
+                    skinViewer.animation = new skinview3d.WalkingAnimation();
+                } else if (kind === 'run') {
+                    skinViewer.animation = new skinview3d.RunningAnimation();
+                } else {
+                    skinViewer.animation = null;
+                }
+            } catch (error) {
+                console.warn('[NVO] 3D animation change failed:', error);
+            } finally {
+                window.setTimeout(() => { viewerActionBusy = false; }, 0);
+            }
+        }
+        document.getElementById('animWalk').addEventListener('click', () => setViewerAnimation('walk'));
+        document.getElementById('animRun').addEventListener('click', () => setViewerAnimation('run'));
+        document.getElementById('animIdle').addEventListener('click', () => setViewerAnimation('idle'));
 
         let isRotating = true;
         document.getElementById('toggleRotate').addEventListener('click', () => {
@@ -3274,14 +3305,26 @@ body.ui-simple>#simpleApp{display:block!important}
          */
         function installErrorBoundary(){
             window.addEventListener('error', event => {
+                if (Date.now() < suppressViewerErrorsUntil) return;
                 if (!event.error) return;
                 console.error('[NVO] Unhandled error:', event.error);
-                showToast(t('unexpectedError'), 'error');
+                const message = String(event.error?.message || event.message || '');
+                const stack = String(event.error?.stack || '');
+                if (/skinview3d|WalkingAnimation|RunningAnimation|WebGL|three/i.test(message + ' ' + stack)) return;
+                // Global boundary yalnızca konsola/terminale kaydeder; kullanıcıya
+                // belirsiz bir toast göstermez. Böylece canvas döndürme gibi WebGL
+                // kaynaklı tarayıcı hataları arayüzü bloke etmez.
+                return;
             });
             window.addEventListener('unhandledrejection', event => {
+                if (Date.now() < suppressViewerErrorsUntil) return;
                 const reason = event.reason instanceof Error ? event.reason : new Error(String(event.reason || t('unexpectedError')));
                 console.error('[NVO] Unhandled promise rejection:', reason);
-                showToast(reason.message || t('unexpectedError'), 'error');
+                const text = String(reason.message || '');
+                const stack = String(reason.stack || '');
+                if (/skinview3d|WalkingAnimation|RunningAnimation|WebGL|three/i.test(text + ' ' + stack)) return;
+                // Genel promise hatasını kullanıcıya toast olarak yansıtma.
+                return;
             });
         }
 
