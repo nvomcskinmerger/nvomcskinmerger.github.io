@@ -2644,58 +2644,40 @@ body.ui-simple>#simpleApp{display:block!important}
          * @param {number} depth
          * @returns {{top:number[],bottom:number[],left:number[],front:number[],right:number[],back:number[]}}
          */
-        function boxFaces(u, v, width, height, depth){
-            if (![u, v, width, height, depth].every(Number.isFinite) || width <= 0 || height <= 0 || depth <= 0) {
-                throw new Error('Geçersiz UV kutusu (boxFaces).');
-            }
+        function boxFaces(u, v, w, h, d) {
             return {
-                top:    [u + depth,             v,              width, depth],
-                bottom: [u + depth,             v + height,     width, depth],
-                left:   [u,                     v + depth,     depth, height],
-                front:  [u + depth,             v + depth,     width, height],
-                right:  [u + depth + width,     v + depth,     depth, height],
-                back:   [u + depth + width + depth, v + depth, width, height]
+                top:    [u + d,         v,         w, d],
+                bottom: [u + w + d,     v,         w, d],
+                left:   [u,             v + d,     d, h],
+                front:  [u + d,         v + d,     w, h],
+                right:  [u + w + d,     v + d,     d, h],
+                back:   [u + w + d * 2, v + d,     w, h]
             };
         }
 
-        /** @type {HTMLCanvasElement|null} */
-        let copyBufferCanvas = null;
-
-        /**
-         * @param {CanvasRenderingContext2D} srcCtx
-         * @param {CanvasRenderingContext2D} dstCtx
-         * @param {[number,number,number,number]} srcRect
-         * @param {[number,number,number,number]} [dstRect]
-         * @returns {void}
-         */
-        function copyRect(srcCtx, dstCtx, srcRect, dstRect = srcRect){
+        function copyRect(srcCtx, dstCtx, srcRect, dstRect = srcRect) {
             const [sx, sy, sw, sh] = srcRect;
             const [dx, dy, dw, dh] = dstRect;
-            const imageData = srcCtx.getImageData(sx, sy, sw, sh);
-            if (sw === dw && sh === dh) {
-                dstCtx.putImageData(imageData, dx, dy);
-                return;
-            }
-            if (!copyBufferCanvas) copyBufferCanvas = document.createElement('canvas');
-            copyBufferCanvas.width = sw;
-            copyBufferCanvas.height = sh;
-            const bufferCtx = copyBufferCanvas.getContext('2d');
-            bufferCtx.imageSmoothingEnabled = false;
-            bufferCtx.clearRect(0, 0, sw, sh);
-            bufferCtx.putImageData(imageData, 0, 0);
-            dstCtx.save();
+            const tmp = document.createElement('canvas');
+            tmp.width = sw; tmp.height = sh;
+            const t = tmp.getContext('2d');
+            t.imageSmoothingEnabled = false;
+            t.putImageData(srcCtx.getImageData(sx, sy, sw, sh), 0, 0);
             dstCtx.imageSmoothingEnabled = false;
+            // KRİTİK DÜZELTME: drawImage varsayılan "source-over" harmanlama kullanır —
+            // kaynak piksel şeffafsa hedefi SİLMEZ, olduğu gibi bırakır. Bu yüzden Skin 2'nin
+            // boş/şeffaf olduğu her yerde (çoğu skin dış katmanı tam kullanmaz) Skin 1'in eski
+            // pikselleri (siyah bileklik, çizgiler vb.) yanlışlıkla sonuçta kalıyordu. Önce
+            // hedef dikdörtgeni tamamen temizleyip SONRA çizerek gerçek bir "değiştirme"
+            // (silme + yapıştırma) sağlanıyor, sadece "üzerine ekleme" değil.
             dstCtx.clearRect(dx, dy, dw, dh);
-            dstCtx.drawImage(copyBufferCanvas, 0, 0, sw, sh, dx, dy, dw, dh);
-            dstCtx.restore();
+            dstCtx.drawImage(tmp, 0, 0, sw, sh, dx, dy, dw, dh);
         }
 
-        /** @param {CanvasRenderingContext2D} srcCtx @param {CanvasRenderingContext2D} dstCtx @param {[number,number,number,number]} srcFace @param {[number,number,number,number]} [dstFace] @returns {void} */
         function copyFace(srcCtx, dstCtx, srcFace, dstFace = srcFace) {
             copyRect(srcCtx, dstCtx, srcFace, dstFace);
         }
 
-        /** @param {CanvasRenderingContext2D} srcCtx @param {CanvasRenderingContext2D} dstCtx @param {[number,number,number,number,number]} srcBox @param {[number,number,number,number,number]} dstBox @returns {void} */
         function copyWholeBox(srcCtx, dstCtx, srcBox, dstBox) {
             const sf = boxFaces(...srcBox);
             const df = boxFaces(...dstBox);
@@ -2710,8 +2692,7 @@ body.ui-simple>#simpleApp{display:block!important}
         // fiziksel olarak yatay yüzler olduğu için bölünmez. Alt kapak ise Skin 2'den
         // tamamen alınır. Böylece tişört, ceket, kol kılıfı ve pantolon da aynı
         // fiziksel orta çizgiyi takip eder.
-        /** @param {CanvasRenderingContext2D} srcCtx @param {CanvasRenderingContext2D} dstCtx @param {[number,number,number,number,number]} srcBox @param {[number,number,number,number,number]} dstBox @param {'steve'|'alex'} srcModel @param {'steve'|'alex'} dstModel @returns {void} */
-        function copyBottomPhysicalHalf(srcCtx, dstCtx, srcBox, dstBox) {
+        function copyBottomPhysicalHalf(srcCtx, dstCtx, srcBox, dstBox, srcModel, dstModel) {
             const sf = boxFaces(...srcBox);
             const df = boxFaces(...dstBox);
             const srcH = srcBox[3], dstH = dstBox[3];
@@ -2735,7 +2716,14 @@ body.ui-simple>#simpleApp{display:block!important}
             copyFace(srcCtx, dstCtx, sf.bottom, df.bottom);
         }
 
-        /** @param {CanvasRenderingContext2D} srcCtx @param {CanvasRenderingContext2D} dstCtx @param {[number,number,number,number,number]} srcBox @param {[number,number,number,number,number]} dstBox @returns {void} */
+        function copyBoxScaled(srcCtx, dstCtx, srcBox, dstBox) {
+            const sf = boxFaces(...srcBox);
+            const df = boxFaces(...dstBox);
+            for (const name of ['top','bottom','left','front','right','back']) {
+                copyRect(srcCtx, dstCtx, sf[name], df[name]);
+            }
+        }
+
         function copyArmFull(srcCtx, dstCtx, srcBox, dstBox) {
             // Steve(4px) <-> Alex(3px) kol genişliklerini hedef UV'ye ölçekleyerek eşleştir.
             const sf = boxFaces(...srcBox);
@@ -2745,7 +2733,6 @@ body.ui-simple>#simpleApp{display:block!important}
             }
         }
 
-        /** @param {CanvasRenderingContext2D} srcCtx @param {CanvasRenderingContext2D} dstCtx @param {[number,number,number,number,number]} srcBox @param {[number,number,number,number,number]} dstBox @returns {void} */
         function copyFrontBackPhysical(srcCtx, dstCtx, srcBox, dstBox) {
             const sf = boxFaces(...srcBox);
             const df = boxFaces(...dstBox);
@@ -2783,34 +2770,53 @@ body.ui-simple>#simpleApp{display:block!important}
         // 50/50 harmanlama: Skin 1 tabana çizilir, Skin 2'nin sağ yarısı (kullanıcıya göre sol)
         // kol, bacak, kafa ve gövde parçaları (iç + dış katmanlar dahil) üzerine bindirilir.
         // Bu fonksiyon, 'half' ve 'base_only' modları arasında paylaşılır.
-        /** @returns {void} */
         function executeHalfMerge(){
             ctxOut.drawImage(canvas1, 0, 0);
-            copyWholeBox(ctx2, ctxOut, armBox('leftArm', 'base', model2), armBox('leftArm', 'base', model1));
-            copyWholeBox(ctx2, ctxOut, armBox('leftArm', 'overlay', model2), armBox('leftArm', 'overlay', model1));
+
+            const swHalf = model2 === 'alex' ? 3 : 4;
+            const dwHalf = model1 === 'alex' ? 3 : 4;
+            copyWholeBox(ctx2, ctxOut, [32,48,swHalf,12,4], [32,48,dwHalf,12,4]);
+            copyWholeBox(ctx2, ctxOut, [48,48,swHalf,12,4], [48,48,dwHalf,12,4]);
+
             copyArea(ctx2, ctxOut, 16, 48, 16, 16);
             copyArea(ctx2, ctxOut, 0, 48, 16, 16);
 
-            const H = UV_MAP.half;
-            for (const rect of [H.headLeft,H.headRight,H.headBottomLeft,H.headBottomCenter,H.headBottomRight,H.headOuterLeft,H.headOuterRight,H.headOuterBottomLeft,H.headOuterBottomCenter,H.headOuterBottomRight]) copyArea(ctx2, ctxOut, ...rect);
-            for (const rect of [H.torsoTopLeft,H.torsoTopRight,H.torsoFrontLeft,H.torsoFrontCenter,H.torsoFrontRight,H.torsoOuterTopLeft,H.torsoOuterTopRight,H.torsoOuterFrontLeft,H.torsoOuterFrontCenter,H.torsoOuterFrontRight]) copyArea(ctx2, ctxOut, ...rect);
+            copyArea(ctx2, ctxOut, 12, 0, 4, 8);
+            copyArea(ctx2, ctxOut, 20, 0, 4, 8);
+            copyArea(ctx2, ctxOut, 12, 8, 4, 8);
+            copyArea(ctx2, ctxOut, 16, 8, 8, 8);
+            copyArea(ctx2, ctxOut, 24, 8, 4, 8);
+
+            copyArea(ctx2, ctxOut, 44, 0, 4, 8);
+            copyArea(ctx2, ctxOut, 52, 0, 4, 8);
+            copyArea(ctx2, ctxOut, 44, 8, 4, 8);
+            copyArea(ctx2, ctxOut, 48, 8, 8, 8);
+            copyArea(ctx2, ctxOut, 56, 8, 4, 8);
+
+            copyArea(ctx2, ctxOut, 24, 16, 4, 4);
+            copyArea(ctx2, ctxOut, 32, 16, 4, 4);
+            copyArea(ctx2, ctxOut, 24, 20, 4, 12);
+            copyArea(ctx2, ctxOut, 28, 20, 4, 12);
+            copyArea(ctx2, ctxOut, 32, 20, 4, 12);
+
+            copyArea(ctx2, ctxOut, 24, 32, 4, 4);
+            copyArea(ctx2, ctxOut, 32, 32, 4, 4);
+            copyArea(ctx2, ctxOut, 24, 36, 4, 12);
+            copyArea(ctx2, ctxOut, 28, 36, 4, 12);
+            copyArea(ctx2, ctxOut, 32, 36, 4, 12);
         }
 
         // Şapka, ceket, kol kılıfı ve pantolon gibi tüm "dış katman" (overlay) UV
         // bölgelerini tamamen şeffaflaştırır. 'base_only' modu tarafından kullanılır.
-        /** @param {CanvasRenderingContext2D} ctx @returns {void} */
         function clearOverlayLayers(ctx){
-            for (const rect of Object.values(UV_MAP.outer)) ctx.clearRect(...rect);
+            ctx.clearRect(32, 0, 32, 16); // Şapka katmanı (tüm kafa dış katmanı)
+            ctx.clearRect(16, 32, 32, 16); // Ceket katmanı (gövde dış katmanı)
+            ctx.clearRect(40, 32, 16, 16); // Sağ kol kılıfı
+            ctx.clearRect(48, 48, 16, 16); // Sol kol kılıfı
+            ctx.clearRect(0, 32, 16, 16);  // Sağ pantolon
+            ctx.clearRect(0, 48, 16, 16);  // Sol pantolon
         }
 
-        /**
-         * @param {CanvasRenderingContext2D} srcCtx
-         * @param {CanvasRenderingContext2D} dstCtx
-         * @param {'head'|'torso'|'arms'|'legs'} part
-         * @param {'steve'|'alex'} srcModel
-         * @param {'steve'|'alex'} dstModel
-         * @returns {void}
-         */
         function copyCharacterPart(srcCtx, dstCtx, part, srcModel, dstModel){
             if (part === 'head') {
                 copyArea(srcCtx, dstCtx, ...UV_MAP.head.region);
