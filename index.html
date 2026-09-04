@@ -2632,6 +2632,32 @@ body.ui-simple>#simpleApp{display:block!important}
             dstCtx.putImageData(imageData, x, y);
         }
 
+        /**
+         * Returns the six Minecraft 64x64 UV rectangles for a skin box.
+         * Box format: [u, v, width, height, depth].
+         * The layout matches the standard Minecraft skin atlas used by
+         * skinview3d: top, bottom, left, front, right, back.
+         * @param {number} u
+         * @param {number} v
+         * @param {number} width
+         * @param {number} height
+         * @param {number} depth
+         * @returns {{top:number[],bottom:number[],left:number[],front:number[],right:number[],back:number[]}}
+         */
+        function boxFaces(u, v, width, height, depth){
+            if (![u, v, width, height, depth].every(Number.isFinite) || width <= 0 || height <= 0 || depth <= 0) {
+                throw new Error('Geçersiz UV kutusu (boxFaces).');
+            }
+            return {
+                top:    [u + depth,             v,              width, depth],
+                bottom: [u + depth,             v + height,     width, depth],
+                left:   [u,                     v + depth,     depth, height],
+                front:  [u + depth,             v + depth,     width, height],
+                right:  [u + depth + width,     v + depth,     depth, height],
+                back:   [u + depth + width + depth, v + depth, width, height]
+            };
+        }
+
         /** @type {HTMLCanvasElement|null} */
         let copyBufferCanvas = null;
 
