@@ -11,10 +11,17 @@
     <meta property="og:title" content="NVO MC Skin Merger — Minecraft Skin Birleştirici">
     <meta property="og:description" content="İki Minecraft skinini gerçek UV koordinat motoruyla ücretsiz birleştirin.">
     <meta property="og:image" content="https://nvomcskinmerger.github.io/og-preview.png">
+    <meta property="og:image:secure_url" content="https://nvomcskinmerger.github.io/og-preview.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="NVO MC Skin Merger — Minecraft Skin Birleştirici">
     <meta property="og:url" content="https://nvomcskinmerger.github.io/">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="NVO MC Skin Merger">
     <meta name="twitter:description" content="İki Minecraft skinini gerçek UV koordinat motoruyla ücretsiz birleştirin.">
+    <meta name="twitter:image" content="https://nvomcskinmerger.github.io/og-preview.png">
+    <meta name="twitter:image:alt" content="NVO MC Skin Merger — Minecraft Skin Birleştirici">
     <!-- PWA Manifest (tek dosya olması için data URI ile gömülüdür) -->
     <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiTlZPIE1DIFNraW4gTWVyZ2VyIiwic2hvcnRfbmFtZSI6Ik5WTyBTa2luIE1lcmdlciIsInN0YXJ0X3VybCI6Ii4iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjMDYwODBlIiwidGhlbWVfY29sb3IiOiIjMDYwODBlIn0=">
     <!-- Sekme Logosu (Favicon) -->
@@ -1016,9 +1023,55 @@ body.ui-simple>#simpleApp{display:block!important}
 .simple-footer{text-align:center;color:var(--text-muted);font-size:.62rem;padding:5px 0 10px}
 .simple-hidden-input{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}
 @media(max-width:480px){.simple-files{grid-template-columns:1fr}.simple-file{min-height:94px}.simple-actions{grid-template-columns:1fr}}
+
+/* ===== Turnstile giriş doğrulama ekranı ===== */
+#nvoTurnstileGate{position:fixed;inset:0;z-index:999999;background:var(--bg-main);background-image:radial-gradient(circle at 10% 10%, var(--bg-gradient-1) 0%, transparent 40%),radial-gradient(circle at 90% 90%, var(--bg-gradient-2) 0%, transparent 40%);display:flex;align-items:center;justify-content:center;transition:opacity .35s ease;}
+#nvoTurnstileGate.nvo-gate-hidden{opacity:0;pointer-events:none;}
+.nvo-gate-card{display:flex;flex-direction:column;align-items:center;gap:16px;padding:36px 30px;border-radius:var(--radius-lg);background:var(--card-bg);border:1px solid var(--card-border);box-shadow:var(--shadow-soft);max-width:320px;text-align:center;}
+.nvo-gate-logo{font-family:'Outfit',sans-serif;font-weight:900;font-size:1.05rem;color:var(--text-main);letter-spacing:.02em;}
+.nvo-gate-status{font-size:.78rem;color:var(--text-muted);}
+.nvo-gate-spinner{width:26px;height:26px;border-radius:50%;border:3px solid var(--card-border);border-top-color:var(--accent-cyan);animation:nvoGateSpin .8s linear infinite;}
+@keyframes nvoGateSpin{to{transform:rotate(360deg)}}
+body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 </style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
-<body>
+<body class="nvo-gate-active">
+<!-- Turnstile giriş doğrulama ekranı: yoğunluk/şüpheli trafikte kutucuk gösterir, normal ziyaretçide görünmeden geçer -->
+<div id="nvoTurnstileGate">
+  <div class="nvo-gate-card">
+    <div class="nvo-gate-logo">NVO MC Skin Merger</div>
+    <div id="nvoGateSpinner" class="nvo-gate-spinner"></div>
+    <div id="nvoGateStatus" class="nvo-gate-status">Doğrulanıyor…</div>
+    <div id="nvoTurnstileWidget" class="cf-turnstile"
+         data-sitekey="0x4AAAAAAEo-gjisXAlOo_ma"
+         data-theme="dark"
+         data-callback="nvoTurnstileSuccess"
+         data-error-callback="nvoTurnstileError"
+         data-expired-callback="nvoTurnstileExpired"></div>
+  </div>
+</div>
+<script>
+  function nvoTurnstileSuccess(token){
+    var gate = document.getElementById('nvoTurnstileGate');
+    document.body.classList.remove('nvo-gate-active');
+    if (gate) {
+      gate.classList.add('nvo-gate-hidden');
+      setTimeout(function(){ gate.remove(); }, 400);
+    }
+  }
+  function nvoTurnstileError(){
+    var status = document.getElementById('nvoGateStatus');
+    var spinner = document.getElementById('nvoGateSpinner');
+    if (spinner) spinner.style.display = 'none';
+    if (status) status.textContent = 'Doğrulama yüklenemedi, sayfayı yenileyin.';
+  }
+  function nvoTurnstileExpired(){
+    if (window.turnstile && document.getElementById('nvoTurnstileWidget')) {
+      window.turnstile.reset('#nvoTurnstileWidget');
+    }
+  }
+</script>
 <!-- SIMPLE INTERFACE: separate DOM, not a restyle of the premium layout -->
 <section id="simpleApp" aria-label="Simple interface">
   <div class="simple-shell">
