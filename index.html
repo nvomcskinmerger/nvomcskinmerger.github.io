@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NVO MC SKIN MERGER v6.4 - Mobile Safe Area</title>
     <meta name="description" content="NVO MC Skin Merger: iki Minecraft skinini gerçek UV koordinat motoruyla kusursuz biçimde birleştirin. Yarı-yarıya, kafa değişimi, kol/bacak değişimi, dış katman, rastgele karışım ve daha fazlası — ücretsiz ve tarayıcıda çalışır.">
-    <meta name="theme-color" content="#06080e">
+    <meta name="theme-color" content="#0c0707">
     <!-- Open Graph / Sosyal Medya Paylaşım Önizlemesi -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="NVO MC Skin Merger — Minecraft Skin Birleştirici">
@@ -40,18 +40,18 @@
                (mor+pembe+camgöbeği aynı anda, güçlü box-shadow'lar). Daha "premium"
                bir his için tek bir tutarlı vurgu rengine (camgöbeği) ağırlık verildi,
                parlama efektleri yumuşatıldı, kart arka planları sadeleştirildi. */
-            --bg-main: #0a0c12;
-            --bg-gradient-1: rgba(0, 200, 255, 0.06);
-            --bg-gradient-2: rgba(120, 80, 220, 0.05);
-            --card-bg: rgba(20, 24, 36, 0.6);
-            --card-border: rgba(255, 255, 255, 0.07);
-            --accent-cyan: #4fd1ff;
-            --accent-purple: #8a7bff;
-            --accent-pink: #ff5c8a;
+            --bg-main: #0c0707;
+            --bg-gradient-1: rgba(255, 45, 45, 0.09);
+            --bg-gradient-2: rgba(120, 10, 10, 0.10);
+            --card-bg: rgba(24, 12, 12, 0.62);
+            --card-border: rgba(255, 90, 90, 0.14);
+            --accent-cyan: #ff3b3b;
+            --accent-purple: #d1544a;
+            --accent-pink: #ff1f4d;
             --accent-amber: #ffb703;
             --accent-green: #3ddc97;
-            --text-main: #eef1f6;
-            --text-muted: #8b93a3;
+            --text-main: #f7ecec;
+            --text-muted: #bd9494;
             --radius-lg: 18px;
             --radius-md: 12px;
             --shadow-soft: 0 8px 24px rgba(0,0,0,0.35);
@@ -60,18 +60,18 @@
 
         /* ===== AÇIK TEMA ===== */
         html[data-theme="light"] {
-            --bg-main: #f4f5f8;
-            --bg-gradient-1: rgba(79, 209, 255, 0.08);
-            --bg-gradient-2: rgba(138, 123, 255, 0.06);
-            --card-bg: rgba(255, 255, 255, 0.75);
-            --card-border: rgba(20, 24, 36, 0.08);
-            --accent-cyan: #0091c7;
-            --accent-purple: #6c5ce7;
-            --accent-pink: #e0447b;
+            --bg-main: #fdf4f4;
+            --bg-gradient-1: rgba(216, 30, 44, 0.09);
+            --bg-gradient-2: rgba(120, 10, 10, 0.06);
+            --card-bg: rgba(255, 250, 250, 0.8);
+            --card-border: rgba(120, 20, 20, 0.14);
+            --accent-cyan: #d81e2c;
+            --accent-purple: #7a1414;
+            --accent-pink: #c2185b;
             --accent-amber: #b8790a;
             --accent-green: #1b9c6e;
-            --text-main: #1a1d27;
-            --text-muted: #656d7d;
+            --text-main: #200a0a;
+            --text-muted: #7a5252;
             --shadow-soft: 0 8px 24px rgba(20,24,36,0.08);
         }
 
@@ -117,7 +117,7 @@
         .ui-style-btn.active{background:var(--text-main);color:var(--bg-main)}
         .ui-style-btn:hover{color:var(--text-main)}
         body.ui-premium .glass-card{animation:nvoReveal .55s ease both}
-        body.ui-premium .upload-box:hover{box-shadow:0 10px 30px rgba(79,209,255,.10)}
+        body.ui-premium .upload-box:hover{box-shadow:0 10px 30px rgba(255, 59, 59,.10)}
         body.ui-premium .mode-card.active{animation:nvoFloat 2.8s ease-in-out infinite}
         body.ui-premium .btn-primary,body.ui-premium .btn-download{position:relative;overflow:hidden}
         body.ui-premium .btn-primary::after,body.ui-premium .btn-download::after{content:"";position:absolute;inset:0;width:35%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);transform:translateX(-150%);animation:nvoShimmer 3.8s ease-in-out infinite}
@@ -130,7 +130,7 @@
         body.ui-simple .upload-box:hover{transform:none;background:rgba(127,127,127,.04)}
         body.ui-simple .mode-card{background:transparent;border:1px solid var(--card-border);border-radius:8px;padding:11px}
         body.ui-simple .mode-card:hover,body.ui-simple .mode-card.active{transform:none;box-shadow:none}
-        body.ui-simple .mode-card.active{background:rgba(79,209,255,.08)}
+        body.ui-simple .mode-card.active{background:rgba(255, 59, 59,.08)}
         body.ui-simple .btn,body.ui-simple .utility-btn,body.ui-simple .three-controls button{box-shadow:none}
         body.ui-simple .terminal{height:85px;background:transparent;box-shadow:none}
         body.ui-simple .advanced-section{display:none}
@@ -175,7 +175,7 @@
         .icon-link i { font-size: 0.9rem; }
         .icon-link:hover {
             border-color: var(--accent-cyan);
-            background: rgba(0,242,254,.08);
+            background: rgba(255, 59, 59,.08);
             transform: translateY(-1px);
         }
         .icon-link:active {
@@ -229,7 +229,7 @@
         }
 
         .glass-card:hover {
-            border-color: rgba(0, 242, 254, 0.25);
+            border-color: rgba(255, 59, 59, 0.25);
         }
 
         .card-header {
@@ -257,7 +257,7 @@
             color: var(--text-muted);
             border: 1px solid rgba(255,255,255,0.08);
         }
-        .model-tag.steve { background: rgba(0, 242, 254, 0.12); color: var(--accent-cyan); border-color: var(--accent-cyan); }
+        .model-tag.steve { background: rgba(255, 59, 59, 0.12); color: var(--accent-cyan); border-color: var(--accent-cyan); }
         .model-tag.alex { background: rgba(138, 43, 226, 0.15); color: var(--accent-purple); border-color: var(--accent-purple); }
 
         /* Upload Area */
@@ -274,7 +274,7 @@
 
         .upload-box:hover {
             border-color: var(--accent-cyan);
-            background: rgba(0, 242, 254, 0.04);
+            background: rgba(255, 59, 59, 0.04);
             transform: translateY(-2px);
         }
 
@@ -324,6 +324,22 @@
             .mode-scroll-window { max-height: 300px; }
         }
 
+        .custom-picker-wrap{display:flex;gap:28px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+        .custom-mannequin-block{display:flex;flex-direction:column;align-items:center;gap:10px}
+        .custom-mannequin-title{font-size:0.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em}
+        .custom-mannequin{display:grid;grid-template-columns:46px 46px 46px;grid-template-rows:38px 58px 58px;grid-template-areas:". head ." "rightArm torso leftArm" ". legs .";gap:5px}
+        .cbp-part{border:2px solid var(--card-border);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:800;cursor:pointer;color:var(--text-main);background:rgba(255,255,255,0.03);transition:var(--transition);user-select:none}
+        .cbp-part:hover{transform:translateY(-2px);border-color:var(--accent-cyan)}
+        .cbp-part.src-1{border-color:var(--accent-cyan);background:rgba(255, 59, 59,0.16);color:var(--accent-cyan)}
+        .cbp-part.src-2{border-color:var(--accent-purple);background:rgba(179, 56, 46,0.16);color:var(--accent-purple)}
+        .cbp-part.src-0{border-style:dashed;opacity:0.55;color:var(--text-muted)}
+        .cbp-head{grid-area:head}
+        .cbp-torso{grid-area:torso}
+        .cbp-rightArm{grid-area:rightArm}
+        .cbp-leftArm{grid-area:leftArm}
+        .cbp-legs{grid-area:legs;display:flex;gap:5px}
+        .cbp-legs .cbp-part{flex:1}
+
         .mode-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -357,15 +373,15 @@
         }
 
         .mode-card:hover {
-            background: rgba(0, 242, 254, 0.06);
-            border-color: rgba(0, 242, 254, 0.4);
+            background: rgba(255, 59, 59, 0.06);
+            border-color: rgba(255, 59, 59, 0.4);
             transform: translateY(-2px);
         }
 
         .mode-card.active {
-            background: rgba(79, 209, 255, 0.12);
+            background: rgba(255, 59, 59, 0.12);
             border-color: var(--accent-cyan);
-            box-shadow: 0 0 0 1px rgba(79, 209, 255, 0.25);
+            box-shadow: 0 0 0 1px rgba(255, 59, 59, 0.25);
         }
 
         .mode-card.active i {
@@ -462,14 +478,14 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent-cyan), #2a9fc9);
+            background: linear-gradient(135deg, var(--accent-cyan), #b91e1e);
             color: #04060a;
-            box-shadow: 0 3px 14px rgba(79, 209, 255, 0.22);
+            box-shadow: 0 3px 14px rgba(255, 59, 59, 0.22);
         }
 
         .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(79, 209, 255, 0.3);
+            box-shadow: 0 6px 18px rgba(255, 59, 59, 0.3);
         }
 
         .btn-download {
@@ -608,7 +624,7 @@
 
         .footer-link-btn:hover {
             border-color: var(--accent-cyan);
-            background: rgba(0,242,254,.08);
+            background: rgba(255, 59, 59,.08);
             transform: translateY(-1px);
         }
 
@@ -674,7 +690,7 @@
             background:rgba(255,255,255,.04); color:var(--text-main); cursor:pointer;
             font-weight:600; transition:var(--transition);
         }
-        .utility-btn:hover { border-color:var(--accent-cyan); background:rgba(0,242,254,.08); }
+        .utility-btn:hover { border-color:var(--accent-cyan); background:rgba(255, 59, 59,.08); }
         /* İkincil/ileri düzey özellikler (zincirleme birleştirme, karşılaştırma) varsayılan
            kapalı bir <details> içine alınarak arayüz sade tutulur; isteyen açar. */
         .advanced-section {
@@ -847,7 +863,7 @@
 
     body.ui-premium .upload-box:hover {
         border-color: var(--accent-cyan);
-        background: rgba(79,209,255,.035);
+        background: rgba(255, 59, 59,.035);
         transform: none;
         box-shadow: none;
     }
@@ -876,7 +892,7 @@
     }
 
     body.ui-premium .mode-card.active {
-        background: rgba(79,209,255,.075);
+        background: rgba(255, 59, 59,.075);
         border-color: var(--accent-cyan);
         box-shadow: inset 2px 0 0 var(--accent-cyan);
         animation: none;
@@ -1224,7 +1240,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                     <p data-i18n="mode_half_desc">Sol yarısı Skin 1, sağ yarısı Skin 2 simetrik harmanlama.</p>
                 </div>
                 <div class="mode-card" data-mode="head_swap" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-user-gear"></i>
+                    <i class="fa-solid fa-head-side-mask"></i>
                     <span data-i18n="mode_head_swap_title">Kafa Değişimi</span>
                     <p data-i18n="mode_head_swap_desc">Skin 1'in kafası ve şapkası, Skin 2'nin vücudu.</p>
                 </div>
@@ -1249,7 +1265,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                     <p data-i18n="mode_outer_overlay_desc">Temel vücut Skin 1, dış kıyafet/katman Skin 2.</p>
                 </div>
                 <div class="mode-card" data-mode="base_only" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-regular fa-square"></i>
+                    <i class="fa-solid fa-user"></i>
                     <span data-i18n="mode_base_only_title">Sadece Temel Katman</span>
                     <p data-i18n="mode_base_only_desc">50/50 harmanlama yapılır, ardından şapka/ceket/kol kılıfı gibi tüm dış katmanlar temizlenir.</p>
                 </div>
@@ -1269,7 +1285,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                     <p data-i18n="mode_chimera_desc">Kafa, gövde, kollar ve bacaklar için her parça rastgele Skin 1 veya Skin 2'den seçilir.</p>
                 </div>
                 <div class="mode-card" data-mode="body_swap" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-person-half-dress"></i>
+                    <i class="fa-solid fa-vest"></i>
                     <span data-i18n="mode_body_swap_title">Gövde Değişimi</span>
                     <p data-i18n="mode_body_swap_desc">Skin 1'in kafa ve kolları korunur; gövde ve iki bacak Skin 2'den alınır.</p>
                 </div>
@@ -1288,7 +1304,51 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                     <span data-i18n="mode_checker_blend_title">Piksel Mozaik</span>
                     <p data-i18n="mode_checker_blend_desc">UV haritasındaki pikseller dama düzeninde Skin 1 ve Skin 2 arasında dağıtılır.</p>
                 </div>
+                <div class="mode-card" data-mode="custom" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-hand-pointer"></i>
+                    <span data-i18n="mode_custom_title">Özel Seçmeli Merger</span>
+                    <p data-i18n="mode_custom_desc">Kafa, gövde, kollar, bacaklar ve dış katmanı ayrı ayrı Skin 1 veya Skin 2'den seçerek kendi kombinasyonunuzu oluşturun.</p>
+                </div>
             </div>
+            </div>
+        </div>
+
+        <!-- Özel Seçmeli Merger: Tıklamalı Vücut Parçası Seçici -->
+        <div class="glass-card full-width animate-fade" id="customPickerCard" style="display:none;">
+            <div class="card-title" style="margin-bottom:4px;"><i class="fa-solid fa-hand-pointer"></i> <span data-i18n="customPickerTitle">Özel Seçmeli Merger — Vücut Parçalarına Tıklayın</span></div>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:14px;" data-i18n="customPickerDesc">Her parçaya tıklayarak sırayla Skin 1 → Skin 2 arasında geçiş yapın. Dış katman (overlay) parçalarında ayrıca "Kapalı" seçeneği de bulunur.</p>
+            <div class="custom-picker-wrap">
+                <div class="custom-mannequin-block">
+                    <span class="custom-mannequin-title" data-i18n="customBaseLabel">Temel Beden (Body)</span>
+                    <div class="custom-mannequin" id="cbpBase">
+                        <div class="cbp-part cbp-head" data-part="head" data-layer="base">S1</div>
+                        <div class="cbp-part cbp-rightArm" data-part="rightArm" data-layer="base">S1</div>
+                        <div class="cbp-part cbp-torso" data-part="torso" data-layer="base">S1</div>
+                        <div class="cbp-part cbp-leftArm" data-part="leftArm" data-layer="base">S1</div>
+                        <div class="cbp-legs">
+                            <div class="cbp-part" data-part="rightLeg" data-layer="base">S1</div>
+                            <div class="cbp-part" data-part="leftLeg" data-layer="base">S1</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-mannequin-block">
+                    <span class="custom-mannequin-title" data-i18n="customOverlayLabel">Dış Katman (Overlay)</span>
+                    <div class="custom-mannequin" id="cbpOverlay">
+                        <div class="cbp-part cbp-head" data-part="head" data-layer="overlay">S1</div>
+                        <div class="cbp-part cbp-rightArm" data-part="rightArm" data-layer="overlay">S1</div>
+                        <div class="cbp-part cbp-torso" data-part="torso" data-layer="overlay">S1</div>
+                        <div class="cbp-part cbp-leftArm" data-part="leftArm" data-layer="overlay">S1</div>
+                        <div class="cbp-legs">
+                            <div class="cbp-part" data-part="rightLeg" data-layer="overlay">S1</div>
+                            <div class="cbp-part" data-part="leftLeg" data-layer="overlay">S1</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap;">
+                <button type="button" class="utility-btn" id="cbpAllSkin1"><i class="fa-solid fa-1"></i> <span data-i18n="customAllSkin1">Tümü Skin 1</span></button>
+                <button type="button" class="utility-btn" id="cbpAllSkin2"><i class="fa-solid fa-2"></i> <span data-i18n="customAllSkin2">Tümü Skin 2</span></button>
+                <button type="button" class="utility-btn" id="cbpOverlayOff"><i class="fa-solid fa-eye-slash"></i> <span data-i18n="customOverlayOff">Tüm Overlay Kapalı</span></button>
             </div>
         </div>
 
@@ -1500,6 +1560,18 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
     <script>
         let skinViewer = null;
         let selectedMode = 'half'; // Varsayılan mod
+
+        // Özel Seçmeli Merger (custom mode) durumu: her vücut parçası için
+        // base (temel) ve overlay (dış katman) kaynağı ayrı ayrı tutulur.
+        // Değerler: 1 = Skin 1, 2 = Skin 2, 0 = Kapalı (yalnızca overlay için geçerli).
+        const customSelection = {
+            head:     { base: 1, overlay: 1 },
+            torso:    { base: 1, overlay: 1 },
+            rightArm: { base: 1, overlay: 1 },
+            leftArm:  { base: 1, overlay: 1 },
+            rightLeg: { base: 1, overlay: 1 },
+            leftLeg:  { base: 1, overlay: 1 }
+        };
         /**
          * Immutable application constants. All UV geometry belongs here; merger
          * functions consume named coordinates instead of embedding raw numbers.
@@ -1617,6 +1689,15 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 mode_reverse_overlay_desc: 'Skin 2 temel beden olarak kullanılır; Skin 1\'in dış kıyafet ve katmanları üzerine uygulanır.',
                 mode_checker_blend_title: 'Piksel Mozaik',
                 mode_checker_blend_desc: 'UV haritasındaki pikseller dama düzeninde Skin 1 ve Skin 2 arasında dağıtılır.',
+                mode_custom_title: 'Özel Seçmeli Merger',
+                mode_custom_desc: 'Kafa, gövde, kollar, bacaklar ve dış katmanı ayrı ayrı Skin 1 veya Skin 2\'den seçerek kendi kombinasyonunuzu oluşturun.',
+                customPickerTitle: 'Özel Seçmeli Merger — Vücut Parçalarına Tıklayın',
+                customPickerDesc: 'Her parçaya tıklayarak sırayla Skin 1 → Skin 2 arasında geçiş yapın. Dış katman (overlay) parçalarında ayrıca "Kapalı" seçeneği de bulunur.',
+                customBaseLabel: 'Temel Beden (Body)',
+                customOverlayLabel: 'Dış Katman (Overlay)',
+                customAllSkin1: 'Tümü Skin 1',
+                customAllSkin2: 'Tümü Skin 2',
+                customOverlayOff: 'Tüm Overlay Kapalı',
                 modeSelected: (name) => `Seçilen mod: ${name}`,
                 readyStatus: (m1,m2,mode) => `Hazır: ${m1.toUpperCase()} + ${m2.toUpperCase()} • ${mode}`,
                 mergeStarted: (mode) => `İşlem başlatıldı — Seçilen mod: [${mode}]`,
@@ -1756,6 +1837,15 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 mode_reverse_overlay_desc: 'Use Skin 2 as the base body and apply Skin 1\'s outer clothing and layers.',
                 mode_checker_blend_title: 'Pixel Mosaic',
                 mode_checker_blend_desc: 'Distribute UV-map pixels between Skin 1 and Skin 2 in a checkerboard pattern.',
+                mode_custom_title: 'Custom Selective Merger',
+                mode_custom_desc: 'Pick the head, torso, arms, legs and outer layer from Skin 1 or Skin 2 individually to build your own combination.',
+                customPickerTitle: 'Custom Selective Merger — Click Body Parts',
+                customPickerDesc: 'Click each part to cycle between Skin 1 and Skin 2. Overlay parts also have an "Off" option.',
+                customBaseLabel: 'Base Body',
+                customOverlayLabel: 'Overlay',
+                customAllSkin1: 'All Skin 1',
+                customAllSkin2: 'All Skin 2',
+                customOverlayOff: 'All Overlays Off',
                 modeSelected: (name) => `Selected mode: ${name}`,
                 readyStatus: (m1,m2,mode) => `Ready: ${m1.toUpperCase()} + ${m2.toUpperCase()} • ${mode}`,
                 mergeStarted: (mode) => `Process started — Selected mode: [${mode}]`,
@@ -1891,7 +1981,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             const icon = document.getElementById('themeToggleIcon');
             const metaTheme = document.querySelector('meta[name="theme-color"]');
             if (icon) icon.className = currentTheme === 'light' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-            if (metaTheme) metaTheme.setAttribute('content', currentTheme === 'light' ? '#f4f5f8' : '#0a0c12');
+            if (metaTheme) metaTheme.setAttribute('content', currentTheme === 'light' ? '#fdf4f4' : '#0c0707');
             const simpleIcon = document.getElementById('simpleThemeIcon');
             if (simpleIcon) simpleIcon.className = currentTheme === 'light' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
         }
@@ -2366,6 +2456,8 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             card.classList.add('active');
             card.setAttribute('aria-pressed','true');
             selectedMode = card.getAttribute('data-mode');
+            const cbpCard = document.getElementById('customPickerCard');
+            if (cbpCard) cbpCard.style.display = (selectedMode === 'custom') ? '' : 'none';
             resultInfo.removeAttribute('data-i18n');
             resultInfo.textContent = t('modeSelected', t(`mode_${selectedMode}_title`));
             log(t('modeSelected', t(`mode_${selectedMode}_title`)), "warn");
@@ -2381,6 +2473,55 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 }
             });
         });
+
+        // ===== Özel Seçmeli Merger: Tıklamalı Vücut Parçası Seçici (UI) =====
+        function renderCustomPicker(){
+            document.querySelectorAll('#cbpBase .cbp-part, #cbpOverlay .cbp-part').forEach(el => {
+                const part = el.getAttribute('data-part');
+                const layer = el.getAttribute('data-layer');
+                const val = customSelection[part][layer];
+                el.classList.remove('src-1', 'src-2', 'src-0');
+                el.classList.add('src-' + val);
+                el.textContent = val === 0 ? '—' : ('S' + val);
+                el.setAttribute('aria-label', part + ' ' + layer + ': ' + (val === 0 ? 'Off' : ('Skin ' + val)));
+            });
+        }
+
+        document.querySelectorAll('#cbpBase .cbp-part, #cbpOverlay .cbp-part').forEach(el => {
+            el.setAttribute('role', 'button');
+            el.setAttribute('tabindex', '0');
+            const cycle = () => {
+                const part = el.getAttribute('data-part');
+                const layer = el.getAttribute('data-layer');
+                let val = customSelection[part][layer];
+                if (layer === 'base') {
+                    val = (val === 1) ? 2 : 1; // Temel katman her zaman Skin 1 veya Skin 2 olmalı.
+                } else {
+                    val = (val === 1) ? 2 : (val === 2 ? 0 : 1); // Overlay: S1 -> S2 -> Kapalı -> S1
+                }
+                customSelection[part][layer] = val;
+                renderCustomPicker();
+            };
+            el.addEventListener('click', cycle);
+            el.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); cycle(); }
+            });
+        });
+
+        document.getElementById('cbpAllSkin1')?.addEventListener('click', () => {
+            Object.keys(customSelection).forEach(p => { customSelection[p].base = 1; customSelection[p].overlay = 1; });
+            renderCustomPicker();
+        });
+        document.getElementById('cbpAllSkin2')?.addEventListener('click', () => {
+            Object.keys(customSelection).forEach(p => { customSelection[p].base = 2; customSelection[p].overlay = 2; });
+            renderCustomPicker();
+        });
+        document.getElementById('cbpOverlayOff')?.addEventListener('click', () => {
+            Object.keys(customSelection).forEach(p => { customSelection[p].overlay = 0; });
+            renderCustomPicker();
+        });
+
+        renderCustomPicker();
 
         /**
          * Disposes the current skinview3d instance and its renderer resources.
@@ -2896,6 +3037,28 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             }
         }
 
+        // Özel Seçmeli Merger (custom mode) için: verilen vücut parçasının TEK bir
+        // katmanını (base ya da overlay) src -> dst kopyalar. Kollarda model
+        // (Steve/Alex) genişlik farkı armBox/copyArmFull ile otomatik uyarlanır.
+        function copyCustomPartLayer(srcCtx, dstCtx, part, layer, srcModel, dstModel){
+            if (part === 'rightArm' || part === 'leftArm') {
+                copyArmFull(srcCtx, dstCtx, armBox(part, layer, srcModel), armBox(part, layer, dstModel));
+                return;
+            }
+            // head, torso, rightLeg, leftLeg — hepsi sabit UV kutularını kullanır.
+            copyWholeBox(srcCtx, dstCtx, UV_MAP[part][layer], UV_MAP[part][layer]);
+        }
+
+        // Bir parçanın overlay katmanını tamamen şeffaflaştırır ("Kapalı" seçeneği).
+        function clearCustomPartLayer(dstCtx, part, layer, dstModel){
+            const box = (part === 'rightArm' || part === 'leftArm') ? armBox(part, layer, dstModel) : UV_MAP[part][layer];
+            const faces = boxFaces(...box);
+            for (const name of ['top', 'bottom', 'left', 'front', 'right', 'back']) {
+                const [x, y, w, h] = faces[name];
+                dstCtx.clearRect(x, y, w, h);
+            }
+        }
+
         /** @param {CanvasRenderingContext2D} srcCtx @param {CanvasRenderingContext2D} dstCtx @returns {void} */
         function copyOuterLayers(srcCtx, dstCtx){
             for (const rect of Object.values(UV_MAP.outer)) copyArea(srcCtx, dstCtx, ...rect);
@@ -3158,6 +3321,32 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 copyWholeBox(srcCtxOf(leftLegSrc), ctxOut, UV_MAP.leftLeg.overlay, UV_MAP.leftLeg.overlay);
 
                 log(t('chimeraResult', headSrc, torsoSrc, rightArmSrc, leftArmSrc, rightLegSrc, leftLegSrc), 'success');
+
+            } else if (selectedMode === 'custom') {
+                // Özel Seçmeli Merger: kullanıcı her vücut parçasının temel (base)
+                // ve dış katman (overlay) kaynağını tıklamalı arayüzden ayrı ayrı
+                // seçmiştir (bkz. customSelection ve #customPickerCard).
+                ctxOut.clearRect(0, 0, APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE);
+                const dstModel = model1; // Çıktı kol genişliği için referans model.
+                const srcCtxOf = (n) => (n === 1 ? ctx1 : ctx2);
+                const srcModelOf = (n) => (n === 1 ? model1 : model2);
+
+                for (const part of ['head', 'torso', 'rightArm', 'leftArm', 'rightLeg', 'leftLeg']) {
+                    const sel = customSelection[part];
+
+                    // Temel (base) katman: her zaman Skin 1 veya Skin 2.
+                    const baseSrc = sel.base === 2 ? 2 : 1;
+                    copyCustomPartLayer(srcCtxOf(baseSrc), ctxOut, part, 'base', srcModelOf(baseSrc), dstModel);
+
+                    // Dış katman (overlay): Skin 1 / Skin 2 / Kapalı.
+                    if (sel.overlay === 0) {
+                        clearCustomPartLayer(ctxOut, part, 'overlay', dstModel);
+                    } else {
+                        const overlaySrc = sel.overlay === 2 ? 2 : 1;
+                        copyCustomPartLayer(srcCtxOf(overlaySrc), ctxOut, part, 'overlay', srcModelOf(overlaySrc), dstModel);
+                    }
+                }
+                log(t('mode_custom_title') + ': ' + t('mode_custom_desc'), 'success');
             }
 
             log(t("mergeEngineSuccess"), "success");
@@ -3457,7 +3646,8 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
     arm_swap:'mode_arm_swap_title', leg_swap:'mode_leg_swap_title', outer_overlay:'mode_outer_overlay_title',
     base_only:'mode_base_only_title', front_back:'mode_front_back_title', blend:'mode_blend_title',
     chimera:'mode_chimera_title', body_swap:'mode_body_swap_title', head_legs_swap:'mode_head_legs_swap_title',
-    reverse_overlay:'mode_reverse_overlay_title', checker_blend:'mode_checker_blend_title'
+    reverse_overlay:'mode_reverse_overlay_title', checker_blend:'mode_checker_blend_title',
+    custom:'mode_custom_title'
   };
   const $ = id => document.getElementById(id);
 
