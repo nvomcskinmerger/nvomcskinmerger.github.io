@@ -1145,6 +1145,45 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
       </div>
     </div>
 
+    <!-- Özel Seçmeli Merger: Basit modda da tıklamalı vücut parçası seçici -->
+    <div class="simple-panel" id="customPickerCardSimple" style="display:none;">
+      <div class="simple-panel-title" data-i18n="customPickerTitle">Özel Seçmeli Merger — Vücut Parçalarına Tıklayın</div>
+      <p style="font-size:0.78rem;color:var(--text-muted);margin:-4px 0 12px;" data-i18n="customPickerDesc">Her parçaya tıklayarak sırayla Skin 1 → Skin 2 arasında geçiş yapın. Dış katman (overlay) parçalarında ayrıca "Kapalı" seçeneği de bulunur.</p>
+      <div class="custom-picker-wrap">
+        <div class="custom-mannequin-block">
+          <span class="custom-mannequin-title" data-i18n="customBaseLabel">Temel Beden (Body)</span>
+          <div class="custom-mannequin">
+            <div class="cbp-part cbp-head" data-part="head" data-layer="base">S1</div>
+            <div class="cbp-part cbp-rightArm" data-part="rightArm" data-layer="base">S1</div>
+            <div class="cbp-part cbp-torso" data-part="torso" data-layer="base">S1</div>
+            <div class="cbp-part cbp-leftArm" data-part="leftArm" data-layer="base">S1</div>
+            <div class="cbp-legs">
+              <div class="cbp-part" data-part="rightLeg" data-layer="base">S1</div>
+              <div class="cbp-part" data-part="leftLeg" data-layer="base">S1</div>
+            </div>
+          </div>
+        </div>
+        <div class="custom-mannequin-block">
+          <span class="custom-mannequin-title" data-i18n="customOverlayLabel">Dış Katman (Overlay)</span>
+          <div class="custom-mannequin">
+            <div class="cbp-part cbp-head" data-part="head" data-layer="overlay">S1</div>
+            <div class="cbp-part cbp-rightArm" data-part="rightArm" data-layer="overlay">S1</div>
+            <div class="cbp-part cbp-torso" data-part="torso" data-layer="overlay">S1</div>
+            <div class="cbp-part cbp-leftArm" data-part="leftArm" data-layer="overlay">S1</div>
+            <div class="cbp-legs">
+              <div class="cbp-part" data-part="rightLeg" data-layer="overlay">S1</div>
+              <div class="cbp-part" data-part="leftLeg" data-layer="overlay">S1</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap;">
+        <button type="button" class="simple-mini-btn cbp-all-skin1" data-i18n="customAllSkin1">Tümü Skin 1</button>
+        <button type="button" class="simple-mini-btn cbp-all-skin2" data-i18n="customAllSkin2">Tümü Skin 2</button>
+        <button type="button" class="simple-mini-btn cbp-overlay-off" data-i18n="customOverlayOff">Tüm Overlay Kapalı</button>
+      </div>
+    </div>
+
     <div class="simple-panel simple-result">
       <div class="simple-panel-title" data-i18n="uvOutputTitle">Sonuç</div>
       <canvas id="simpleResultCanvas" width="64" height="64"></canvas>
@@ -2225,6 +2264,13 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             googleLoginLabel.textContent = t('logoutPrompt');
             googleLoginBtn.onclick = handleGoogleLogout;
             setTextureVisibility(true);
+            // HATA DÜZELTMESİ: Bu fonksiyon daha önce btnMerge'ü hiç güncellemiyordu.
+            // Kullanıcı skinleri YÜKLEDİKTEN SONRA Google ile giriş yaparsa
+            // (checkModelMismatch() zaten firebaseUser=null iken çalışıp butonu
+            // kilitli bıraktığı için), giriş başarılı olsa bile "Birleştir" butonu
+            // sonsuza kadar disabled kalıyordu. Girişten sonra da model1/model2'nin
+            // o anki durumuna göre buton tekrar değerlendirilir.
+            btnMerge.disabled = !(model1 && model2);
             btnDownload.disabled = !resultReady;
             document.dispatchEvent(new CustomEvent('nvo:auth-updated'));
         }
@@ -2456,8 +2502,13 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             card.classList.add('active');
             card.setAttribute('aria-pressed','true');
             selectedMode = card.getAttribute('data-mode');
+            // Özel Seçmeli Merger paneli hem gelişmiş (advanced) hem basit (simple)
+            // arayüzde bulunur; ikisi de aynı anda senkron açılıp kapanır.
+            const isCustom = (selectedMode === 'custom');
             const cbpCard = document.getElementById('customPickerCard');
-            if (cbpCard) cbpCard.style.display = (selectedMode === 'custom') ? '' : 'none';
+            const cbpCardSimple = document.getElementById('customPickerCardSimple');
+            if (cbpCard) cbpCard.style.display = isCustom ? '' : 'none';
+            if (cbpCardSimple) cbpCardSimple.style.display = isCustom ? '' : 'none';
             resultInfo.removeAttribute('data-i18n');
             resultInfo.textContent = t('modeSelected', t(`mode_${selectedMode}_title`));
             log(t('modeSelected', t(`mode_${selectedMode}_title`)), "warn");
@@ -2475,8 +2526,12 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         });
 
         // ===== Özel Seçmeli Merger: Tıklamalı Vücut Parçası Seçici (UI) =====
+        // NOT: `.cbp-part` seçicileri kasıtlı olarak DOM genelinde (global) çalışır;
+        // böylece hem gelişmiş arayüzdeki (#customPickerCard) hem de basit
+        // arayüzdeki (#customPickerCardSimple) mankenler AYNI customSelection
+        // durumunu paylaşır ve otomatik olarak birbiriyle senkron kalır.
         function renderCustomPicker(){
-            document.querySelectorAll('#cbpBase .cbp-part, #cbpOverlay .cbp-part').forEach(el => {
+            document.querySelectorAll('.cbp-part').forEach(el => {
                 const part = el.getAttribute('data-part');
                 const layer = el.getAttribute('data-layer');
                 const val = customSelection[part][layer];
@@ -2487,7 +2542,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             });
         }
 
-        document.querySelectorAll('#cbpBase .cbp-part, #cbpOverlay .cbp-part').forEach(el => {
+        document.querySelectorAll('.cbp-part').forEach(el => {
             el.setAttribute('role', 'button');
             el.setAttribute('tabindex', '0');
             const cycle = () => {
@@ -2508,18 +2563,21 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             });
         });
 
-        document.getElementById('cbpAllSkin1')?.addEventListener('click', () => {
-            Object.keys(customSelection).forEach(p => { customSelection[p].base = 1; customSelection[p].overlay = 1; });
+        function cbpSetAll(base, overlay){
+            Object.keys(customSelection).forEach(p => { customSelection[p].base = base; customSelection[p].overlay = overlay; });
             renderCustomPicker();
-        });
-        document.getElementById('cbpAllSkin2')?.addEventListener('click', () => {
-            Object.keys(customSelection).forEach(p => { customSelection[p].base = 2; customSelection[p].overlay = 2; });
-            renderCustomPicker();
-        });
-        document.getElementById('cbpOverlayOff')?.addEventListener('click', () => {
+        }
+        function cbpClearAllOverlay(){
             Object.keys(customSelection).forEach(p => { customSelection[p].overlay = 0; });
             renderCustomPicker();
-        });
+        }
+
+        // Hızlı eylem butonları: gelişmiş arayüzde id ile (#cbpAllSkin1 vb.),
+        // basit arayüzde class ile (.cbp-all-skin1 vb.) seçilir; ikisi de aynı
+        // paylaşılan fonksiyonları çağırır.
+        document.querySelectorAll('#cbpAllSkin1, .cbp-all-skin1').forEach(btn => btn.addEventListener('click', () => cbpSetAll(1, 1)));
+        document.querySelectorAll('#cbpAllSkin2, .cbp-all-skin2').forEach(btn => btn.addEventListener('click', () => cbpSetAll(2, 2)));
+        document.querySelectorAll('#cbpOverlayOff, .cbp-overlay-off').forEach(btn => btn.addEventListener('click', cbpClearAllOverlay));
 
         renderCustomPicker();
 
@@ -3747,7 +3805,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
     document.addEventListener('nvo:skin-updated',()=>{syncSimplePreviews();setSimpleMergeState();syncSimpleAuth();});
     document.addEventListener('nvo:result-updated',()=>{syncSimpleResult();setSimpleMergeState();});
     document.addEventListener('nvo:state-reset',()=>{syncSimplePreviews();syncSimpleResult();setSimpleMergeState();syncSimpleAuth();});
-    document.addEventListener('nvo:auth-updated',syncSimpleAuth);
+    document.addEventListener('nvo:auth-updated',()=>{syncSimpleAuth();setSimpleMergeState();});
     window.addEventListener('focus',syncSimpleAuth,{passive:true});
   }
 
