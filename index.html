@@ -321,6 +321,22 @@
             margin-top: 10px;
         }
 
+        .social-bluesky-logo {
+            width: 18px;
+            height: 18px;
+            display: block;
+            object-fit: contain;
+            flex: 0 0 auto;
+        }
+        .icon-link.bluesky-link {
+            gap: 0;
+        }
+        .footer-link-btn .social-bluesky-logo {
+            width: 16px;
+            height: 16px;
+            margin-right: 7px;
+        }
+
         .mode-tabs { display:flex; gap:8px; margin:4px 0 12px; flex-wrap:wrap; }
         .mode-tab { flex:1 1 150px; min-height:42px; border:1px solid rgba(255,255,255,.10); border-radius:12px; background:rgba(255,255,255,.035); color:var(--text-muted); font-weight:800; cursor:pointer; transition:var(--transition); }
         .mode-tab.active { color:var(--text); border-color:var(--accent-cyan); background:rgba(255,59,59,.08); box-shadow:0 0 18px rgba(255,59,59,.08); }
@@ -1254,7 +1270,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         <div class="header-links">
             <a class="icon-link" href="https://github.com/nvomcskinmerger/nvomcskinmerger.github.io" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
             <a class="icon-link" href="https://www.threads.com/@necronvoo" target="_blank" rel="noopener noreferrer" title="Threads" aria-label="Threads"><i class="fa-brands fa-threads"></i></a>
-            <a class="icon-link" href="https://bsky.app/profile/necronvo.bsky.social" target="_blank" rel="noopener noreferrer" title="Bluesky" aria-label="Bluesky"><span style="font-weight:900;font-size:1.05rem;line-height:1;">🦋</span></a>
+            <a class="icon-link bluesky-link" href="https://bsky.app/profile/necronvo.bsky.social" target="_blank" rel="noopener noreferrer" title="Bluesky" aria-label="Bluesky"><img class="social-bluesky-logo" src="https://bsky.social/about/brand-assets/butterfly/bluesky_media_kit_logo_transparent_1.svg" alt="Bluesky"></a>
             <button class="icon-link" id="langToggle" type="button" title="Switch language / Dili değiştir" aria-label="Switch language">
                 <span id="langToggleLabel">EN</span>
             </button>
@@ -1577,7 +1593,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             <button type="button" class="footer-link-btn" onclick="openModal('mitModal')"><i class="fa-solid fa-scale-balanced"></i> <span data-i18n="mitModalTitle">MIT Lisansı</span></button>
             <a class="footer-link-btn" href="https://github.com/nvomcskinmerger/nvomcskinmerger.github.io" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>
             <a class="footer-link-btn" href="https://www.threads.com/@necronvoo" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-threads"></i> <span data-i18n="footerDeveloperLink">Geliştirici</span></a>
-            <a class="footer-link-btn" href="https://bsky.app/profile/necronvo.bsky.social" target="_blank" rel="noopener noreferrer"><span style="font-weight:900;">🦋</span> Bluesky</a>
+            <a class="footer-link-btn bluesky-link" href="https://bsky.app/profile/necronvo.bsky.social" target="_blank" rel="noopener noreferrer"><img class="social-bluesky-logo" src="https://bsky.social/about/brand-assets/butterfly/bluesky_media_kit_logo_transparent_1.svg" alt="Bluesky">Bluesky</a>
         </div>
     </footer>
 
@@ -3031,17 +3047,30 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                     lctx.imageSmoothingEnabled = false;
                     lctx.drawImage(image, 0, 0, 64, 32);
                     nctx.drawImage(legacyCanvas, 0, 0);
-                    // Legacy 64×32 stores only the right limb textures; mirror/copy them
-                    // into the modern left-limb slots so all modern merger modes work.
-                    const mirrorLegacyLimb = (sx, sy, dx, dy) => {
-                        nctx.save();
-                        nctx.translate(dx + 16, dy);
-                        nctx.scale(-1, 1);
-                        nctx.drawImage(legacyCanvas, sx, sy, 16, 16, 0, 0, 16, 16);
-                        nctx.restore();
-                    };
-                    mirrorLegacyLimb(0, 16, 16, 48);
-                    mirrorLegacyLimb(40, 16, 32, 48);
+                    // Legacy 64×32 -> modern 64×64.
+                    // IMPORTANT: a whole 16×16 limb block cannot simply be mirrored.
+                    // The six UV faces have different orientations/positions. Map each
+                    // 4×4 / 4×12 face individually, matching the classic Minecraft UV.
+                    // This preserves seams, front/back, inner/outer, top and bottom faces.
+                    const m = val => Math.floor(val * (legacyCanvas.width / 64));
+                    nctx.save();
+                    nctx.translate(APP_CONFIG.SKIN_SIZE, 0);
+                    nctx.scale(-1, 1);
+                    // Right arm -> left arm
+                    nctx.drawImage(legacyCanvas, m(4), m(16), m(4), m(4), m(40), m(48), m(4), m(4));
+                    nctx.drawImage(legacyCanvas, m(8), m(16), m(4), m(4), m(36), m(48), m(4), m(4));
+                    nctx.drawImage(legacyCanvas, m(0), m(20), m(4), m(12), m(44), m(52), m(4), m(12));
+                    nctx.drawImage(legacyCanvas, m(4), m(20), m(4), m(12), m(40), m(52), m(4), m(12));
+                    nctx.drawImage(legacyCanvas, m(8), m(20), m(4), m(12), m(36), m(52), m(4), m(12));
+                    nctx.drawImage(legacyCanvas, m(12), m(20), m(4), m(12), m(32), m(52), m(4), m(12));
+                    // Right leg -> left leg
+                    nctx.drawImage(legacyCanvas, m(44), m(16), m(4), m(4), m(24), m(48), m(4), m(4));
+                    nctx.drawImage(legacyCanvas, m(48), m(16), m(4), m(4), m(20), m(48), m(4), m(4));
+                    nctx.drawImage(legacyCanvas, m(40), m(20), m(4), m(12), m(28), m(52), m(4), m(12));
+                    nctx.drawImage(legacyCanvas, m(44), m(20), m(4), m(12), m(24), m(52), m(4), m(12));
+                    nctx.drawImage(legacyCanvas, m(48), m(20), m(4), m(12), m(20), m(52), m(4), m(12));
+                    nctx.drawImage(legacyCanvas, m(52), m(20), m(4), m(12), m(16), m(52), m(4), m(12));
+                    nctx.restore();
                 } else {
                     nctx.drawImage(image, 0, 0, APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE);
                 }
