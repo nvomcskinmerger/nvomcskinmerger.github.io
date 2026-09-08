@@ -324,6 +324,23 @@
             .mode-scroll-window { max-height: 300px; }
         }
 
+        .history-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;margin-top:12px;max-height:360px;overflow-y:auto;padding-right:2px}
+        .history-card{background:rgba(255,255,255,0.03);border:1px solid var(--card-border);border-radius:10px;padding:6px;display:flex;flex-direction:column;align-items:center;gap:6px}
+        .history-card img{width:100%;aspect-ratio:1/1;image-rendering:pixelated;border-radius:6px;background:rgba(0,0,0,0.2)}
+        .history-card-label{font-size:0.62rem;color:var(--text-muted);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+        .history-card-actions{display:flex;gap:4px;width:100%}
+        .history-card-actions button{flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--card-border);border-radius:6px;color:var(--text-main);font-size:0.7rem;padding:5px 0;cursor:pointer;transition:var(--transition)}
+        .history-card-actions button:hover{border-color:var(--accent-cyan);color:var(--accent-cyan)}
+        .history-empty{grid-column:1/-1;text-align:center;color:var(--text-muted);font-size:0.8rem;padding:20px 0}
+
+        .username-fetch-row{display:flex;gap:6px;width:100%;margin-top:8px}
+        .username-fetch-input{flex:1;min-width:0;padding:8px 10px;border-radius:9px;border:1px solid var(--card-border);background:rgba(255,255,255,0.04);color:var(--text-main);font-size:0.8rem;outline:none;transition:var(--transition)}
+        .username-fetch-input:focus{border-color:var(--accent-cyan);box-shadow:0 0 0 2px rgba(255,59,59,0.18)}
+        .username-fetch-input::placeholder{color:var(--text-muted)}
+        .username-fetch-btn{white-space:nowrap;flex:0 0 auto}
+        .username-fetch-btn.is-loading i{animation:spin 0.8s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+
         .custom-picker-wrap{display:flex;gap:28px;flex-wrap:wrap;justify-content:center;margin-top:6px}
         .custom-mannequin-block{display:flex;flex-direction:column;align-items:center;gap:10px}
         .custom-mannequin-title{font-size:0.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em}
@@ -1003,6 +1020,7 @@
 
     <!-- skinview3d Library -->
     <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.4.2/bundles/skinview3d.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <style id="simple-ui-v2">
 /* =========================================================
@@ -1189,7 +1207,17 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
       <canvas id="simpleResultCanvas" width="64" height="64"></canvas>
       <div id="simpleStatus" class="simple-status" data-i18n="resultDefault">Henüz bir sonuç yok.</div>
       <button id="simpleDownloadBtn" class="simple-secondary-btn" type="button" disabled style="width:100%;"><i class="fa-solid fa-download"></i> <span data-i18n="downloadBtn">İNDİR</span></button>
+      <button id="simpleDownloadAllBtn" class="simple-secondary-btn" type="button" style="width:100%;"><i class="fa-solid fa-file-zipper"></i> <span data-i18n="downloadAllBtn">Tüm Modları İndir</span></button>
       <button id="simpleUseAsSkin1Btn" class="simple-secondary-btn" type="button" disabled style="width:100%;"><i class="fa-solid fa-arrow-rotate-left"></i> <span data-i18n="useAsSkin1Btn">Sonucu Skin 1 Yap</span></button>
+      <button id="simpleSaveHistoryBtn" class="simple-secondary-btn" type="button" disabled style="width:100%;"><i class="fa-solid fa-bookmark"></i> <span data-i18n="historySaveBtn">Sonucu Galeriye Kaydet</span></button>
+    </div>
+
+    <div class="simple-panel">
+      <div class="simple-panel-title" data-i18n="historyTitle">Geçmiş / Galeri</div>
+      <button id="simpleRefreshHistoryBtn" class="simple-secondary-btn" type="button" style="width:100%;margin-bottom:10px;"><i class="fa-solid fa-rotate"></i> <span data-i18n="historyRefreshBtn">Yenile</span></button>
+      <div class="history-grid" id="simpleHistoryGrid">
+        <p class="history-empty" data-i18n="historyLoginRequired">Geçmişini görmek için Google ile giriş yap.</p>
+      </div>
     </div>
 
     <div class="simple-footer">NVO TEAM · Minecraft Skin Merger</div>
@@ -1250,6 +1278,10 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 <canvas id="canvas1" class="preview-canvas" width="64" height="64"></canvas>
                 <div class="file-meta" id="meta1"><span><span class="status-dot"></span> <span data-i18n="pendingLabel">Bekleniyor</span></span></div>
                 <div class="utility-row"><button class="utility-btn" id="clear1" type="button"><i class="fa-solid fa-trash"></i> <span data-i18n="clearBtn">Temizle</span></button></div>
+                <div class="username-fetch-row">
+                    <input type="text" class="username-fetch-input" id="usernameFetch1" data-i18n-placeholder="usernameFetchPlaceholder" placeholder="Minecraft kullanıcı adı..." autocomplete="off" spellcheck="false">
+                    <button type="button" class="utility-btn username-fetch-btn" id="usernameFetchBtn1"><i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="usernameFetchBtn">Getir</span></button>
+                </div>
             </div>
         </div>
 
@@ -1265,6 +1297,10 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 <canvas id="canvas2" class="preview-canvas" width="64" height="64"></canvas>
                 <div class="file-meta" id="meta2"><span><span class="status-dot"></span> <span data-i18n="pendingLabel">Bekleniyor</span></span></div>
                 <div class="utility-row"><button class="utility-btn" id="clear2" type="button"><i class="fa-solid fa-trash"></i> <span data-i18n="clearBtn">Temizle</span></button></div>
+                <div class="username-fetch-row">
+                    <input type="text" class="username-fetch-input" id="usernameFetch2" data-i18n-placeholder="usernameFetchPlaceholder" placeholder="Minecraft kullanıcı adı..." autocomplete="off" spellcheck="false">
+                    <button type="button" class="utility-btn username-fetch-btn" id="usernameFetchBtn2"><i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="usernameFetchBtn">Getir</span></button>
+                </div>
             </div>
         </div>
 
@@ -1438,9 +1474,12 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                         <button id="btnResetAll" class="utility-btn" type="button" data-i18n-title="resetTitle" title="Her şeyi baştan başlat">
                             <i class="fa-solid fa-rotate-left"></i> <span data-i18n="resetBtn">Sıfırla</span>
                         </button>
+                        <button id="btnDownloadAll" class="utility-btn" type="button" data-i18n-title="downloadAllTitle" title="Tüm birleştirme modlarını tek seferde ZIP olarak indir">
+                            <i class="fa-solid fa-file-zipper"></i> <span data-i18n="downloadAllBtn">Tüm Modları İndir</span>
+                        </button>
                     </div>
                     <details class="advanced-section">
-                        <summary data-i18n="advancedToggle">Gelişmiş</summary>
+                        <summary data-i18n="advancedToggleChain">Zincirleme Birleştirme</summary>
                         <button id="btnUseAsSkin1" class="utility-btn" disabled style="width:100%;margin-top:8px;" data-i18n-title="useAsSkin1Title" title="Birleştirme sonucunu yeni Skin 1 olarak yükleyip zincirleme birleştirme yapın">
                             <i class="fa-solid fa-link"></i> <span data-i18n="useAsSkin1Btn">Sonucu Skin 1 Yap</span>
                         </button>
@@ -1458,7 +1497,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                         <button id="toggleRotate"><i class="fa-solid fa-rotate"></i> <span data-i18n="animRotateBtn">Dön</span></button>
                     </div>
                     <details class="advanced-section">
-                        <summary data-i18n="advancedToggle">Gelişmiş</summary>
+                        <summary data-i18n="advancedToggleCompare">Önce / Sonra Karşılaştır</summary>
                         <div class="three-controls" style="margin-top:8px;">
                             <button id="compareSkin1" disabled data-i18n-title="compareSkin1Title" title="3D modelde Skin 1'i (orijinal) göster"><i class="fa-solid fa-eye"></i> <span data-i18n="compareSkin1Btn">Skin 1</span></button>
                             <button id="compareSkin2" disabled data-i18n-title="compareSkin2Title" title="3D modelde Skin 2'yi (orijinal) göster"><i class="fa-solid fa-eye"></i> <span data-i18n="compareSkin2Btn">Skin 2</span></button>
@@ -1466,6 +1505,21 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                         </div>
                     </details>
                 </div>
+            </div>
+        </div>
+
+        <!-- Geçmiş / Galeri -->
+        <div class="glass-card full-width animate-fade">
+            <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="historyTitle">Geçmiş / Galeri</span></div>
+                <button id="btnRefreshHistory" class="utility-btn" type="button"><i class="fa-solid fa-rotate"></i> <span data-i18n="historyRefreshBtn">Yenile</span></button>
+            </div>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin:6px 0 0;" data-i18n="historyDesc">Beğendiğin sonuçları hesabına kaydet, istediğin zaman tekrar indir ya da Skin 1 olarak yeniden yükle.</p>
+            <div class="utility-row" style="margin-top:12px;">
+                <button id="btnSaveHistory" class="utility-btn" type="button" disabled><i class="fa-solid fa-bookmark"></i> <span data-i18n="historySaveBtn">Sonucu Galeriye Kaydet</span></button>
+            </div>
+            <div class="history-grid" id="historyGrid">
+                <p class="history-empty" data-i18n="historyLoginRequired">Geçmişini görmek için Google ile giriş yap.</p>
             </div>
         </div>
     </main>
@@ -1656,7 +1710,9 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             resultReady: false,
             mergeInProgress: false,
             compareMode: 'result',
-            viewerResizeHandler: null
+            viewerResizeHandler: null,
+            viewerContextLostHandler: null,
+            viewerContextRestoredHandler: null
         };
 
         let authStateReadyResolve;
@@ -1737,6 +1793,28 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 customAllSkin1: 'Tümü Skin 1',
                 customAllSkin2: 'Tümü Skin 2',
                 customOverlayOff: 'Tüm Overlay Kapalı',
+                usernameFetchPlaceholder: 'Minecraft kullanıcı adı...',
+                usernameFetchBtn: 'Getir',
+                usernameRequired: 'Lütfen bir kullanıcı adı girin.',
+                usernameInvalid: 'Geçersiz kullanıcı adı (2-16 karakter, harf/rakam/_ ).',
+                usernameNotFound: (name) => `"${name}" adlı bir Minecraft hesabı bulunamadı.`,
+                skinFetchFailed: 'Skin alınamadı, lütfen tekrar deneyin.',
+                downloadAllTitle: 'Tüm birleştirme modlarını tek seferde ZIP olarak indir',
+                downloadAllBtn: 'Tüm Modları İndir',
+                batchDownloadStarted: '15 mod da üretiliyor, lütfen bekleyin…',
+                batchDownloadSuccess: 'Tüm modlar ZIP olarak indirildi.',
+                zipLibMissing: 'ZIP kütüphanesi yüklenemedi, lütfen sayfayı yenileyin.',
+                historyTitle: 'Geçmiş / Galeri',
+                historyRefreshBtn: 'Yenile',
+                historyDesc: 'Beğendiğin sonuçları hesabına kaydet, istediğin zaman tekrar indir ya da Skin 1 olarak yeniden yükle.',
+                historySaveBtn: 'Sonucu Galeriye Kaydet',
+                historyLoginRequired: 'Geçmişini görmek için Google ile giriş yap.',
+                historyLoading: 'Yükleniyor…',
+                historyEmpty: 'Henüz kaydedilmiş bir sonuç yok.',
+                historyLoadFailed: 'Geçmiş yüklenemedi, lütfen tekrar dene.',
+                historySaveSuccess: 'Sonuç galeriye kaydedildi.',
+                noResultToSave: 'Kaydedilecek bir sonuç yok, önce birleştirme yap.',
+                deleteBtn: 'Sil',
                 modeSelected: (name) => `Seçilen mod: ${name}`,
                 readyStatus: (m1,m2,mode) => `Hazır: ${m1.toUpperCase()} + ${m2.toUpperCase()} • ${mode}`,
                 mergeStarted: (mode) => `İşlem başlatıldı — Seçilen mod: [${mode}]`,
@@ -1765,7 +1843,8 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 downloadBtn: 'İNDİR',
                 useAsSkin1Btn: 'Sonucu Skin 1 Yap',
                 resetBtn: 'Sıfırla',
-                advancedToggle: 'Gelişmiş',
+                advancedToggleChain: 'Zincirleme Birleştirme',
+                advancedToggleCompare: 'Önce / Sonra Karşılaştır',
                 textureLockMsg: '3D skin texture için Google ile giriş yapın. Model/animasyon yine kullanılabilir.',
                 animWalkBtn: 'Yürü',
                 animRunBtn: 'Koş',
@@ -1885,6 +1964,28 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 customAllSkin1: 'All Skin 1',
                 customAllSkin2: 'All Skin 2',
                 customOverlayOff: 'All Overlays Off',
+                usernameFetchPlaceholder: 'Minecraft username...',
+                usernameFetchBtn: 'Fetch',
+                usernameRequired: 'Please enter a username.',
+                usernameInvalid: 'Invalid username (2-16 characters, letters/digits/_).',
+                usernameNotFound: (name) => `No Minecraft account named "${name}" was found.`,
+                skinFetchFailed: 'Could not fetch the skin, please try again.',
+                downloadAllTitle: 'Download every merge mode at once as a ZIP',
+                downloadAllBtn: 'Download All Modes',
+                batchDownloadStarted: 'Generating all 15 modes, please wait…',
+                batchDownloadSuccess: 'All modes downloaded as a ZIP.',
+                zipLibMissing: 'The ZIP library failed to load, please refresh the page.',
+                historyTitle: 'History / Gallery',
+                historyRefreshBtn: 'Refresh',
+                historyDesc: 'Save results you like to your account, download them again anytime, or reload them as Skin 1.',
+                historySaveBtn: 'Save Result to Gallery',
+                historyLoginRequired: 'Sign in with Google to see your history.',
+                historyLoading: 'Loading…',
+                historyEmpty: 'No saved results yet.',
+                historyLoadFailed: 'Could not load history, please try again.',
+                historySaveSuccess: 'Result saved to your gallery.',
+                noResultToSave: 'Nothing to save yet — merge something first.',
+                deleteBtn: 'Delete',
                 modeSelected: (name) => `Selected mode: ${name}`,
                 readyStatus: (m1,m2,mode) => `Ready: ${m1.toUpperCase()} + ${m2.toUpperCase()} • ${mode}`,
                 mergeStarted: (mode) => `Process started — Selected mode: [${mode}]`,
@@ -1913,7 +2014,8 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 downloadBtn: 'DOWNLOAD',
                 useAsSkin1Btn: 'Use Result as Skin 1',
                 resetBtn: 'Reset',
-                advancedToggle: 'Advanced',
+                advancedToggleChain: 'Chain Merge',
+                advancedToggleCompare: 'Before / After Compare',
                 textureLockMsg: 'Sign in with Google to view the 3D skin texture. The model/animation still works without it.',
                 animWalkBtn: 'Walk',
                 animRunBtn: 'Run',
@@ -1987,6 +2089,9 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             document.querySelectorAll('[data-i18n-title]').forEach(el => {
                 el.title = t(el.getAttribute('data-i18n-title'));
             });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+            });
             const langBtnLabel = document.getElementById('langToggleLabel');
             const langBtn = document.getElementById('langToggle');
             if (langBtnLabel) langBtnLabel.textContent = currentLang === 'en' ? 'TR' : 'EN';
@@ -2048,6 +2153,17 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 const active = btn.getAttribute('data-ui-style') === currentUIStyle;
                 btn.classList.toggle('active', active);
                 btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+            });
+            // HATA DÜZELTMESİ: Sayfa "Basit" modda açılırsa 3D canvas o an
+            // display:none olduğu için clientWidth=0 okunur ve görüntüleyici
+            // 1px genişlikte kurulur. Kullanıcı sonradan "Premium" moda
+            // geçtiğinde canvas tekrar görünür olur ama HİÇBİR ZAMAN yeniden
+            // boyutlandırılmaz (yalnızca window 'resize' olayında tetiklenir) —
+            // bu da "3D görünüm bozuk/küçük" şikayetinin asıl sebebiydi.
+            // Her stil değişiminde, layout kesinleştikten sonra (bir sonraki
+            // frame) görüntüleyiciyi gerçek genişliğe göre yeniden boyutlandır.
+            requestAnimationFrame(() => {
+                if (AppState.viewerResizeHandler) AppState.viewerResizeHandler();
             });
         }
         document.querySelectorAll('.ui-style-btn').forEach(btn => {
@@ -2591,6 +2707,13 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 window.removeEventListener('resize', AppState.viewerResizeHandler);
                 AppState.viewerResizeHandler = null;
             }
+            const canvasElement = document.getElementById('skin_3d_canvas');
+            if (canvasElement) {
+                if (AppState.viewerContextLostHandler) canvasElement.removeEventListener('webglcontextlost', AppState.viewerContextLostHandler, false);
+                if (AppState.viewerContextRestoredHandler) canvasElement.removeEventListener('webglcontextrestored', AppState.viewerContextRestoredHandler, false);
+            }
+            AppState.viewerContextLostHandler = null;
+            AppState.viewerContextRestoredHandler = null;
             if (!skinViewer) return;
             try {
                 if (typeof skinViewer.dispose === 'function') skinViewer.dispose();
@@ -2626,7 +2749,45 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 skinViewer.resize(width, APP_CONFIG.VIEWER_HEIGHT);
             };
             window.addEventListener('resize', AppState.viewerResizeHandler, { passive: true });
+
+            // HATA DÜZELTMESİ: Mobil tarayıcılarda sekme arka plana alınıp
+            // uzun süre sonra geri dönüldüğünde ya da GPU belleği başka bir
+            // sekme/uygulama tarafından geri talep edildiğinde WebGL bağlamı
+            // "lost" (kayıp) duruma düşebilir. Bu durumda 3D ekran siyah/donuk
+            // kalır ve tarayıcı bunu KENDİLİĞİNDEN düzeltmez — "3D görünüm
+            // bazen bozuk oluyor" şikayetinin diğer asıl sebebi buydu.
+            // contextlost'ta varsayılan davranışı engelleyip (tarayıcının
+            // context'i tamamen terk etmesini önler), kısa bir gecikmeyle
+            // görüntüleyiciyi baştan kuruyoruz.
+            AppState.viewerContextLostHandler = (event) => {
+                event.preventDefault();
+                log('3D görüntüleyici WebGL bağlamını kaybetti, otomatik onarılıyor…', 'warn');
+            };
+            AppState.viewerContextRestoredHandler = () => {
+                setTimeout(() => {
+                    init3DViewer();
+                    setTextureVisibility(!!firebaseUser);
+                }, 50);
+            };
+            canvasElement.addEventListener('webglcontextlost', AppState.viewerContextLostHandler, false);
+            canvasElement.addEventListener('webglcontextrestored', AppState.viewerContextRestoredHandler, false);
         }
+
+        // İKİNCİL GÜVENLİK AĞI: bazı mobil tarayıcılar contextlost/restored
+        // olaylarını hiç tetiklemeden render döngüsünü sessizce durdurabilir.
+        // Sekme tekrar görünür olduğunda context'in gerçekten kayıp olup
+        // olmadığını doğrudan sorup, gerekirse görüntüleyiciyi yeniden kuruyoruz.
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState !== 'visible' || !skinViewer) return;
+            try {
+                const glCtx = skinViewer.renderer && typeof skinViewer.renderer.getContext === 'function'
+                    ? skinViewer.renderer.getContext() : null;
+                if (glCtx && typeof glCtx.isContextLost === 'function' && glCtx.isContextLost()) {
+                    init3DViewer();
+                    setTextureVisibility(!!firebaseUser);
+                }
+            } catch (error) { /* sessizce yoksay: dokunulmadan bırak */ }
+        });
 
         /**
          * @param {string} msg
@@ -2814,6 +2975,82 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
         inputSkin1.addEventListener('change', event => { void handleFile(event.target.files?.[0], ctx1, 'label1', true); });
         inputSkin2.addEventListener('change', event => { void handleFile(event.target.files?.[0], ctx2, 'label2', false); });
+
+        // ===================== Kullanıcı Adıyla Skin Çekme =====================
+        // Akış: kullanıcı adı -> UUID (resmi Mojang API, CORS engellenirse
+        // playerdb.co yedeğine düşülür) -> UUID -> ham 64x64 skin PNG'si
+        // (Crafatar, tarayıcıdan çağrım için CORS açık). Sonuç, mevcut
+        // handleFile() doğrulama/işleme hattına AYNEN bir dosya gibi verilir.
+        async function fetchSkinByUsername(username){
+            username = (username || '').trim();
+            if (!username) throw new Error(t('usernameRequired'));
+            if (!/^[A-Za-z0-9_]{2,16}$/.test(username)) throw new Error(t('usernameInvalid'));
+
+            let uuid = null;
+
+            // 1) Birincil kaynak: resmi Mojang API.
+            try {
+                const r1 = await fetch(`https://api.mojang.com/users/profiles/minecraft/${encodeURIComponent(username)}`);
+                if (r1.status === 404) throw new Error(t('usernameNotFound', username));
+                if (r1.ok) {
+                    const data = await r1.json();
+                    uuid = data && data.id ? data.id : null;
+                }
+            } catch (e) {
+                if (e instanceof Error && e.message === t('usernameNotFound', username)) throw e;
+                // Ağ/CORS hatası olabilir; aşağıdaki yedek servise geçilecek.
+            }
+
+            // 2) Yedek kaynak: CORS'u açık playerdb.co (Mojang engellenirse).
+            if (!uuid) {
+                try {
+                    const r2 = await fetch(`https://playerdb.co/api/player/minecraft/${encodeURIComponent(username)}`);
+                    if (r2.ok) {
+                        const data2 = await r2.json();
+                        const rawId = data2 && data2.data && data2.data.player ? data2.data.player.id : null;
+                        uuid = rawId ? rawId.replace(/-/g, '') : null;
+                    }
+                } catch (e) { /* yoksay: sıradaki hata mesajıyla sonlanacak */ }
+            }
+
+            if (!uuid) throw new Error(t('usernameNotFound', username));
+
+            // 3) UUID -> ham skin PNG'si (Crafatar).
+            const r3 = await fetch(`https://crafatar.com/skins/${uuid}`);
+            if (!r3.ok) throw new Error(t('skinFetchFailed'));
+            const blob = await r3.blob();
+            return new File([blob], `${username}.png`, { type: 'image/png' });
+        }
+
+        function wireUsernameFetch(btnId, inputId, ctx, labelId, isFirst){
+            const btn = document.getElementById(btnId);
+            const input = document.getElementById(inputId);
+            if (!btn || !input) return;
+            const run = async () => {
+                if (btn.disabled) return;
+                const username = input.value;
+                if (!username.trim()) { reportUserError(new Error(t('usernameRequired')), 'error'); return; }
+                btn.disabled = true;
+                btn.classList.add('is-loading');
+                try {
+                    const file = await fetchSkinByUsername(username);
+                    await handleFile(file, ctx, labelId, isFirst);
+                } catch (error) {
+                    reportUserError(error, 'error');
+                } finally {
+                    btn.disabled = false;
+                    btn.classList.remove('is-loading');
+                }
+            };
+            btn.addEventListener('click', run);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); run(); }
+            });
+        }
+        wireUsernameFetch('usernameFetchBtn1', 'usernameFetch1', ctx1, 'label1', true);
+        wireUsernameFetch('usernameFetchBtn2', 'usernameFetch2', ctx2, 'label2', false);
+        // ===================== /Kullanıcı Adıyla Skin Çekme =====================
+
 
         /**
          * Executes one merge transaction with explicit state guards and recovery.
@@ -3472,6 +3709,19 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         document.getElementById('clear1').addEventListener('click', () => clearSkin(1));
         document.getElementById('clear2').addEventListener('click', () => clearSkin(2));
 
+        // "Tüm Modları İndir" butonu HER ZAMAN btnMerge ile AYNI ön koşullara
+        // (giriş yapılmış + iki skin de yüklü) bağlıdır. Ayrı ayrı her yerde
+        // tekrar etmek yerine, durum değiştiren üç olayı dinleyip tek noktadan
+        // senkronluyoruz — bu sayede yeni bir gate eklense bile burası bozulmaz.
+        function syncDownloadAllButton(){
+            const btnAll = document.getElementById('btnDownloadAll');
+            if (btnAll) btnAll.disabled = btnMerge.disabled;
+        }
+        document.addEventListener('nvo:skin-updated', syncDownloadAllButton);
+        document.addEventListener('nvo:auth-updated', syncDownloadAllButton);
+        document.addEventListener('nvo:result-updated', syncDownloadAllButton);
+        syncDownloadAllButton();
+
         // ===== Öncesi/Sonrası Karşılaştırma (3D önizlemede Skin1 / Skin2 / Sonuç arası geçiş) =====
         let compareMode = 'result';
 
@@ -3582,6 +3832,220 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 reportUserError(error, 'error');
             }
         });
+
+        // ===================== Toplu / Çoklu İndirme (Tüm Modlar ZIP) =====================
+        // Tüm 15 birleştirme modunu sırayla mevcut Skin 1 / Skin 2 üzerinde
+        // çalıştırıp tek bir .zip dosyasında toplar. `selectedMode` global
+        // durumunu geçici olarak değiştirdiğimiz için işlem bitince kullanıcının
+        // GERÇEKTEN seçili olduğu moda ve görünen sonuca geri dönülür.
+        const ALL_MERGE_MODES = ['half','head_swap','top_bottom','arm_swap','leg_swap','outer_overlay','base_only','front_back','blend','chimera','body_swap','head_legs_swap','reverse_overlay','checker_blend','custom'];
+
+        async function downloadAllModes(){
+            if (isLoadingAuth) { reportUserError(new Error(t('authNotReady')), 'warn'); return; }
+            if (!firebaseUser) { reportUserError(new Error(t('downloadLoginRequired')), 'warn'); return; }
+            if (!model1 || !model2) { reportUserError(new Error(t('unexpectedError')), 'error'); return; }
+            if (typeof JSZip === 'undefined') { reportUserError(new Error(t('zipLibMissing')), 'error'); return; }
+            if (AppState.mergeInProgress) return;
+
+            const btnAdv = document.getElementById('btnDownloadAll');
+            const btnSimple = document.getElementById('simpleDownloadAllBtn');
+            [btnAdv, btnSimple].forEach(b => { if (b) { b.disabled = true; b.classList.add('is-loading'); } });
+            AppState.mergeInProgress = true;
+            const originalMode = selectedMode;
+            log(t('batchDownloadStarted'), 'info');
+
+            try {
+                const zip = new JSZip();
+                for (const mode of ALL_MERGE_MODES) {
+                    selectedMode = mode;
+                    try {
+                        executeMergeLogic();
+                    } catch (error) {
+                        // Bir mod (ör. eksik model eşleşmesi nedeniyle) başarısız olsa
+                        // bile diğer modların üretimini engellemesin.
+                        log(`${mode}: ${error.message}`, 'warn');
+                        continue;
+                    }
+                    const blob = await new Promise(resolve => resultCanvas.toBlob(resolve, 'image/png'));
+                    if (blob) zip.file(`${mode}.png`, blob);
+                }
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                const url = URL.createObjectURL(zipBlob);
+                const link = document.createElement('a');
+                link.download = 'nvo_tum_modlar.zip';
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 4000);
+                log(t('batchDownloadSuccess'), 'success');
+            } catch (error) {
+                reportUserError(error, 'error');
+            } finally {
+                // Görüneni, kullanıcının GERÇEKTEN seçili olduğu moda geri döndür.
+                selectedMode = originalMode;
+                try {
+                    executeMergeLogic();
+                    resultReady = true;
+                    AppState.resultReady = true;
+                    btnDownload.disabled = !firebaseUser;
+                    btnUseAsSkin1.disabled = !firebaseUser;
+                    document.dispatchEvent(new CustomEvent('nvo:result-updated'));
+                } catch (e) { /* yoksay */ }
+                AppState.mergeInProgress = false;
+                [btnAdv, btnSimple].forEach(b => { if (b) b.classList.remove('is-loading'); });
+                syncDownloadAllButton();
+            }
+        }
+        document.getElementById('btnDownloadAll')?.addEventListener('click', downloadAllModes);
+        document.getElementById('simpleDownloadAllBtn')?.addEventListener('click', downloadAllModes);
+        // ===================== /Toplu İndirme =====================
+
+        // ===================== Geçmiş / Galeri (Firestore) =====================
+        // NOT: Bu özellik `window.NVO.db` (Firestore) üzerinde
+        // `users/{uid}/history/{autoId}` koleksiyonuna yazar/okur. Firestore
+        // güvenlik kurallarının Firebase konsolunda şu şekilde ayarlanmış
+        // olması GEREKİR, aksi halde yazma/okuma "permission-denied" ile
+        // başarısız olur:
+        //   match /users/{userId}/history/{docId} {
+        //     allow read, write: if request.auth != null && request.auth.uid == userId;
+        //   }
+        const historyGrids = () => [document.getElementById('historyGrid'), document.getElementById('simpleHistoryGrid')].filter(Boolean);
+
+        async function historyCollection(){
+            if (!firebaseUser) return null;
+            const { db } = await getFirebase();
+            return db.collection('users').doc(firebaseUser.uid).collection('history');
+        }
+
+        async function saveResultToHistory(){
+            if (isLoadingAuth) { reportUserError(new Error(t('authNotReady')), 'warn'); return; }
+            if (!firebaseUser) { reportUserError(new Error(t('downloadLoginRequired')), 'warn'); return; }
+            if (!resultReady) { reportUserError(new Error(t('noResultToSave')), 'warn'); return; }
+
+            const btns = [document.getElementById('btnSaveHistory'), document.getElementById('simpleSaveHistoryBtn')].filter(Boolean);
+            btns.forEach(b => { b.disabled = true; b.classList.add('is-loading'); });
+            try {
+                const col = await historyCollection();
+                if (!col) throw new Error(t('unexpectedError'));
+                const dataUrl = canvasToPngDataUrl(resultCanvas);
+                await col.add({
+                    mode: selectedMode,
+                    dataUrl,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                log(t('historySaveSuccess'), 'success');
+                await loadHistory();
+            } catch (error) {
+                reportUserError(error, 'error');
+            } finally {
+                btns.forEach(b => { b.disabled = !(firebaseUser && resultReady); b.classList.remove('is-loading'); });
+            }
+        }
+
+        function renderHistoryMessage(msgKey){
+            historyGrids().forEach(g => { g.innerHTML = `<p class="history-empty">${t(msgKey)}</p>`; });
+        }
+
+        async function loadHistory(){
+            const grids = historyGrids();
+            if (!grids.length) return;
+            if (isLoadingAuth) return;
+            if (!firebaseUser) { renderHistoryMessage('historyLoginRequired'); return; }
+
+            renderHistoryMessage('historyLoading');
+            try {
+                const col = await historyCollection();
+                if (!col) { renderHistoryMessage('unexpectedError'); return; }
+                const snap = await col.orderBy('createdAt', 'desc').limit(30).get();
+                if (snap.empty) { renderHistoryMessage('historyEmpty'); return; }
+                const items = [];
+                snap.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
+                grids.forEach(g => {
+                    g.innerHTML = '';
+                    items.forEach(item => g.appendChild(buildHistoryCard(item)));
+                });
+            } catch (error) {
+                console.warn('[NVO] history load failed:', error);
+                renderHistoryMessage('historyLoadFailed');
+            }
+        }
+
+        function buildHistoryCard(item){
+            const card = document.createElement('div');
+            card.className = 'history-card';
+
+            const img = document.createElement('img');
+            img.src = item.dataUrl;
+            img.alt = item.mode || '';
+            img.loading = 'lazy';
+
+            const label = document.createElement('span');
+            label.className = 'history-card-label';
+            label.textContent = item.mode ? t(`mode_${item.mode}_title`) : '—';
+
+            const actions = document.createElement('div');
+            actions.className = 'history-card-actions';
+
+            const dlBtn = document.createElement('button');
+            dlBtn.type = 'button';
+            dlBtn.title = t('downloadBtn');
+            dlBtn.innerHTML = '<i class="fa-solid fa-download"></i>';
+            dlBtn.addEventListener('click', () => {
+                const link = document.createElement('a');
+                link.download = `nvo_${item.mode || 'skin'}_${item.id}.png`;
+                link.href = item.dataUrl;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+            });
+
+            const useBtn = document.createElement('button');
+            useBtn.type = 'button';
+            useBtn.title = t('useAsSkin1Btn');
+            useBtn.innerHTML = '<i class="fa-solid fa-link"></i>';
+            useBtn.addEventListener('click', async () => {
+                try {
+                    const blob = await (await fetch(item.dataUrl)).blob();
+                    const file = new File([blob], `${item.mode || 'history'}.png`, { type: 'image/png' });
+                    await handleFile(file, ctx1, 'label1', true);
+                } catch (error) { reportUserError(error, 'error'); }
+            });
+
+            const delBtn = document.createElement('button');
+            delBtn.type = 'button';
+            delBtn.title = t('deleteBtn');
+            delBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+            delBtn.addEventListener('click', async () => {
+                delBtn.disabled = true;
+                try {
+                    const col = await historyCollection();
+                    if (!col) throw new Error(t('unexpectedError'));
+                    await col.doc(item.id).delete();
+                    await loadHistory();
+                } catch (error) {
+                    reportUserError(error, 'error');
+                    delBtn.disabled = false;
+                }
+            });
+
+            actions.append(dlBtn, useBtn, delBtn);
+            card.append(img, label, actions);
+            return card;
+        }
+
+        function syncHistorySaveButtons(){
+            const btns = [document.getElementById('btnSaveHistory'), document.getElementById('simpleSaveHistoryBtn')].filter(Boolean);
+            btns.forEach(b => { b.disabled = !(firebaseUser && resultReady); });
+        }
+
+        document.getElementById('btnSaveHistory')?.addEventListener('click', saveResultToHistory);
+        document.getElementById('simpleSaveHistoryBtn')?.addEventListener('click', saveResultToHistory);
+        document.getElementById('btnRefreshHistory')?.addEventListener('click', loadHistory);
+        document.getElementById('simpleRefreshHistoryBtn')?.addEventListener('click', loadHistory);
+        document.addEventListener('nvo:auth-updated', () => { loadHistory(); syncHistorySaveButtons(); });
+        document.addEventListener('nvo:result-updated', syncHistorySaveButtons);
+        // ===================== /Geçmiş / Galeri =====================
 
         // 3D Kontroller — skinview3d'nin native animation API'si.
         // Animasyon katmanındaki WebGL hataları ana uygulamanın toast sistemine sızmaz.
@@ -3759,6 +4223,10 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
   function setSimpleMergeState(){
     const real=$('btnMerge');
     if($('simpleMergeBtn')) $('simpleMergeBtn').disabled=real?.disabled ?? true;
+    // Toplu ZIP indirme, gerçek Birleştir düğmesiyle AYNI ön koşullara
+    // (giriş yapılmış + iki skin de yüklü) bağlıdır; sonuç üretilmiş
+    // olmasına gerek yoktur, bu yüzden aynı disabled durumunu paylaşır.
+    if($('simpleDownloadAllBtn')) $('simpleDownloadAllBtn').disabled=real?.disabled ?? true;
   }
 
   function syncSimpleAuth(){
