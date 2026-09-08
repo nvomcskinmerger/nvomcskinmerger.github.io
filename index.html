@@ -327,6 +327,12 @@
             display: block;
             object-fit: contain;
             flex: 0 0 auto;
+            opacity: .84;
+            transition: opacity .16s ease;
+        }
+        .icon-link:hover .social-bluesky-logo,
+        .footer-link-btn:hover .social-bluesky-logo {
+            opacity: 1;
         }
         .icon-link.bluesky-link {
             gap: 0;
@@ -862,6 +868,10 @@
         font-weight: 400;
     }
 
+
+    html[data-theme="light"] .social-bluesky-logo {
+        content: url("https://bsky.social/about/brand-assets/butterfly/bluesky_media_kit_logo_transparent_4.svg");
+    }
     body.ui-premium .header-links {
         margin-top: 14px;
         gap: 6px;
@@ -1149,7 +1159,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 <section id="simpleApp" aria-label="Simple interface">
   <div class="simple-shell">
     <div class="simple-top">
-      <div><div class="simple-brand">NVO Skin Merger</div><div class="simple-sub">64×32 → 128×128 Minecraft Skin</div></div>
+      <div><div class="simple-brand">NVO Skin Merger</div><div class="simple-sub">Native 64×32 / 64×64 / 128×64 / 128×128 Skin Merger</div></div>
       <div class="simple-tools">
         <button class="simple-tool" id="simpleLangBtn" type="button" aria-label="Language"><span id="simpleLangLabel">EN</span></button>
         <button class="simple-tool" id="simpleThemeBtn" type="button" aria-label="Theme"><i class="fa-solid fa-moon" id="simpleThemeIcon"></i></button>
@@ -1270,7 +1280,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         <div class="header-links">
             <a class="icon-link" href="https://github.com/nvomcskinmerger/nvomcskinmerger.github.io" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
             <a class="icon-link" href="https://www.threads.com/@necronvoo" target="_blank" rel="noopener noreferrer" title="Threads" aria-label="Threads"><i class="fa-brands fa-threads"></i></a>
-            <a class="icon-link bluesky-link" href="https://bsky.app/profile/necronvo.bsky.social" target="_blank" rel="noopener noreferrer" title="Bluesky" aria-label="Bluesky"><img class="social-bluesky-logo" src="https://bsky.social/about/brand-assets/butterfly/bluesky_media_kit_logo_transparent_1.svg" alt="Bluesky"></a>
+            <a class="icon-link bluesky-link" href="https://bsky.app/profile/necronvo.bsky.social" target="_blank" rel="noopener noreferrer" title="Bluesky" aria-label="Bluesky"><img class="social-bluesky-logo" src="https://bsky.social/about/brand-assets/butterfly/bluesky_media_kit_logo_transparent_3.svg" alt="Bluesky"></a>
             <button class="icon-link" id="langToggle" type="button" title="Switch language / Dili değiştir" aria-label="Switch language">
                 <span id="langToggleLabel">EN</span>
             </button>
@@ -1593,7 +1603,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             <button type="button" class="footer-link-btn" onclick="openModal('mitModal')"><i class="fa-solid fa-scale-balanced"></i> <span data-i18n="mitModalTitle">MIT Lisansı</span></button>
             <a class="footer-link-btn" href="https://github.com/nvomcskinmerger/nvomcskinmerger.github.io" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>
             <a class="footer-link-btn" href="https://www.threads.com/@necronvoo" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-threads"></i> <span data-i18n="footerDeveloperLink">Geliştirici</span></a>
-            <a class="footer-link-btn bluesky-link" href="https://bsky.app/profile/necronvo.bsky.social" target="_blank" rel="noopener noreferrer"><img class="social-bluesky-logo" src="https://bsky.social/about/brand-assets/butterfly/bluesky_media_kit_logo_transparent_1.svg" alt="Bluesky">Bluesky</a>
+            <a class="footer-link-btn bluesky-link" href="https://bsky.app/profile/necronvo.bsky.social" target="_blank" rel="noopener noreferrer"><img class="social-bluesky-logo" src="https://bsky.social/about/brand-assets/butterfly/bluesky_media_kit_logo_transparent_3.svg" alt="Bluesky">Bluesky</a>
         </div>
     </footer>
 
@@ -1833,7 +1843,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 switchToEnglish: 'Switch language',
                 usageTitle: 'Firebase üzerindeki toplam birleştirme kullanımı',
                 terminalTitle: 'Derin Tarama Konsolu',
-                terminalReady: '[INFO] Sistem hazır. 64×32, 64×64, 128×64 ve 128×128 PNG skin desteklenir; iç UV atlası 64×64 olarak normalize edilir.',
+                terminalReady: '[INFO] Sistem hazır. 64×32, 64×64, 128×64 ve 128×128 PNG skin desteklenir; Tüm formatlar kendi yerel çözünürlüğünde korunur; formatlar birbirine dönüştürülmez.',
                 result3dTitle: 'Sonuç & 3D Canlı İnteraktif Model',
                 modelMismatchTitle: 'Model Farkı Algılandı!',
                 modelMismatchText: 'Skin 1: ',
@@ -1890,6 +1900,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 invalidPng: 'HATA: Yalnızca PNG Minecraft skin dosyası kabul edilir.',
                 fileTooLarge: 'HATA: Dosya 5 MB\'dan büyük olamaz.',
                 invalidDimensions: (w,h) => `HATA: Desteklenmeyen skin boyutu ${w}×${h}. Desteklenen: 64×32, 64×64, 128×64, 128×128 PNG.`,
+                skinFormatMismatch: (a,b) => `Bu merger yalnızca aynı skin formatlarını birleştirir: ${a} + ${b} desteklenmiyor.`,
                 imageReadError: (name) => `HATA: ${name} bir görsel olarak okunamadı.`,
                 invalidPngSignature: 'HATA: Dosya gerçek bir PNG değil veya PNG başlığı okunamadı.',
                 authNotReady: 'Kimlik doğrulama henüz hazır değil. Lütfen birkaç saniye bekleyin.',
@@ -2012,7 +2023,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 switchToEnglish: 'Switch to English',
                 usageTitle: 'Total merge usage on Firebase',
                 terminalTitle: 'Deep Scan Console',
-                terminalReady: '[INFO] System ready. 64×32, 64×64, 128×64 and 128×128 PNG skins are supported and normalized to a 64×64 UV atlas.',
+                terminalReady: '[INFO] System ready. 64×32, 64×64, 128×64 and 128×128 PNG skins are supported; All formats keep their native resolution; formats are never converted into another atlas.',
                 result3dTitle: 'Result & Live Interactive 3D Model',
                 modelMismatchTitle: 'Model Difference Detected!',
                 modelMismatchText: 'Skin 1: ',
@@ -2069,6 +2080,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 invalidPng: 'ERROR: Only PNG Minecraft skin files are accepted.',
                 fileTooLarge: 'ERROR: File cannot be larger than 5 MB.',
                 invalidDimensions: (w,h) => `ERROR: Unsupported skin size ${w}×${h}. Supported: 64×32, 64×64, 128×64, 128×128 PNG.`,
+                skinFormatMismatch: (a,b) => `This merger only combines identical skin formats: ${a} + ${b} is not supported.`,
                 imageReadError: (name) => `ERROR: ${name} could not be read as an image.`,
                 invalidPngSignature: 'ERROR: The file is not a valid PNG or its PNG header could not be read.',
                 authNotReady: 'Authentication is not ready yet. Please wait a moment.',
@@ -2688,6 +2700,43 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
         let model1 = null; 
         let model2 = null;
+        let skinResolution1 = 64;
+        let skinResolution2 = 64;
+
+        function getCanvasResolution(canvas){
+            return canvas ? canvas.width : 64;
+        }
+
+        function getSkinFormat(canvas){
+            if (!canvas) return null;
+            return `${canvas.width}×${canvas.height}`;
+        }
+
+        function isLegacySkinCanvas(canvas){
+            return !!canvas && canvas.height * 2 === canvas.width;
+        }
+
+        function getLayoutScale(canvas){
+            // 64×64 -> 1, 128×128 -> 2, 64×32 -> 1, 128×64 -> 2.
+            return canvas && canvas.width >= 128 ? 2 : 1;
+        }
+
+        function prepareResultCanvas(){
+            const targetW = canvas1 ? canvas1.width : 64;
+            const targetH = canvas1 ? canvas1.height : 64;
+            if (resultCanvas.width !== targetW || resultCanvas.height !== targetH) {
+                resultCanvas.width = targetW;
+                resultCanvas.height = targetH;
+            }
+            ctxOut.imageSmoothingEnabled = false;
+            return targetW;
+        }
+
+        function drawSkinToOutput(srcCanvas){
+            ctxOut.imageSmoothingEnabled = false;
+            ctxOut.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
+            ctxOut.drawImage(srcCanvas, 0, 0, srcCanvas.width, srcCanvas.height);
+        }
 
         // Mod Seçimi Tıklama Olayları
         function selectModeCard(card){
@@ -2905,10 +2954,17 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         }
 
         function detectSkinModel(ctx) {
-            // Minecraft 64x64 model detection. The arm width is the reliable discriminator:
-            // Steve = 4px arm, Alex = 3px arm.
-            const p = ctx.getImageData(0, 0, APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE).data;
-            const alpha = (x, y) => p[(y * APP_CONFIG.SKIN_SIZE + x) * 4 + 3];
+            // Legacy 64×32 / 128×64 skins are the classic pre-1.8 layout.
+            // There is no separate slim-arm atlas in that format.
+            if (isLegacySkinCanvas(ctx && ctx.canvas)) return 'steve';
+
+            // Model detection uses logical 64×64 UV coordinates, while the actual
+            // canvas may be 64×64 or native 128×128. Sample at the corresponding
+            // native pixel so 128×128 skins are detected without being downscaled.
+            const scale = logicalScale ? logicalScale(ctx.canvas) : (ctx.canvas.width >= 128 ? 2 : 1);
+            const size = ctx.canvas.width;
+            const p = ctx.getImageData(0, 0, size, size).data;
+            const alpha = (x, y) => p[((y * scale) * size + (x * scale)) * 4 + 3];
             const countOpaque = (x0, x1, y0, y1) => {
                 let n = 0;
                 for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++)
@@ -2945,16 +3001,22 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
         function checkModelMismatch() {
             if (model1 && model2) {
-                // Birleştirme için Firebase oturumu zorunlu.
-                btnMerge.disabled = isLoadingAuth || !firebaseUser;
+                const f1 = getSkinFormat(canvas1);
+                const f2 = getSkinFormat(canvas2);
+                const sameFormat = f1 === f2;
+                // A 64×64 skin must never be merged with 128×128 (or any other format).
+                // Each atlas has its own native merger pipeline.
+                btnMerge.disabled = isLoadingAuth || !firebaseUser || !sameFormat;
                 resultInfo.removeAttribute('data-i18n');
-                resultInfo.textContent = t('readyStatus', model1, model2, t(`mode_${selectedMode}_title`));
-                if (model1 !== model2) {
+                resultInfo.textContent = sameFormat
+                    ? t('readyStatus', model1, model2, t(`mode_${selectedMode}_title`))
+                    : t('skinFormatMismatch', f1, f2);
+                if (model1 !== model2 || !sameFormat) {
                     warningBox.classList.add('active');
                     const w1 = document.getElementById('warningModel1');
                     const w2 = document.getElementById('warningModel2');
-                    if (w1) w1.textContent = model1.toUpperCase();
-                    if (w2) w2.textContent = model2.toUpperCase();
+                    if (w1) w1.textContent = !sameFormat ? f1 : model1.toUpperCase();
+                    if (w2) w2.textContent = !sameFormat ? f2 : model2.toUpperCase();
                 } else {
                     warningBox.classList.remove('active');
                 }
@@ -3007,7 +3069,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         }
 
         /**
-         * Validates and loads one local Minecraft skin. Supported formats are normalized to the internal 64×64 atlas.
+         * Validates and loads one local Minecraft skin. Every supported atlas stays at its original native resolution; no format conversion is performed.
          * @param {File|null|undefined} file
          * @param {CanvasRenderingContext2D} ctx
          * @param {string} labelId
@@ -3022,64 +3084,26 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
                 const { width, height } = await readPngDimensions(file);
                 const format = `${width}×${height}`;
-                const supported = APP_CONFIG.SUPPORTED_SKIN_FORMATS.includes(format);
-                if (!supported) throw new Error(t('invalidDimensions', width, height));
+                if (!APP_CONFIG.SUPPORTED_SKIN_FORMATS.includes(format)) {
+                    throw new Error(t('invalidDimensions', width, height));
+                }
 
                 const image = await decodeLocalPng(file);
                 if (image.naturalWidth !== width || image.naturalHeight !== height) {
                     throw new Error(t('invalidDimensions', image.naturalWidth, image.naturalHeight));
                 }
 
-                // Normalize every supported texture to the internal 64×64 UV atlas.
-                // 64×64 and 128×128 are square modern layouts; 64×32 and 128×64 are
-                // legacy layouts and get their mirrored left arm/leg regions restored.
-                const normalized = document.createElement('canvas');
-                normalized.width = APP_CONFIG.SKIN_SIZE;
-                normalized.height = APP_CONFIG.SKIN_SIZE;
-                const nctx = normalized.getContext('2d', { alpha:true, willReadFrequently:true });
-                nctx.imageSmoothingEnabled = false;
-                const legacy = height * 2 === width;
-                if (legacy) {
-                    const scale = width / 64;
-                    const legacyCanvas = document.createElement('canvas');
-                    legacyCanvas.width = 64; legacyCanvas.height = 32;
-                    const lctx = legacyCanvas.getContext('2d', { alpha:true, willReadFrequently:true });
-                    lctx.imageSmoothingEnabled = false;
-                    lctx.drawImage(image, 0, 0, 64, 32);
-                    nctx.drawImage(legacyCanvas, 0, 0);
-                    // Legacy 64×32 -> modern 64×64.
-                    // IMPORTANT: a whole 16×16 limb block cannot simply be mirrored.
-                    // The six UV faces have different orientations/positions. Map each
-                    // 4×4 / 4×12 face individually, matching the classic Minecraft UV.
-                    // This preserves seams, front/back, inner/outer, top and bottom faces.
-                    const m = val => Math.floor(val * (legacyCanvas.width / 64));
-                    nctx.save();
-                    nctx.translate(APP_CONFIG.SKIN_SIZE, 0);
-                    nctx.scale(-1, 1);
-                    // Right arm -> left arm
-                    nctx.drawImage(legacyCanvas, m(4), m(16), m(4), m(4), m(40), m(48), m(4), m(4));
-                    nctx.drawImage(legacyCanvas, m(8), m(16), m(4), m(4), m(36), m(48), m(4), m(4));
-                    nctx.drawImage(legacyCanvas, m(0), m(20), m(4), m(12), m(44), m(52), m(4), m(12));
-                    nctx.drawImage(legacyCanvas, m(4), m(20), m(4), m(12), m(40), m(52), m(4), m(12));
-                    nctx.drawImage(legacyCanvas, m(8), m(20), m(4), m(12), m(36), m(52), m(4), m(12));
-                    nctx.drawImage(legacyCanvas, m(12), m(20), m(4), m(12), m(32), m(52), m(4), m(12));
-                    // Right leg -> left leg
-                    nctx.drawImage(legacyCanvas, m(44), m(16), m(4), m(4), m(24), m(48), m(4), m(4));
-                    nctx.drawImage(legacyCanvas, m(48), m(16), m(4), m(4), m(20), m(48), m(4), m(4));
-                    nctx.drawImage(legacyCanvas, m(40), m(20), m(4), m(12), m(28), m(52), m(4), m(12));
-                    nctx.drawImage(legacyCanvas, m(44), m(20), m(4), m(12), m(24), m(52), m(4), m(12));
-                    nctx.drawImage(legacyCanvas, m(48), m(20), m(4), m(12), m(20), m(52), m(4), m(12));
-                    nctx.drawImage(legacyCanvas, m(52), m(20), m(4), m(12), m(16), m(52), m(4), m(12));
-                    nctx.restore();
-                } else {
-                    nctx.drawImage(image, 0, 0, APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE);
-                }
-
-                ctx.save();
-                ctx.clearRect(0, 0, APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE);
+                // IMPORTANT: never convert one skin atlas into another.
+                // Every supported format keeps its native canvas and native pixels.
+                // The merger engine selects the matching UV system at merge time.
+                ctx.canvas.width = width;
+                ctx.canvas.height = height;
                 ctx.imageSmoothingEnabled = false;
-                ctx.drawImage(normalized, 0, 0);
-                ctx.restore();
+                ctx.clearRect(0, 0, width, height);
+                ctx.drawImage(image, 0, 0, width, height);
+
+                if (isFirst) skinResolution1 = width;
+                else skinResolution2 = width;
                 finishLoadSkin(ctx, labelId, isFirst, file, format);
                 document.dispatchEvent(new CustomEvent('nvo:skin-updated'));
             } catch (error) {
@@ -3105,12 +3129,12 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             if (isFirst) {
                 model1 = detected;
                 updateModelTag(tagSkin1, model1);
-                meta1.textContent = `${sourceFormat} PNG → 64×64 • ${sizeLabel}`;
+                meta1.textContent = `${sourceFormat} PNG • native • ${sizeLabel}`;
                 log(t('skinLoaded', 1, file.name, model1), 'success');
             } else {
                 model2 = detected;
                 updateModelTag(tagSkin2, model2);
-                meta2.textContent = `${sourceFormat} PNG → 64×64 • ${sizeLabel}`;
+                meta2.textContent = `${sourceFormat} PNG • native • ${sizeLabel}`;
                 log(t('skinLoaded', 2, file.name, model2), 'success');
             }
             resultReady = false;
@@ -3302,49 +3326,95 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
          * @param {number} h
          * @returns {void}
          */
-        function copyArea(srcCtx, dstCtx, x, y, w, h){
-            const imageData = srcCtx.getImageData(x, y, w, h);
-            dstCtx.putImageData(imageData, x, y);
+        function logicalScale(canvas){
+            return getLayoutScale(canvas);
         }
 
-        /**
-         * Returns the six Minecraft 64x64 UV rectangles for a skin box.
-         * Box format: [u, v, width, height, depth].
-         * The layout matches the standard Minecraft skin atlas used by
-         * skinview3d: top, bottom, left, front, right, back.
-         * @param {number} u
-         * @param {number} v
-         * @param {number} width
-         * @param {number} height
-         * @param {number} depth
-         * @returns {{top:number[],bottom:number[],left:number[],front:number[],right:number[],back:number[]}}
-         */
-        function boxFaces(u, v, w, h, d) {
+        function scaleLogicalRect(rect, canvas){
+            const k = logicalScale(canvas);
+            return rect.map(v => Math.round(v * k));
+        }
+
+        // Legacy 64×32 / 128×64 has the original pre-1.8 atlas. It is NOT
+        // upgraded to 64×64. These boxes describe the legacy atlas directly.
+        const LEGACY_BOX = Object.freeze({
+            head: [0, 0, 8, 8, 8],
+            torso: [16, 16, 8, 12, 4],
+            rightArm: [40, 16, 4, 12, 4],
+            leftArm: [40, 16, 4, 12, 4],
+            rightLeg: [0, 16, 4, 12, 4],
+            leftLeg: [0, 16, 4, 12, 4]
+        });
+
+        function boxFaces(u, v, w, h, d){
             return {
-                top:    [u + d,         v,         w, d],
-                bottom: [u + w + d,     v,         w, d],
-                left:   [u,             v + d,     d, h],
-                front:  [u + d,         v + d,     w, h],
-                right:  [u + w + d,     v + d,     d, h],
-                back:   [u + w + d * 2, v + d,     w, h]
+                top:    [u + d,       v,       w, d],
+                bottom: [u + w + d,   v,       w, d],
+                right:  [u,           v + d,   d, h],
+                front:  [u + d,       v + d,   w, h],
+                left:   [u + w + d,   v + d,   d, h],
+                back:   [u + w + 2*d, v + d,   w, h]
             };
         }
 
-        function copyRect(srcCtx, dstCtx, srcRect, dstRect = srcRect) {
-            const [sx, sy, sw, sh] = srcRect;
-            const [dx, dy, dw, dh] = dstRect;
+        function isLegacyContext(ctx){
+            return isLegacySkinCanvas(ctx && ctx.canvas);
+        }
+
+        function legacyBoxFor(box){
+            const [u,v,w,h,d] = box;
+            const same = (a,b) => a.every((x,i) => x === b[i]);
+            if (same(box, UV_MAP.head.base)) return LEGACY_BOX.head;
+            if (same(box, UV_MAP.head.overlay)) return [32,0,8,8,8]; // legacy hat layer
+            if (same(box, UV_MAP.torso.base)) return LEGACY_BOX.torso;
+            if (same(box, UV_MAP.torso.overlay)) return null; // no legacy torso overlay
+            if (same(box, UV_MAP.rightArm.base) || same(box, UV_MAP.rightArm.overlay)) return same(box, UV_MAP.rightArm.base) ? LEGACY_BOX.rightArm : null;
+            if (same(box, UV_MAP.leftArm.base) || same(box, UV_MAP.leftArm.overlay)) return same(box, UV_MAP.leftArm.base) ? LEGACY_BOX.leftArm : null;
+            if (same(box, UV_MAP.rightLeg.base) || same(box, UV_MAP.rightLeg.overlay)) return same(box, UV_MAP.rightLeg.base) ? LEGACY_BOX.rightLeg : null;
+            if (same(box, UV_MAP.leftLeg.base) || same(box, UV_MAP.leftLeg.overlay)) return same(box, UV_MAP.leftLeg.base) ? LEGACY_BOX.leftLeg : null;
+            return box;
+        }
+
+        function getFacesForBox(box, ctx){
+            const mapped = isLegacyContext(ctx) ? legacyBoxFor(box) : box;
+            return mapped ? boxFaces(...mapped) : null;
+        }
+
+        function mapLegacyRegion(rect){
+            const key = rect.join(',');
+            const map = {
+                '0,0,64,16': [0,0,32,16],
+                '16,16,24,28': [16,16,24,16],
+                '32,0,32,16': [32,0,32,16],
+                '16,32,24,16': null,
+                '40,32,16,16': null,
+                '0,32,16,16': null,
+                '48,48,16,16': null,
+                '0,48,16,16': null
+            };
+            return Object.prototype.hasOwnProperty.call(map,key) ? map[key] : rect;
+        }
+
+        function copyArea(srcCtx, dstCtx, x, y, w, h){
+            const srcRect = isLegacyContext(srcCtx) ? mapLegacyRegion([x,y,w,h]) : [x,y,w,h];
+            const dstRect = isLegacyContext(dstCtx) ? mapLegacyRegion([x,y,w,h]) : [x,y,w,h];
+            if (!srcRect || !dstRect) return;
+            copyRect(srcCtx, dstCtx, srcRect, dstRect, true);
+        }
+
+        function copyRect(srcCtx, dstCtx, srcRect, dstRect = srcRect, alreadyMapped = false) {
+            if (!srcRect || !dstRect) return;
+            const [lsx, lsy, lsw, lsh] = srcRect;
+            const [ldx, ldy, ldw, ldh] = dstRect;
+            const [sx, sy, sw, sh] = alreadyMapped ? scaleLogicalRect([lsx,lsy,lsw,lsh], srcCtx.canvas) : scaleLogicalRect([lsx,lsy,lsw,lsh], srcCtx.canvas);
+            const [dx, dy, dw, dh] = alreadyMapped ? scaleLogicalRect([ldx,ldy,ldw,ldh], dstCtx.canvas) : scaleLogicalRect([ldx,ldy,ldw,ldh], dstCtx.canvas);
+            if (sw <= 0 || sh <= 0 || dw <= 0 || dh <= 0) return;
             const tmp = document.createElement('canvas');
             tmp.width = sw; tmp.height = sh;
-            const t = tmp.getContext('2d');
+            const t = tmp.getContext('2d', { alpha:true, willReadFrequently:true });
             t.imageSmoothingEnabled = false;
-            t.putImageData(srcCtx.getImageData(sx, sy, sw, sh), 0, 0);
+            t.drawImage(srcCtx.canvas, sx, sy, sw, sh, 0, 0, sw, sh);
             dstCtx.imageSmoothingEnabled = false;
-            // KRİTİK DÜZELTME: drawImage varsayılan "source-over" harmanlama kullanır —
-            // kaynak piksel şeffafsa hedefi SİLMEZ, olduğu gibi bırakır. Bu yüzden Skin 2'nin
-            // boş/şeffaf olduğu her yerde (çoğu skin dış katmanı tam kullanmaz) Skin 1'in eski
-            // pikselleri (siyah bileklik, çizgiler vb.) yanlışlıkla sonuçta kalıyordu. Önce
-            // hedef dikdörtgeni tamamen temizleyip SONRA çizerek gerçek bir "değiştirme"
-            // (silme + yapıştırma) sağlanıyor, sadece "üzerine ekleme" değil.
             dstCtx.clearRect(dx, dy, dw, dh);
             dstCtx.drawImage(tmp, 0, 0, sw, sh, dx, dy, dw, dh);
         }
@@ -3354,11 +3424,10 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         }
 
         function copyWholeBox(srcCtx, dstCtx, srcBox, dstBox) {
-            const sf = boxFaces(...srcBox);
-            const df = boxFaces(...dstBox);
-            for (const name of ['top','bottom','left','front','right','back']) {
-                copyFace(srcCtx, dstCtx, sf[name], df[name]);
-            }
+            const sf = getFacesForBox(srcBox, srcCtx);
+            const df = getFacesForBox(dstBox, dstCtx);
+            if (!sf || !df) return;
+            for (const name of ['top','bottom','left','front','right','back']) copyFace(srcCtx, dstCtx, sf[name], df[name]);
         }
 
         // Bir kutunun fiziksel ALT yarısını, iç skin + dış kıyafet/overlay dahil,
@@ -3446,7 +3515,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         // kol, bacak, kafa ve gövde parçaları (iç + dış katmanlar dahil) üzerine bindirilir.
         // Bu fonksiyon, 'half' ve 'base_only' modları arasında paylaşılır.
         function executeHalfMerge(){
-            ctxOut.drawImage(canvas1, 0, 0);
+            drawSkinToOutput(canvas1);
 
             const swHalf = model2 === 'alex' ? 3 : 4;
             const dwHalf = model1 === 'alex' ? 3 : 4;
@@ -3543,23 +3612,152 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             for (const rect of Object.values(UV_MAP.outer)) copyArea(srcCtx, dstCtx, ...rect);
         }
 
+        function legacyCopyBox(srcCtx, dstCtx, part, layer = 'base') {
+            // Legacy has one physical arm/leg atlas. Left limbs are represented by
+            // the same right-side texture and mirrored by the game/model.
+            if (layer === 'overlay' && part !== 'head') return;
+            let box;
+            if (part === 'head') box = layer === 'overlay' ? [32,0,8,8,8] : LEGACY_BOX.head;
+            else if (part === 'torso') box = LEGACY_BOX.torso;
+            else if (part === 'rightArm' || part === 'leftArm') box = LEGACY_BOX.rightArm;
+            else if (part === 'rightLeg' || part === 'leftLeg') box = LEGACY_BOX.rightLeg;
+            if (!box) return;
+            copyWholeBox(srcCtx, dstCtx, box, box);
+        }
+
+        function legacyCopyPart(srcCtx, dstCtx, part) {
+            if (part === 'head') {
+                legacyCopyBox(srcCtx, dstCtx, 'head', 'base');
+                legacyCopyBox(srcCtx, dstCtx, 'head', 'overlay');
+            } else if (part === 'torso') {
+                legacyCopyBox(srcCtx, dstCtx, 'torso', 'base');
+            } else if (part === 'arms') {
+                legacyCopyBox(srcCtx, dstCtx, 'rightArm', 'base');
+            } else if (part === 'legs') {
+                legacyCopyBox(srcCtx, dstCtx, 'rightLeg', 'base');
+            }
+        }
+
+        function legacyClearHat(ctx) {
+            const k = getLayoutScale(ctx.canvas);
+            ctx.clearRect(32*k, 0, 32*k, 16*k);
+        }
+
+        function legacyExecuteMergeLogic() {
+            prepareResultCanvas();
+            ctxOut.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
+
+            const src1 = ctx1, src2 = ctx2;
+            const pick = () => Math.random() < 0.5 ? src1 : src2;
+
+            switch (selectedMode) {
+                case 'head_swap':
+                    drawSkinToOutput(canvas2); legacyCopyPart(src1, ctxOut, 'head'); break;
+                case 'arm_swap':
+                    drawSkinToOutput(canvas1); legacyCopyPart(src2, ctxOut, 'arms'); break;
+                case 'leg_swap':
+                    drawSkinToOutput(canvas1); legacyCopyPart(src2, ctxOut, 'legs'); break;
+                case 'body_swap':
+                    drawSkinToOutput(canvas1); legacyCopyPart(src2, ctxOut, 'torso'); legacyCopyPart(src2, ctxOut, 'legs'); break;
+                case 'head_legs_swap':
+                    drawSkinToOutput(canvas1); legacyCopyPart(src2, ctxOut, 'head'); legacyCopyPart(src2, ctxOut, 'legs'); break;
+                case 'head_torso_swap':
+                    drawSkinToOutput(canvas1); legacyCopyPart(src2, ctxOut, 'head'); legacyCopyPart(src2, ctxOut, 'torso'); break;
+                case 'arms_legs_swap':
+                    drawSkinToOutput(canvas1); legacyCopyPart(src2, ctxOut, 'arms'); legacyCopyPart(src2, ctxOut, 'legs'); break;
+                case 'alternating_parts':
+                    drawSkinToOutput(canvas1); legacyCopyPart(src2, ctxOut, 'torso'); legacyCopyPart(src2, ctxOut, 'arms'); break;
+                case 'outer_overlay':
+                    drawSkinToOutput(canvas1); legacyCopyBox(src2, ctxOut, 'head', 'overlay'); break;
+                case 'reverse_overlay':
+                    drawSkinToOutput(canvas2); legacyCopyBox(src1, ctxOut, 'head', 'overlay'); break;
+                case 'base_only':
+                    drawSkinToOutput(canvas1); legacyClearHat(ctxOut); break;
+                case 'blend':
+                    ctxOut.save(); ctxOut.globalAlpha = 1; drawSkinToOutput(canvas1); ctxOut.globalAlpha = 0.5; ctxOut.drawImage(canvas2,0,0); ctxOut.restore(); break;
+                case 'checker_blend': {
+                    const w = resultCanvas.width, h = resultCanvas.height;
+                    const a = ctx1.getImageData(0,0,w,h), b = ctx2.getImageData(0,0,w,h);
+                    const out = ctxOut.createImageData(w,h);
+                    for (let y=0;y<h;y++) for(let x=0;x<w;x++) { const i=(y*w+x)*4, q=((x+y)&1)?b.data:a.data; out.data[i]=q[i]; out.data[i+1]=q[i+1]; out.data[i+2]=q[i+2]; out.data[i+3]=q[i+3]; }
+                    ctxOut.putImageData(out,0,0); break;
+                }
+                case 'chimera':
+                    ctxOut.clearRect(0,0,resultCanvas.width,resultCanvas.height);
+                    legacyCopyPart(pick(),ctxOut,'head'); legacyCopyPart(pick(),ctxOut,'torso'); legacyCopyPart(pick(),ctxOut,'arms'); legacyCopyPart(pick(),ctxOut,'legs'); break;
+                case 'custom':
+                    ctxOut.clearRect(0,0,resultCanvas.width,resultCanvas.height);
+                    const customPart = (part) => {
+                        const sel = customSelection[part];
+                        const baseCtx = sel.base === 2 ? src2 : src1;
+                        legacyCopyBox(baseCtx, ctxOut, part === 'head' ? 'head' : part, 'base');
+                        if (sel.overlay === 0) { if (part === 'head') legacyClearHat(ctxOut); }
+                        else if (sel.overlay === 2 && part === 'head') legacyCopyBox(src2,ctxOut,'head','overlay');
+                        else if (sel.overlay === 1 && part === 'head') legacyCopyBox(src1,ctxOut,'head','overlay');
+                    };
+                    for (const p of ['head','torso','rightArm','leftArm','rightLeg','leftLeg']) customPart(p);
+                    break;
+                case 'half':
+                    drawSkinToOutput(canvas1);
+                    // Legacy has only the classic right-side atlas. Split the vertical
+                    // faces of body/arm/leg at their physical midpoint without creating
+                    // a modern 64×64 conversion.
+                    for (const part of ['torso','rightArm','rightLeg']) {
+                        const box = part === 'torso' ? LEGACY_BOX.torso : part === 'rightArm' ? LEGACY_BOX.rightArm : LEGACY_BOX.rightLeg;
+                        const sf = boxFaces(...box), df = sf;
+                        for (const face of ['right','front','left','back']) {
+                            const f=sf[face], half=Math.floor(f[3]/2);
+                            copyRect(src2,ctxOut,[f[0],f[1]+f[3]-half,f[2],half],[f[0],f[1]+f[3]-half,f[2],half]);
+                        }
+                        copyFace(src2,ctxOut,sf.bottom,df.bottom);
+                    }
+                    break;
+                case 'top_bottom':
+                    drawSkinToOutput(canvas1);
+                    for (const part of ['torso','rightArm','rightLeg']) {
+                        const box = part === 'torso' ? LEGACY_BOX.torso : part === 'rightArm' ? LEGACY_BOX.rightArm : LEGACY_BOX.rightLeg;
+                        const f=boxFaces(...box), half=Math.floor(box[3]/2);
+                        for (const face of ['right','front','left','back']) copyRect(src2,ctxOut,[f[0],f[1]+f[3]-half,f[2],half],[f[0],f[1]+f[3]-half,f[2],half]);
+                        copyFace(src2,ctxOut,f.bottom,f.bottom);
+                    }
+                    break;
+                case 'front_back':
+                    drawSkinToOutput(canvas1);
+                    for (const box of [LEGACY_BOX.head,LEGACY_BOX.torso,LEGACY_BOX.rightArm,LEGACY_BOX.rightLeg]) {
+                        const f=boxFaces(...box); copyFace(src2,ctxOut,f.back,f.back);
+                    }
+                    break;
+                default:
+                    // Fallback keeps the native atlas intact rather than converting it.
+                    drawSkinToOutput(canvas1);
+                    break;
+            }
+        }
+
         /** @returns {void} @throws {Error} */
         function executeMergeLogic() {
-            ctxOut.clearRect(0, 0, APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE);
+            const f1 = getSkinFormat(canvas1), f2 = getSkinFormat(canvas2);
+            if (f1 !== f2) throw new Error(t('skinFormatMismatch', f1, f2));
+            if (isLegacySkinCanvas(canvas1)) {
+                legacyExecuteMergeLogic();
+                return;
+            }
+            prepareResultCanvas();
+            ctxOut.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
 
             if (selectedMode === 'half') {
                 executeHalfMerge();
 
             } else if (selectedMode === 'head_swap') {
                 // Skin 2 Vücut + Skin 1 Kafa
-                ctxOut.drawImage(canvas2, 0, 0);
+                drawSkinToOutput(canvas2);
                 copyArea(ctx1, ctxOut, ...UV_MAP.head.region); // Tüm kafa ve şapka katmanı
 
             } else if (selectedMode === 'top_bottom') {
                 // v6.1: Gövde + kollar GERÇEK KUTU YÜKSEKLİĞİNDEN ortadan bölünür.
                 // Önce Skin 1'in tamamı alınır; sonra her dikey yüzün alt yarısı Skin 2 ile değiştirilir.
                 // Böylece UV'deki top/bottom şeritleri yanlışlıkla gövdeye yapıştırılmaz.
-                ctxOut.drawImage(canvas1, 0, 0);
+                drawSkinToOutput(canvas1);
 
                 const dstModel = model1;
                 const srcModel = model2;
@@ -3605,7 +3803,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
             } else if (selectedMode === 'arm_swap') {
                 // Yeni merger: Skin 1'in kafa + gövde + bacakları, Skin 2'nin iki kolu.
-                ctxOut.drawImage(canvas1, 0, 0);
+                drawSkinToOutput(canvas1);
 
                 // Sağ kol iç/dış katman
                 copyArmFull(ctx2, ctxOut, armBox('rightArm','base',model2), armBox('rightArm','base',model1));
@@ -3617,7 +3815,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
             } else if (selectedMode === 'outer_overlay') {
                 // Skin 1 İç Beden + Skin 2 Dış Ceket/Zırh
-                ctxOut.drawImage(canvas1, 0, 0);
+                drawSkinToOutput(canvas1);
 
                 // Dış Katmanları Skin 2'den Kopyala
                 copyArea(ctx2, ctxOut, ...UV_MAP.outer.head); // Hat
@@ -3672,7 +3870,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                     copyRect(srcCtx, dstCtx, [sf.right[0] + sf.right[2] - halfDepth, sf.right[1], halfDepth, sf.right[3]], [df.right[0] + df.right[2] - targetHalfDepth, df.right[1], targetHalfDepth, df.right[3]]);
                 };
 
-                ctxOut.drawImage(canvas1, 0, 0);
+                drawSkinToOutput(canvas1);
 
                 // The front/back split uses the same source and destination geometry.
                 for (const pair of [
@@ -3693,7 +3891,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 // Skin 1'in kafa, gövde ve kolları korunur; iki bacak Skin 2'den alınır.
                 // Bacak genişliği Steve/Alex ayrımı olmaksızın her zaman 4px'tir, bu yüzden
                 // kol değişiminin aksine ölçekleme gerekmez.
-                ctxOut.drawImage(canvas1, 0, 0);
+                drawSkinToOutput(canvas1);
 
                 // Sağ bacak: iç katman + dış pantolon katmanı
                 copyWholeBox(ctx2, ctxOut, UV_MAP.rightLeg.base, UV_MAP.rightLeg.base);
@@ -3705,32 +3903,43 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
             } else if (selectedMode === 'body_swap') {
                 // Skin 1 kafa+kolları, Skin 2 gövde+bacakları.
-                ctxOut.drawImage(canvas1, 0, 0);
+                drawSkinToOutput(canvas1);
                 copyCharacterPart(ctx2, ctxOut, 'torso', model2, model1);
                 copyCharacterPart(ctx2, ctxOut, 'legs', model2, model1);
                 log(t('mode_body_swap_title') + ': ' + t('mode_body_swap_desc'), 'success');
 
             } else if (selectedMode === 'head_legs_swap') {
                 // Skin 2 kafa+bacakları, Skin 1 gövde+kolları.
-                ctxOut.drawImage(canvas1, 0, 0);
+                drawSkinToOutput(canvas1);
                 copyCharacterPart(ctx2, ctxOut, 'head', model2, model1);
                 copyCharacterPart(ctx2, ctxOut, 'legs', model2, model1);
                 log(t('mode_head_legs_swap_title') + ': ' + t('mode_head_legs_swap_desc'), 'success');
 
             } else if (selectedMode === 'reverse_overlay') {
                 // Skin 2 base + Skin 1 outer layers.
-                ctxOut.drawImage(canvas2, 0, 0);
+                drawSkinToOutput(canvas2);
                 copyOuterLayers(ctx1, ctxOut);
                 log(t('mode_reverse_overlay_title') + ': ' + t('mode_reverse_overlay_desc'), 'success');
 
             } else if (selectedMode === 'checker_blend') {
                 // Piksel düzeyinde, UV koordinatlarını bozmadan geçerli 64×64 çıktı üret.
-                const a = ctx1.getImageData(0, 0, APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE);
-                const b = ctx2.getImageData(0, 0, APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE);
-                const out = ctxOut.createImageData(APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE);
-                for (let y = 0; y < APP_CONFIG.SKIN_SIZE; y++) {
-                    for (let x = 0; x < APP_CONFIG.SKIN_SIZE; x++) {
-                        const i = (y * APP_CONFIG.SKIN_SIZE + x) * 4;
+                const size = resultCanvas.width;
+                const ca = document.createElement('canvas');
+                const cb = document.createElement('canvas');
+                ca.width = cb.width = size;
+                ca.height = cb.height = size;
+                const caCtx = ca.getContext('2d');
+                const cbCtx = cb.getContext('2d');
+                caCtx.imageSmoothingEnabled = false;
+                cbCtx.imageSmoothingEnabled = false;
+                caCtx.drawImage(canvas1, 0, 0, size, size);
+                cbCtx.drawImage(canvas2, 0, 0, size, size);
+                const a = caCtx.getImageData(0, 0, size, size);
+                const b = cbCtx.getImageData(0, 0, size, size);
+                const out = ctxOut.createImageData(size, size);
+                for (let y = 0; y < size; y++) {
+                    for (let x = 0; x < size; x++) {
+                        const i = (y * size + x) * 4;
                         const src = ((x + y) & 1) === 0 ? a : b;
                         out.data[i] = src.data[i];
                         out.data[i+1] = src.data[i+1];
@@ -3753,11 +3962,11 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 // İki texture'ı, model/UV farklarını hiçe sayarak doğrudan %50 saydamlıkla
                 // üst üste bindirir. Kasıtlı olarak "hayalet" / karışım efekti üretir.
                 ctxOut.save();
-                ctxOut.clearRect(0, 0, APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE);
+                ctxOut.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
                 ctxOut.globalAlpha = 1.0;
-                ctxOut.drawImage(canvas1, 0, 0);
+                drawSkinToOutput(canvas1);
                 ctxOut.globalAlpha = 0.5;
-                ctxOut.drawImage(canvas2, 0, 0);
+                drawSkinToOutput(canvas2);
                 ctxOut.restore();
                 log(t('mode_blend_desc'), 'success');
 
@@ -3765,7 +3974,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 // Her ana vücut parçası (kafa, gövde, sağ/sol kol, sağ/sol bacak) için
                 // rastgele Skin 1 veya Skin 2 seçilir. Kol genişlikleri her zaman
                 // model1'in (hedef) UV şablonuna göre ölçeklenir.
-                ctxOut.clearRect(0, 0, APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE);
+                ctxOut.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
                 const pick = () => (Math.random() < 0.5 ? 1 : 2);
                 const srcCtxOf = (n) => (n === 1 ? ctx1 : ctx2);
 
@@ -3802,19 +4011,19 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 log(t('chimeraResult', headSrc, torsoSrc, rightArmSrc, leftArmSrc, rightLegSrc, leftLegSrc), 'success');
 
             } else if (selectedMode === 'head_torso_swap') {
-                ctxOut.drawImage(canvas1, 0, 0);
+                drawSkinToOutput(canvas1);
                 copyCharacterPart(ctx2, ctxOut, 'head', model2, model1);
                 copyCharacterPart(ctx2, ctxOut, 'torso', model2, model1);
                 log(t('mode_head_torso_swap_title') + ': ' + t('mode_head_torso_swap_desc'), 'success');
 
             } else if (selectedMode === 'arms_legs_swap') {
-                ctxOut.drawImage(canvas1, 0, 0);
+                drawSkinToOutput(canvas1);
                 copyCharacterPart(ctx2, ctxOut, 'arms', model2, model1);
                 copyCharacterPart(ctx2, ctxOut, 'legs', model2, model1);
                 log(t('mode_arms_legs_swap_title') + ': ' + t('mode_arms_legs_swap_desc'), 'success');
 
             } else if (selectedMode === 'alternating_parts') {
-                ctxOut.drawImage(canvas1, 0, 0);
+                drawSkinToOutput(canvas1);
                 copyCharacterPart(ctx2, ctxOut, 'torso', model2, model1);
                 copyCharacterPart(ctx2, ctxOut, 'arms', model2, model1);
                 log(t('mode_alternating_parts_title') + ': ' + t('mode_alternating_parts_desc'), 'success');
@@ -3823,7 +4032,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 // Özel Seçmeli Merger: kullanıcı her vücut parçasının temel (base)
                 // ve dış katman (overlay) kaynağını tıklamalı arayüzden ayrı ayrı
                 // seçmiştir (bkz. customSelection ve #customPickerCard).
-                ctxOut.clearRect(0, 0, APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE);
+                ctxOut.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
                 const dstModel = model1; // Çıktı kol genişliği için referans model.
                 const srcCtxOf = (n) => (n === 1 ? ctx1 : ctx2);
                 const srcModelOf = (n) => (n === 1 ? model1 : model2);
@@ -3869,7 +4078,11 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
         function clearSkin(which) {
             const ctx = which === 1 ? ctx1 : ctx2;
-            ctx.clearRect(0, 0, APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE);
+            ctx.canvas.width = APP_CONFIG.SKIN_SIZE;
+            ctx.canvas.height = APP_CONFIG.SKIN_SIZE;
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            if (which === 1) skinResolution1 = 64;
+            else skinResolution2 = 64;
             if (which === 1) {
                 model1 = null;
                 tagSkin1.setAttribute('data-i18n', 'modelPending');
@@ -3899,7 +4112,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             compareResultBtn.disabled = true;
             resultReady = false;
             AppState.resultReady = false;
-            ctxOut.clearRect(0, 0, APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE);
+            ctxOut.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
             if (skinViewer) {
                 try { Promise.resolve(skinViewer.loadSkin(blankTextureDataUrl())).catch(error => reportUserError(error, 'error')); } catch (error) { reportUserError(error, 'error'); }
             }
@@ -3950,15 +4163,17 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         // ===== Zincirleme Birleştirme: Sonucu yeni Skin 1 olarak kullan =====
         btnUseAsSkin1.addEventListener('click', () => {
             if (!resultReady) return;
-            ctx1.clearRect(0, 0, APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE);
+            ctx1.canvas.width = resultCanvas.width;
+            ctx1.canvas.height = resultCanvas.height;
             ctx1.imageSmoothingEnabled = false;
             ctx1.drawImage(resultCanvas, 0, 0);
+            skinResolution1 = resultCanvas.width;
             model1 = detectSkinModel(ctx1);
             updateModelTag(tagSkin1, model1);
             const label1El = document.getElementById('label1');
             label1El.removeAttribute('data-i18n');
             label1El.textContent = `Önceki sonuç (${selectedMode})`;
-            meta1.innerHTML = '<span><span class="status-dot"></span> 64×64 PNG • birleştirme sonucu</span>';
+            meta1.innerHTML = `<span><span class="status-dot"></span> ${resultCanvas.width}×${resultCanvas.height} PNG • birleştirme sonucu</span>`;
             checkModelMismatch();
             setCompareActive('result');
             log(t('chainComplete'), 'success');
@@ -3969,7 +4184,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         btnResetAll.addEventListener('click', () => {
             clearSkin(1);
             clearSkin(2);
-            ctxOut.clearRect(0, 0, APP_CONFIG.SKIN_SIZE, APP_CONFIG.SKIN_SIZE);
+            ctxOut.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
             resultInfo.setAttribute('data-i18n', 'resultDefault');
             resultInfo.textContent = t('resultDefault');
             progressWrapper.classList.remove('active');
