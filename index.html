@@ -283,6 +283,22 @@
             top: 0; left: 0; width: 100%; height: 100%;
             opacity: 0;
             cursor: pointer;
+            z-index: 1;
+        }
+
+        /* Upload input tüm kutuyu kaplıyor; aşağıdaki kontrollerin tıklanmasını
+           engellememesi için onları input katmanının üzerine al. */
+        .upload-box .utility-row,
+        .upload-box .username-fetch-row {
+            position: relative;
+            z-index: 2;
+        }
+
+        .upload-box .utility-row button,
+        .upload-box .username-fetch-row input,
+        .upload-box .username-fetch-row button {
+            position: relative;
+            z-index: 3;
         }
 
         .preview-canvas {
