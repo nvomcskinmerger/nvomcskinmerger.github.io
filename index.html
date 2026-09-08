@@ -314,6 +314,18 @@
         }
 
         /* Merger Mode Selection Grid */
+        .mode-tabs{display:flex;gap:6px;margin:0 0 10px;padding:3px;border:1px solid var(--card-border);border-radius:10px;background:rgba(255,255,255,.025)}
+        .mode-tab{flex:1;border:0;background:transparent;color:var(--text-muted);padding:9px 10px;border-radius:8px;font:inherit;font-size:.78rem;font-weight:800;cursor:pointer;transition:var(--transition)}
+        .mode-tab.active{background:var(--text-main);color:var(--bg-main)}
+        .mode-tab:hover{color:var(--text-main)}
+        .mode-card.mode-hidden{display:none!important}
+        body.ui-simple .mode-tabs{margin-bottom:8px}
+        .simple-username-row{display:flex;gap:6px;margin-top:6px;width:100%}
+        .simple-username-input{flex:1;min-width:0;height:34px;border:1px solid var(--card-border);background:transparent;color:var(--text-main);border-radius:7px;padding:0 9px;font:inherit;font-size:.68rem;outline:none}
+        .simple-username-input:focus{border-color:var(--accent-cyan)}
+        .simple-username-input::placeholder{color:var(--text-muted)}
+        .simple-username-btn{height:34px;border:1px solid var(--card-border);background:transparent;color:var(--text-muted);border-radius:7px;padding:0 10px;font:inherit;font-size:.68rem;font-weight:700;cursor:pointer}
+        .simple-username-btn:hover{border-color:var(--accent-cyan);color:var(--text-main)}
         .mode-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -1157,6 +1169,10 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             <canvas id="simplePreview1" class="simple-preview" width="64" height="64"></canvas>
           </label>
           <button id="simpleClear1" class="simple-mini-btn" type="button" data-i18n="clearBtn">Temizle</button>
+          <div class="simple-username-row">
+            <input id="simpleUsername1" class="simple-username-input" type="text" maxlength="16" autocomplete="off" spellcheck="false" data-i18n-placeholder="usernameFetchPlaceholder" placeholder="Minecraft kullanıcı adı...">
+            <button id="simpleUsernameBtn1" class="simple-username-btn" type="button" data-i18n="usernameFetchBtn">Getir</button>
+          </div>
         </div>
         <div class="simple-file-wrap">
           <label class="simple-file" for="inputSkin2">
@@ -1166,6 +1182,10 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             <canvas id="simplePreview2" class="simple-preview" width="64" height="64"></canvas>
           </label>
           <button id="simpleClear2" class="simple-mini-btn" type="button" data-i18n="clearBtn">Temizle</button>
+          <div class="simple-username-row">
+            <input id="simpleUsername2" class="simple-username-input" type="text" maxlength="16" autocomplete="off" spellcheck="false" data-i18n-placeholder="usernameFetchPlaceholder" placeholder="Minecraft kullanıcı adı...">
+            <button id="simpleUsernameBtn2" class="simple-username-btn" type="button" data-i18n="usernameFetchBtn">Getir</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1323,79 +1343,98 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         <!-- Birleştirme Modu Seçimi -->
         <div class="glass-card full-width animate-fade">
             <div class="card-title" style="margin-bottom:12px;"><i class="fa-solid fa-sliders"></i> <span data-i18n="modeSectionTitle">Birleştirme (Merger) Modunu Seçin</span></div>
+            <div class="mode-tabs" role="tablist" aria-label="Merger kategorisi">
+                <button type="button" class="mode-tab active" data-mode-tab="ready" role="tab" aria-selected="true"><i class="fa-solid fa-layer-group"></i> <span data-i18n="readyModesTab">Hazır Modlar</span></button>
+                <button type="button" class="mode-tab" data-mode-tab="custom" role="tab" aria-selected="false"><i class="fa-solid fa-hand-pointer"></i> <span data-i18n="customModesTab">Özel Modlar</span></button>
+            </div>
             <div class="mode-scroll-window">
             <div class="mode-grid">
-                <div class="mode-card active" data-mode="half" role="button" tabindex="0" aria-pressed="true">
+                <div class="mode-card active" data-mode-type="ready" data-mode="half" role="button" tabindex="0" aria-pressed="true">
                     <i class="fa-solid fa-columns"></i>
                     <span data-i18n="mode_half_title">50/50 Yarı Yarıya</span>
                     <p data-i18n="mode_half_desc">Sol yarısı Skin 1, sağ yarısı Skin 2 simetrik harmanlama.</p>
                 </div>
-                <div class="mode-card" data-mode="head_swap" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode-type="ready" data-mode="head_swap" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-head-side-mask"></i>
                     <span data-i18n="mode_head_swap_title">Kafa Değişimi</span>
                     <p data-i18n="mode_head_swap_desc">Skin 1'in kafası ve şapkası, Skin 2'nin vücudu.</p>
                 </div>
-                <div class="mode-card" data-mode="top_bottom" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode-type="ready" data-mode="top_bottom" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-arrows-up-down"></i>
                     <span data-i18n="mode_top_bottom_title">Üst / Alt Bölme</span>
                     <p data-i18n="mode_top_bottom_desc">Gövde ve iki kol tam ortadan 6+6 piksel bölünür; üst Skin 1, alt Skin 2. Bacaklar Skin 2.</p>
                 </div>
-                <div class="mode-card" data-mode="arm_swap" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode-type="ready" data-mode="arm_swap" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-arrows-left-right"></i>
                     <span data-i18n="mode_arm_swap_title">Kol Değişimi</span>
                     <p data-i18n="mode_arm_swap_desc">Skin 1'in kafa, gövde ve bacakları korunur; iki kol Skin 2'den alınır.</p>
                 </div>
-                <div class="mode-card" data-mode="leg_swap" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode-type="ready" data-mode="leg_swap" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-person-walking-arrow-right"></i>
                     <span data-i18n="mode_leg_swap_title">Bacak Değişimi</span>
                     <p data-i18n="mode_leg_swap_desc">Skin 1'in kafa, gövde ve kolları korunur; iki bacak Skin 2'den alınır.</p>
                 </div>
-                <div class="mode-card" data-mode="outer_overlay" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode-type="ready" data-mode="outer_overlay" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-shirt"></i>
                     <span data-i18n="mode_outer_overlay_title">Ceket & Zırh Katmanı</span>
                     <p data-i18n="mode_outer_overlay_desc">Temel vücut Skin 1, dış kıyafet/katman Skin 2.</p>
                 </div>
-                <div class="mode-card" data-mode="base_only" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode-type="ready" data-mode="base_only" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-user"></i>
                     <span data-i18n="mode_base_only_title">Sadece Temel Katman</span>
                     <p data-i18n="mode_base_only_desc">50/50 harmanlama yapılır, ardından şapka/ceket/kol kılıfı gibi tüm dış katmanlar temizlenir.</p>
                 </div>
-                <div class="mode-card" data-mode="front_back" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode-type="ready" data-mode="front_back" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-repeat"></i>
                     <span data-i18n="mode_front_back_title">Ön / Arka Bölme</span>
                     <p data-i18n="mode_front_back_desc">Karakterin ön yüzü Skin 1, sırt kısmı Skin 2.</p>
                 </div>
-                <div class="mode-card" data-mode="blend" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode-type="ready" data-mode="blend" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-droplet"></i>
                     <span data-i18n="mode_blend_title">Opacity Blend</span>
                     <p data-i18n="mode_blend_desc">İki texture %50 saydamlıkla üst üste bindirilir; hayalet/karışım efekti.</p>
                 </div>
-                <div class="mode-card" data-mode="chimera" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode-type="ready" data-mode="chimera" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-shuffle"></i>
                     <span data-i18n="mode_chimera_title">Rastgele Karışım</span>
                     <p data-i18n="mode_chimera_desc">Kafa, gövde, kollar ve bacaklar için her parça rastgele Skin 1 veya Skin 2'den seçilir.</p>
                 </div>
-                <div class="mode-card" data-mode="body_swap" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode-type="ready" data-mode="body_swap" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-vest"></i>
                     <span data-i18n="mode_body_swap_title">Gövde Değişimi</span>
                     <p data-i18n="mode_body_swap_desc">Skin 1'in kafa ve kolları korunur; gövde ve iki bacak Skin 2'den alınır.</p>
                 </div>
-                <div class="mode-card" data-mode="head_legs_swap" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode-type="ready" data-mode="head_legs_swap" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-person"></i>
                     <span data-i18n="mode_head_legs_swap_title">Kafa & Bacak Değişimi</span>
                     <p data-i18n="mode_head_legs_swap_desc">Skin 2'nin kafa ve bacakları, Skin 1'in gövde ve kollarıyla birleştirilir.</p>
                 </div>
-                <div class="mode-card" data-mode="reverse_overlay" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode-type="ready" data-mode="reverse_overlay" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-layer-group"></i>
                     <span data-i18n="mode_reverse_overlay_title">Ters Katman</span>
                     <p data-i18n="mode_reverse_overlay_desc">Skin 2 temel beden olarak kullanılır; Skin 1'in dış kıyafet ve katmanları üzerine uygulanır.</p>
                 </div>
-                <div class="mode-card" data-mode="checker_blend" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode-type="ready" data-mode="checker_blend" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-chess-board"></i>
                     <span data-i18n="mode_checker_blend_title">Piksel Mozaik</span>
                     <p data-i18n="mode_checker_blend_desc">UV haritasındaki pikseller dama düzeninde Skin 1 ve Skin 2 arasında dağıtılır.</p>
                 </div>
-                <div class="mode-card" data-mode="custom" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode-type="ready" data-mode="head_torso_swap" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-user-tie"></i>
+                    <span data-i18n="mode_head_torso_swap_title">Kafa & Gövde Değişimi</span>
+                    <p data-i18n="mode_head_torso_swap_desc">Skin 2'nin kafa ve gövdesi, Skin 1'in kolları ve bacaklarıyla birleştirilir.</p>
+                </div>
+                <div class="mode-card" data-mode-type="ready" data-mode="arms_legs_swap" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-person-running"></i>
+                    <span data-i18n="mode_arms_legs_swap_title">Kol & Bacak Değişimi</span>
+                    <p data-i18n="mode_arms_legs_swap_desc">Skin 2'nin iki kolu ve iki bacağı, Skin 1'in kafa ve gövdesiyle birleştirilir.</p>
+                </div>
+                <div class="mode-card" data-mode-type="ready" data-mode="alternating_parts" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-shuffle"></i>
+                    <span data-i18n="mode_alternating_parts_title">Dengeli Parça Karışımı</span>
+                    <p data-i18n="mode_alternating_parts_desc">Kafa ve bacaklar Skin 1'den, gövde ve kollar Skin 2'den alınır.</p>
+                </div>
+                <div class="mode-card" data-mode-type="custom" data-mode="custom" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-hand-pointer"></i>
                     <span data-i18n="mode_custom_title">Özel Seçmeli Merger</span>
                     <p data-i18n="mode_custom_desc">Kafa, gövde, kollar, bacaklar ve dış katmanı ayrı ayrı Skin 1 veya Skin 2'den seçerek kendi kombinasyonunuzu oluşturun.</p>
@@ -1800,6 +1839,14 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 mode_reverse_overlay_desc: 'Skin 2 temel beden olarak kullanılır; Skin 1\'in dış kıyafet ve katmanları üzerine uygulanır.',
                 mode_checker_blend_title: 'Piksel Mozaik',
                 mode_checker_blend_desc: 'UV haritasındaki pikseller dama düzeninde Skin 1 ve Skin 2 arasında dağıtılır.',
+                mode_head_torso_swap_title: 'Kafa & Gövde Değişimi',
+                mode_head_torso_swap_desc: 'Skin 2\'nin kafa ve gövdesi, Skin 1\'in kolları ve bacaklarıyla birleştirilir.',
+                mode_arms_legs_swap_title: 'Kol & Bacak Değişimi',
+                mode_arms_legs_swap_desc: 'Skin 2\'nin iki kolu ve iki bacağı, Skin 1\'in kafa ve gövdesiyle birleştirilir.',
+                mode_alternating_parts_title: 'Dengeli Parça Karışımı',
+                mode_alternating_parts_desc: 'Kafa ve bacaklar Skin 1\'den, gövde ve kollar Skin 2\'den alınır.',
+                readyModesTab: 'Hazır Modlar',
+                customModesTab: 'Özel Modlar',
                 mode_custom_title: 'Özel Seçmeli Merger',
                 mode_custom_desc: 'Kafa, gövde, kollar, bacaklar ve dış katmanı ayrı ayrı Skin 1 veya Skin 2\'den seçerek kendi kombinasyonunuzu oluşturun.',
                 customPickerTitle: 'Özel Seçmeli Merger — Vücut Parçalarına Tıklayın',
@@ -1971,6 +2018,14 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 mode_reverse_overlay_desc: 'Use Skin 2 as the base body and apply Skin 1\'s outer clothing and layers.',
                 mode_checker_blend_title: 'Pixel Mosaic',
                 mode_checker_blend_desc: 'Distribute UV-map pixels between Skin 1 and Skin 2 in a checkerboard pattern.',
+                mode_head_torso_swap_title: 'Head & Torso Swap',
+                mode_head_torso_swap_desc: "Combine Skin 2's head and torso with Skin 1's arms and legs.",
+                mode_arms_legs_swap_title: 'Arms & Legs Swap',
+                mode_arms_legs_swap_desc: "Combine Skin 2's arms and legs with Skin 1's head and torso.",
+                mode_alternating_parts_title: 'Balanced Part Mix',
+                mode_alternating_parts_desc: 'Use Skin 1 for the head and legs, and Skin 2 for the torso and arms.',
+                readyModesTab: 'Ready Modes',
+                customModesTab: 'Custom Modes',
                 mode_custom_title: 'Custom Selective Merger',
                 mode_custom_desc: 'Pick the head, torso, arms, legs and outer layer from Skin 1 or Skin 2 individually to build your own combination.',
                 customPickerTitle: 'Custom Selective Merger — Click Body Parts',
@@ -2645,6 +2700,25 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             resultInfo.textContent = t('modeSelected', t(`mode_${selectedMode}_title`));
             log(t('modeSelected', t(`mode_${selectedMode}_title`)), "warn");
         }
+
+        function setModeCategory(category){
+            document.querySelectorAll('[data-mode-tab]').forEach(tab=>{
+                const active=tab.getAttribute('data-mode-tab')===category;
+                tab.classList.toggle('active',active); tab.setAttribute('aria-selected',String(active));
+            });
+            document.querySelectorAll('.mode-card[data-mode-type]').forEach(card=>{
+                card.classList.toggle('mode-hidden', card.getAttribute('data-mode-type')!==category);
+            });
+            if(category==='custom'){
+                const customCard=document.querySelector('.mode-card[data-mode="custom"]');
+                if(customCard && !customCard.classList.contains('active')) selectModeCard(customCard);
+            } else {
+                const activeCard=document.querySelector('.mode-card[data-mode-type="ready"].active');
+                if(!activeCard){ const first=document.querySelector('.mode-card[data-mode-type="ready"]'); if(first) selectModeCard(first); }
+            }
+        }
+        document.querySelectorAll('[data-mode-tab]').forEach(tab=>tab.addEventListener('click',()=>setModeCategory(tab.getAttribute('data-mode-tab'))));
+        setModeCategory('ready');
 
         document.querySelectorAll('.mode-card').forEach(card => {
             card.addEventListener('click', () => selectModeCard(card));
@@ -3670,6 +3744,24 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
                 log(t('chimeraResult', headSrc, torsoSrc, rightArmSrc, leftArmSrc, rightLegSrc, leftLegSrc), 'success');
 
+            } else if (selectedMode === 'head_torso_swap') {
+                ctxOut.drawImage(canvas1, 0, 0);
+                copyCharacterPart(ctx2, ctxOut, 'head', model2, model1);
+                copyCharacterPart(ctx2, ctxOut, 'torso', model2, model1);
+                log(t('mode_head_torso_swap_title') + ': ' + t('mode_head_torso_swap_desc'), 'success');
+
+            } else if (selectedMode === 'arms_legs_swap') {
+                ctxOut.drawImage(canvas1, 0, 0);
+                copyCharacterPart(ctx2, ctxOut, 'arms', model2, model1);
+                copyCharacterPart(ctx2, ctxOut, 'legs', model2, model1);
+                log(t('mode_arms_legs_swap_title') + ': ' + t('mode_arms_legs_swap_desc'), 'success');
+
+            } else if (selectedMode === 'alternating_parts') {
+                ctxOut.drawImage(canvas1, 0, 0);
+                copyCharacterPart(ctx2, ctxOut, 'torso', model2, model1);
+                copyCharacterPart(ctx2, ctxOut, 'arms', model2, model1);
+                log(t('mode_alternating_parts_title') + ': ' + t('mode_alternating_parts_desc'), 'success');
+
             } else if (selectedMode === 'custom') {
                 // Özel Seçmeli Merger: kullanıcı her vücut parçasının temel (base)
                 // ve dış katman (overlay) kaynağını tıklamalı arayüzden ayrı ayrı
@@ -4222,8 +4314,10 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
     base_only:'mode_base_only_title', front_back:'mode_front_back_title', blend:'mode_blend_title',
     chimera:'mode_chimera_title', body_swap:'mode_body_swap_title', head_legs_swap:'mode_head_legs_swap_title',
     reverse_overlay:'mode_reverse_overlay_title', checker_blend:'mode_checker_blend_title',
-    custom:'mode_custom_title'
+    head_torso_swap:'mode_head_torso_swap_title', arms_legs_swap:'mode_arms_legs_swap_title',
+    alternating_parts:'mode_alternating_parts_title', custom:'mode_custom_title'
   };
+  const simpleReadyModes = ['half','head_swap','top_bottom','arm_swap','leg_swap','outer_overlay','base_only','front_back','blend','chimera','body_swap','head_legs_swap','reverse_overlay','checker_blend','head_torso_swap','arms_legs_swap','alternating_parts'];
   const $ = id => document.getElementById(id);
 
   function copyPreview(src, dst, show){
@@ -4260,11 +4354,14 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
   function fillModes(){
     const sel=$('simpleModeSelect'); if(!sel) return;
     sel.innerHTML='';
+    const readyGroup=document.createElement('optgroup'); readyGroup.label=typeof t==='function'?t('readyModesTab'):'Ready Modes';
+    const customGroup=document.createElement('optgroup'); customGroup.label=typeof t==='function'?t('customModesTab'):'Custom Modes';
     Object.entries(simpleModeLabels).forEach(([mode,key])=>{
       const o=document.createElement('option');
       o.value=mode; o.dataset.i18n=key; o.textContent=typeof t==='function'?t(key):mode;
-      sel.appendChild(o);
+      (simpleReadyModes.includes(mode)?readyGroup:customGroup).appendChild(o);
     });
+    sel.appendChild(readyGroup); sel.appendChild(customGroup);
     sel.value=(typeof selectedMode!=='undefined'?selectedMode:'half');
   }
 
@@ -4316,6 +4413,13 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
     $('simplePremiumBtn')?.addEventListener('click',()=>$('premiumStyleBtn')?.click());
     $('simpleClear1')?.addEventListener('click',e=>{e.stopPropagation();$('clear1')?.click();});
     $('simpleClear2')?.addEventListener('click',e=>{e.stopPropagation();$('clear2')?.click();});
+    [['simpleUsername1','usernameFetch1','simpleUsernameBtn1','usernameFetchBtn1'],['simpleUsername2','usernameFetch2','simpleUsernameBtn2','usernameFetchBtn2']].forEach(([si,ri,sb,rb])=>{
+      $(sb)?.addEventListener('click',e=>{
+        e.stopPropagation(); const src=$(si), dst=$(ri);
+        if(src && dst){ dst.value=src.value.trim(); }
+        $(rb)?.click();
+      });
+    });
 
     ['inputSkin1','inputSkin2','clear1','clear2','btnResetAll','btnUseAsSkin1'].forEach(id=>{
       const el=$(id); if(el){ el.addEventListener('change',()=>setTimeout(syncSimplePreviews,40)); el.addEventListener('click',()=>setTimeout(()=>{syncSimplePreviews();syncSimpleResult();},60)); }
