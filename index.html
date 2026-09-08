@@ -3004,38 +3004,75 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
             let uuid = null;
 
+            // İstekler bazen tek bir dış serviste geçici olarak başarısız olabiliyor.
+            // Bu yüzden kısa timeout + birden fazla kaynak kullanıyoruz.
+            const fetchWithTimeout = async (url, ms = 9000) => {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), ms);
+                try {
+                    return await fetch(url, {
+                        signal: controller.signal,
+                        cache: 'no-store',
+                        headers: { 'Accept': 'application/json, image/png, image/*' }
+                    });
+                } finally {
+                    clearTimeout(timer);
+                }
+            };
+
             // 1) Birincil kaynak: resmi Mojang API.
             try {
-                const r1 = await fetch(`https://api.mojang.com/users/profiles/minecraft/${encodeURIComponent(username)}`);
+                const r1 = await fetchWithTimeout(`https://api.mojang.com/users/profiles/minecraft/${encodeURIComponent(username)}`);
                 if (r1.status === 404) throw new Error(t('usernameNotFound', username));
                 if (r1.ok) {
                     const data = await r1.json();
-                    uuid = data && data.id ? data.id : null;
+                    uuid = data && data.id ? String(data.id).replace(/-/g, '') : null;
                 }
             } catch (e) {
                 if (e instanceof Error && e.message === t('usernameNotFound', username)) throw e;
-                // Ağ/CORS hatası olabilir; aşağıdaki yedek servise geçilecek.
             }
 
-            // 2) Yedek kaynak: CORS'u açık playerdb.co (Mojang engellenirse).
+            // 2) Yedek UUID kaynağı.
             if (!uuid) {
                 try {
-                    const r2 = await fetch(`https://playerdb.co/api/player/minecraft/${encodeURIComponent(username)}`);
+                    const r2 = await fetchWithTimeout(`https://playerdb.co/api/player/minecraft/${encodeURIComponent(username)}`);
                     if (r2.ok) {
                         const data2 = await r2.json();
                         const rawId = data2 && data2.data && data2.data.player ? data2.data.player.id : null;
-                        uuid = rawId ? rawId.replace(/-/g, '') : null;
+                        uuid = rawId ? String(rawId).replace(/-/g, '') : null;
                     }
-                } catch (e) { /* yoksay: sıradaki hata mesajıyla sonlanacak */ }
+                } catch (e) { /* sonraki kaynağa geç */ }
             }
 
             if (!uuid) throw new Error(t('usernameNotFound', username));
 
-            // 3) UUID -> ham skin PNG'si (Crafatar).
-            const r3 = await fetch(`https://crafatar.com/skins/${uuid}`);
-            if (!r3.ok) throw new Error(t('skinFetchFailed'));
-            const blob = await r3.blob();
-            return new File([blob], `${username}.png`, { type: 'image/png' });
+            // 3) UUID -> ham 64x64 skin PNG'si.
+            // Tek bir Crafatar sunucusuna bağlı kalmamak için sırayla
+            // resmi/aktif Crafatar aynaları ve Mineatar denenir.
+            const skinUrls = [
+                `https://crafatar.com/skins/${uuid}.png`,
+                `https://crafatar.imc.moe/skins/${uuid}.png`,
+                `https://skins.legacyminecraft.com/skins/${uuid}.png`,
+                `https://api.mineatar.io/skin/${uuid}?format=png`
+            ];
+
+            let lastError = null;
+            for (const url of skinUrls) {
+                try {
+                    const response = await fetchWithTimeout(url, 10000);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const blob = await response.blob();
+                    if (!blob || blob.size < 100 || !String(blob.type || '').toLowerCase().includes('image')) {
+                        throw new Error('Geçersiz görsel yanıtı');
+                    }
+                    return new File([blob], `${username}.png`, { type: 'image/png' });
+                } catch (e) {
+                    lastError = e;
+                }
+            }
+
+            console.warn('[NVO] Skin servislerinin tamamı başarısız:', lastError);
+            throw new Error(t('skinFetchFailed'));
         }
 
         function wireUsernameFetch(btnId, inputId, ctx, labelId, isFirst){
