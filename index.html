@@ -2999,6 +2999,51 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             }
         }
 
+        /**
+         * Finalizes a successfully loaded skin after file/username retrieval.
+         * Keeps the UI state in sync with the actual native canvas dimensions.
+         * This function is intentionally shared by file uploads and Minecraft
+         * username fetches so both paths behave identically.
+         */
+        function finishLoadSkin(ctx, labelId, isFirst, file, displayFormat) {
+            const canvas = ctx && ctx.canvas;
+            if (!canvas) throw new Error('Skin canvas bulunamadı.');
+
+            const model = detectSkinModel(ctx);
+            const tag = isFirst ? tagSkin1 : tagSkin2;
+            const meta = isFirst ? meta1 : meta2;
+            const label = document.getElementById(labelId);
+
+            if (isFirst) model1 = model;
+            else model2 = model;
+
+            updateModelTag(tag, model);
+
+            if (label) {
+                label.removeAttribute('data-i18n');
+                const name = file && file.name ? file.name : 'Minecraft skin';
+                label.textContent = name;
+            }
+
+            if (meta) {
+                meta.innerHTML = `<span><span class="status-dot"></span> ${canvas.width}×${canvas.height} PNG • ${displayFormat || getSkinFormat(canvas)}</span>`;
+            }
+
+            // A fresh skin invalidates the previous merge result.
+            resultReady = false;
+            AppState.resultReady = false;
+            btnDownload.disabled = true;
+            btnUseAsSkin1.disabled = true;
+            compareSkin1Btn.disabled = !model1;
+            compareSkin2Btn.disabled = !model2;
+            compareResultBtn.disabled = true;
+
+            checkModelMismatch();
+            syncDownloadAllButton();
+
+            log(`${isFirst ? 'Skin 1' : 'Skin 2'} yüklendi: ${canvas.width}×${canvas.height} (${model.toUpperCase()})`, 'success');
+        }
+
         function checkModelMismatch() {
             if (model1 && model2) {
                 const f1 = getSkinFormat(canvas1);
