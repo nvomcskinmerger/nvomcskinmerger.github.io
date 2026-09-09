@@ -313,28 +313,6 @@
             transition: var(--transition);
         }
 
-
-        /* ===== 3/4 SKIN MULTI MERGER UPLOADERS ===== */
-        .multi-skin-panel{display:none}
-        .multi-skin-panel.active{display:block}
-        body.multi-mode-active #standardSkinCard1,body.multi-mode-active #standardSkinCard2{display:none}
-        body.multi-mode-active #simpleStandardUploadPanel{display:none}
-        .multi-skin-note{font-size:.78rem;color:var(--text-muted);margin:-6px 0 14px;line-height:1.45}
-        .multi-upload-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-        .multi-upload-card{min-width:0;border:1px dashed var(--card-border);border-radius:11px;padding:12px;background:rgba(255,255,255,.025);text-align:center;position:relative;transition:var(--transition)}
-        .multi-upload-card:hover{border-color:var(--accent-cyan);background:rgba(255,59,59,.035)}
-        .multi-upload-card.hidden{display:none}
-        .multi-upload-card input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2}
-        .multi-upload-card .multi-slot-title{font-size:.76rem;font-weight:800;color:var(--text-main);display:block;margin-bottom:7px}
-        .multi-upload-card .multi-slot-icon{font-size:1.1rem;color:var(--accent-cyan);margin-bottom:5px}
-        .multi-upload-card canvas{width:74px;height:74px;display:block;margin:6px auto 7px;image-rendering:pixelated;border:1px solid var(--card-border);border-radius:7px;background:rgba(0,0,0,.18)}
-        .multi-upload-card .multi-slot-name{font-size:.62rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .multi-upload-card .multi-slot-status{font-size:.62rem;color:var(--text-muted);margin-top:5px}
-        .multi-upload-card .multi-clear{position:relative;z-index:3;margin-top:7px;width:100%;padding:5px 7px;border:1px solid var(--card-border);border-radius:7px;background:transparent;color:var(--text-muted);font:inherit;font-size:.62rem;cursor:pointer}
-        .multi-upload-card .multi-clear:hover{border-color:var(--accent-pink);color:var(--text-main)}
-        @media(max-width:900px){.multi-upload-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-        @media(max-width:480px){.multi-upload-grid{grid-template-columns:1fr 1fr}.multi-upload-card{padding:9px}.multi-upload-card canvas{width:62px;height:62px}}
-
         /* Merger Mode Selection Grid */
         .mode-grid {
             display: grid;
@@ -1212,7 +1190,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
       </div>
     </div>
 
-    <div class="simple-panel" id="simpleStandardUploadPanel">
+    <div class="simple-panel">
       <div class="simple-panel-title" data-i18n="simpleUploadTitle">Skinleri yükle</div>
       <div class="simple-files">
         <div class="simple-file-wrap">
@@ -1232,37 +1210,6 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             <canvas id="simplePreview2" class="simple-preview" width="64" height="64"></canvas>
           </label>
           <button id="simpleClear2" class="simple-mini-btn" type="button" data-i18n="clearBtn">Temizle</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="simple-panel multi-skin-panel" id="simpleMultiSkinPanel">
-      <div class="simple-panel-title"><i class="fa-solid fa-layer-group"></i> <span data-i18n="multiUploadTitle">Çoklu Skin Yükleme</span></div>
-      <p class="multi-skin-note" id="simpleMultiSkinDesc"></p>
-      <div class="multi-upload-grid" id="simpleMultiUploadGrid">
-        <div class="multi-upload-card" data-simple-multi-slot="0">
-          <input type="file" id="simpleMultiInput1" accept="image/png">
-          <span class="multi-slot-icon"><i class="fa-solid fa-image"></i></span><span class="multi-slot-title">Skin 1</span>
-          <canvas id="simpleMultiPreview1" width="64" height="64"></canvas><div class="multi-slot-name" id="simpleMultiName1">PNG yükle</div><div class="multi-slot-status" id="simpleMultiStatus1">Bekliyor</div>
-          <button type="button" class="multi-clear" data-simple-multi-clear="0">Temizle</button>
-        </div>
-        <div class="multi-upload-card" data-simple-multi-slot="1">
-          <input type="file" id="simpleMultiInput2" accept="image/png">
-          <span class="multi-slot-icon"><i class="fa-solid fa-image"></i></span><span class="multi-slot-title">Skin 2</span>
-          <canvas id="simpleMultiPreview2" width="64" height="64"></canvas><div class="multi-slot-name" id="simpleMultiName2">PNG yükle</div><div class="multi-slot-status" id="simpleMultiStatus2">Bekliyor</div>
-          <button type="button" class="multi-clear" data-simple-multi-clear="1">Temizle</button>
-        </div>
-        <div class="multi-upload-card" data-simple-multi-slot="2">
-          <input type="file" id="simpleMultiInput3" accept="image/png">
-          <span class="multi-slot-icon"><i class="fa-solid fa-image"></i></span><span class="multi-slot-title">Skin 3</span>
-          <canvas id="simpleMultiPreview3" width="64" height="64"></canvas><div class="multi-slot-name" id="simpleMultiName3">PNG yükle</div><div class="multi-slot-status" id="simpleMultiStatus3">Bekliyor</div>
-          <button type="button" class="multi-clear" data-simple-multi-clear="2">Temizle</button>
-        </div>
-        <div class="multi-upload-card" data-simple-multi-slot="3">
-          <input type="file" id="simpleMultiInput4" accept="image/png">
-          <span class="multi-slot-icon"><i class="fa-solid fa-image"></i></span><span class="multi-slot-title">Skin 4</span>
-          <canvas id="simpleMultiPreview4" width="64" height="64"></canvas><div class="multi-slot-name" id="simpleMultiName4">PNG yükle</div><div class="multi-slot-status" id="simpleMultiStatus4">Bekliyor</div>
-          <button type="button" class="multi-clear" data-simple-multi-clear="3">Temizle</button>
         </div>
       </div>
     </div>
@@ -1381,7 +1328,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
     <main class="container">
         <!-- Sol Skin -->
-        <div class="glass-card animate-fade" id="standardSkinCard1">
+        <div class="glass-card animate-fade">
             <div class="card-header">
                 <div class="card-title"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="skin1CardTitle">Ana Skin (Skin 1)</span></div>
                 <span class="model-tag" id="tagSkin1" data-i18n="modelPending">Model: Bekleniyor</span>
@@ -1400,7 +1347,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         </div>
 
         <!-- Sağ Skin -->
-        <div class="glass-card animate-fade" id="standardSkinCard2">
+        <div class="glass-card animate-fade">
             <div class="card-header">
                 <div class="card-title"><i class="fa-solid fa-arrow-right"></i> <span data-i18n="skin2CardTitle">İkincil Skin (Skin 2)</span></div>
                 <span class="model-tag" id="tagSkin2" data-i18n="modelPending">Model: Bekleniyor</span>
@@ -1522,66 +1469,12 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                     <span data-i18n="mode_gradient_blend_title">Gradyan Geçiş</span>
                     <p data-i18n="mode_gradient_blend_desc">Kafadan ayağa doğru Skin 1'den Skin 2'ye yumuşak, doğrusal bir renk geçişi uygulanır.</p>
                 </div>
-                <div class="mode-card" data-mode="three_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-cubes"></i>
-                    <span data-i18n="mode_three_skin_title">3 Skin Birleştir</span>
-                    <p data-i18n="mode_three_skin_desc">3 farklı skin ile kafa, gövde/kollar ve bacakları birleştir.</p>
-                </div>
-                <div class="mode-card" data-mode="four_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-cubes-stacked"></i>
-                    <span data-i18n="mode_four_skin_title">4 Skin Birleştir</span>
-                    <p data-i18n="mode_four_skin_desc">Kafa, gövde, kollar ve bacakları 4 ayrı skinden oluştur.</p>
-                </div>
                 <div class="mode-card" data-mode="custom" data-mode-type="custom" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-hand-pointer"></i>
                     <span data-i18n="mode_custom_title">Özel Seçmeli Merger</span>
                     <p data-i18n="mode_custom_desc">Kafa, gövde, kollar, bacaklar ve dış katmanı ayrı ayrı Skin 1 veya Skin 2'den seçerek kendi kombinasyonunuzu oluşturun.</p>
                 </div>
             </div>
-            </div>
-        </div>
-
-        <!-- 3/4 Skin Merger için özel, uyumlu yükleme kutuları -->
-        <div class="glass-card full-width animate-fade multi-skin-panel" id="multiSkinPanel">
-            <div class="card-title" style="margin-bottom:4px;"><i class="fa-solid fa-layer-group"></i> <span data-i18n="multiUploadTitle">Çoklu Skin Yükleme</span></div>
-            <p class="multi-skin-note" id="multiSkinDesc"></p>
-            <div class="multi-upload-grid" id="multiUploadGrid">
-                <div class="multi-upload-card" data-multi-slot="0">
-                    <input type="file" id="multiInput1" accept="image/png">
-                    <span class="multi-slot-icon"><i class="fa-solid fa-image"></i></span>
-                    <span class="multi-slot-title">Skin 1</span>
-                    <canvas id="multiPreview1" width="64" height="64"></canvas>
-                    <div class="multi-slot-name" id="multiName1">PNG yükle</div>
-                    <div class="multi-slot-status" id="multiStatus1">Bekliyor</div>
-                    <button type="button" class="multi-clear" data-multi-clear="0">Temizle</button>
-                </div>
-                <div class="multi-upload-card" data-multi-slot="1">
-                    <input type="file" id="multiInput2" accept="image/png">
-                    <span class="multi-slot-icon"><i class="fa-solid fa-image"></i></span>
-                    <span class="multi-slot-title">Skin 2</span>
-                    <canvas id="multiPreview2" width="64" height="64"></canvas>
-                    <div class="multi-slot-name" id="multiName2">PNG yükle</div>
-                    <div class="multi-slot-status" id="multiStatus2">Bekliyor</div>
-                    <button type="button" class="multi-clear" data-multi-clear="1">Temizle</button>
-                </div>
-                <div class="multi-upload-card" data-multi-slot="2">
-                    <input type="file" id="multiInput3" accept="image/png">
-                    <span class="multi-slot-icon"><i class="fa-solid fa-image"></i></span>
-                    <span class="multi-slot-title">Skin 3</span>
-                    <canvas id="multiPreview3" width="64" height="64"></canvas>
-                    <div class="multi-slot-name" id="multiName3">PNG yükle</div>
-                    <div class="multi-slot-status" id="multiStatus3">Bekliyor</div>
-                    <button type="button" class="multi-clear" data-multi-clear="2">Temizle</button>
-                </div>
-                <div class="multi-upload-card" data-multi-slot="3">
-                    <input type="file" id="multiInput4" accept="image/png">
-                    <span class="multi-slot-icon"><i class="fa-solid fa-image"></i></span>
-                    <span class="multi-slot-title">Skin 4</span>
-                    <canvas id="multiPreview4" width="64" height="64"></canvas>
-                    <div class="multi-slot-name" id="multiName4">PNG yükle</div>
-                    <div class="multi-slot-status" id="multiStatus4">Bekliyor</div>
-                    <button type="button" class="multi-clear" data-multi-clear="3">Temizle</button>
-                </div>
             </div>
         </div>
 
@@ -2839,27 +2732,6 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         let skinResolution1 = 64;
         let skinResolution2 = 64;
 
-        // 3/4 Skin Merger state: separate native canvases, never resize 128×128 down.
-        const multiCanvases = Array.from({length:4}, () => {
-            const c = document.createElement('canvas');
-            c.width = 64; c.height = 64;
-            const cx = c.getContext('2d', {alpha:true, willReadFrequently:true});
-            cx.imageSmoothingEnabled = false;
-            return c;
-        });
-        const multiModels = [null, null, null, null];
-        const multiFiles = [null, null, null, null];
-        window.__nvoMultiCanvases = multiCanvases;
-        window.__nvoMultiFiles = multiFiles;
-        let multiFormat = null;
-
-        function isMultiSkinMode(mode = selectedMode){
-            return mode === 'three_skin' || mode === 'four_skin';
-        }
-        function requiredMultiSkinCount(mode = selectedMode){
-            return mode === 'four_skin' ? 4 : mode === 'three_skin' ? 3 : 0;
-        }
-
         function getCanvasResolution(canvas){
             return canvas ? canvas.width : 64;
         }
@@ -2912,8 +2784,6 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             if (cbpCardSimple) cbpCardSimple.style.display = isCustom ? '' : 'none';
             resultInfo.removeAttribute('data-i18n');
             resultInfo.textContent = t('modeSelected', t(`mode_${selectedMode}_title`));
-            updateMultiSkinUI();
-            updateMergeReadiness();
             log(t('modeSelected', t(`mode_${selectedMode}_title`)), "warn");
         }
 
@@ -3203,158 +3073,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             log(`${isFirst ? 'Skin 1' : 'Skin 2'} yüklendi: ${canvas.width}×${canvas.height} (${model.toUpperCase()})`, 'success');
         }
 
-
-        function updateMultiSkinUI(){
-            const count = requiredMultiSkinCount();
-            const panels = [document.getElementById('multiSkinPanel'), document.getElementById('simpleMultiSkinPanel')].filter(Boolean);
-            const active = count > 0;
-            document.body.classList.toggle('multi-mode-active', active);
-            panels.forEach(panel => {
-                panel.classList.toggle('active', active);
-                const desc = panel.querySelector('#multiSkinDesc, #simpleMultiSkinDesc');
-                if (desc) {
-                    desc.removeAttribute('data-i18n');
-                    desc.textContent = count === 4 ? t('multiUploadDesc4') : t('multiUploadDesc3');
-                }
-            });
-            document.querySelectorAll('#multiUploadGrid .multi-upload-card, #simpleMultiUploadGrid .multi-upload-card').forEach(card => {
-                const idx = Number(card.dataset.multiSlot ?? card.dataset.simpleMultiSlot);
-                card.classList.toggle('hidden', idx >= count);
-            });
-            document.querySelectorAll('#multiUploadGrid .multi-upload-card, #simpleMultiUploadGrid .multi-upload-card').forEach(card => {
-                const idx = Number(card.dataset.multiSlot ?? card.dataset.simpleMultiSlot);
-                const title = card.querySelector('.multi-slot-title');
-                if (title) title.textContent = t('multiSkinLabel', idx + 1);
-            });
-        }
-
-        function updateMultiSlotUI(index){
-            const file = multiFiles[index];
-            const model = multiModels[index];
-            const src = multiCanvases[index];
-            document.querySelectorAll(`[id="multiPreview${index+1}"], [id="simpleMultiPreview${index+1}"]`).forEach(canvas => {
-                const cx = canvas.getContext('2d');
-                cx.clearRect(0,0,canvas.width,canvas.height);
-                if (file && src) {
-                    cx.imageSmoothingEnabled = false;
-                    cx.drawImage(src,0,0,canvas.width,canvas.height);
-                    canvas.style.display='block';
-                }
-            });
-            const names = [document.getElementById(`multiName${index+1}`), document.getElementById(`simpleMultiName${index+1}`)];
-            names.forEach(el => { if(el) el.textContent = file ? file.name : t('multiPending'); });
-            const statuses = [document.getElementById(`multiStatus${index+1}`), document.getElementById(`simpleMultiStatus${index+1}`)];
-            statuses.forEach(el => { if(el) el.textContent = model ? `${getSkinFormat(src)} • ${model.toUpperCase()}` : t('multiPending'); });
-        }
-
-        function updateMergeReadiness(){
-            const multi = isMultiSkinMode();
-            if (multi) {
-                const count = requiredMultiSkinCount();
-                const loaded = multiModels.slice(0,count).every(Boolean);
-                const same = loaded && multiFormat && multiCanvases.slice(0,count).every(c => getSkinFormat(c) === multiFormat);
-                btnMerge.disabled = isLoadingAuth || !firebaseUser || !loaded || !same;
-                if (loaded && same) {
-                    resultInfo.removeAttribute('data-i18n');
-                    resultInfo.textContent = t('readyStatus', multiModels[0], multiModels[1], t(`mode_${selectedMode}_title`));
-                    warningBox.classList.remove('active');
-                } else if (loaded && !same) {
-                    resultInfo.removeAttribute('data-i18n');
-                    resultInfo.textContent = t('multiFormatMismatch');
-                    warningBox.classList.add('active');
-                } else {
-                    resultInfo.removeAttribute('data-i18n');
-                    resultInfo.textContent = t('modeSelected', t(`mode_${selectedMode}_title`));
-                    warningBox.classList.remove('active');
-                }
-                syncDownloadAllButton();
-                return;
-            }
-            if (typeof checkModelMismatch === 'function') checkModelMismatch();
-        }
-
-        async function loadMultiSkinFile(file, index){
-            if (!file) return;
-            try {
-                if (file.type !== APP_CONFIG.PNG_MIME) throw new Error(t('invalidPng'));
-                if (file.size <= 0 || file.size > APP_CONFIG.MAX_FILE_BYTES) throw new Error(t('fileTooLarge'));
-                const {width,height} = await readPngDimensions(file);
-                const sourceFormat = `${width}×${height}`;
-                if (!APP_CONFIG.SUPPORTED_SKIN_FORMATS.includes(sourceFormat)) throw new Error(t('invalidDimensions', width, height));
-                const image = await decodeLocalPng(file);
-                const source = document.createElement('canvas');
-                source.width=width; source.height=height;
-                const sctx=source.getContext('2d',{alpha:true,willReadFrequently:true});
-                sctx.imageSmoothingEnabled=false;
-                sctx.drawImage(image,0,0,width,height);
-
-                let loadedWidth=width, loadedHeight=height;
-                if(sourceFormat==='64×32'){
-                    const converted=convertLegacy64x32To64x64(source);
-                    loadedWidth=64; loadedHeight=64;
-                    multiCanvases[index].width=64; multiCanvases[index].height=64;
-                    const cx=multiCanvases[index].getContext('2d',{alpha:true,willReadFrequently:true});
-                    cx.imageSmoothingEnabled=false; cx.clearRect(0,0,64,64); cx.drawImage(converted,0,0);
-                }else{
-                    multiCanvases[index].width=loadedWidth; multiCanvases[index].height=loadedHeight;
-                    const cx=multiCanvases[index].getContext('2d',{alpha:true,willReadFrequently:true});
-                    cx.imageSmoothingEnabled=false; cx.clearRect(0,0,loadedWidth,loadedHeight); cx.drawImage(source,0,0);
-                }
-                const cx=multiCanvases[index].getContext('2d',{alpha:true,willReadFrequently:true});
-                multiModels[index]=detectSkinModel(cx);
-                multiFiles[index]=file;
-                const currentFormat = getSkinFormat(multiCanvases[index]);
-                if(!multiFormat) multiFormat=currentFormat;
-                if(multiFormat !== currentFormat){
-                    multiModels[index]=null; multiFiles[index]=null;
-                    updateMultiSlotUI(index);
-                    throw new Error(t('multiFormatMismatch'));
-                }
-                updateMultiSlotUI(index);
-                updateMergeReadiness();
-                document.dispatchEvent(new CustomEvent('nvo:skin-updated'));
-                log(`Multi Skin ${index+1} yüklendi: ${getSkinFormat(multiCanvases[index])} (${multiModels[index].toUpperCase()})`, 'success');
-            }catch(error){ reportUserError(error,'error'); }
-        }
-
-        function clearMultiSkin(index){
-            const c=multiCanvases[index];
-            c.width=64; c.height=64;
-            c.getContext('2d').clearRect(0,0,64,64);
-            multiModels[index]=null; multiFiles[index]=null;
-            if(index===0 || !multiFiles.some(Boolean)) {
-                const remaining = multiFiles.findIndex(Boolean);
-                multiFormat = remaining >= 0 ? getSkinFormat(multiCanvases[remaining]) : null;
-            }
-            updateMultiSlotUI(index);
-            updateMergeReadiness();
-            document.dispatchEvent(new CustomEvent('nvo:skin-updated'));
-        }
-
-        function wireMultiInputs(){
-            for(let i=0;i<4;i++){
-                document.getElementById(`multiInput${i+1}`)?.addEventListener('change',e=>void loadMultiSkinFile(e.target.files?.[0],i));
-                document.getElementById(`simpleMultiInput${i+1}`)?.addEventListener('change',e=>void loadMultiSkinFile(e.target.files?.[0],i));
-                document.querySelector(`[data-multi-clear="${i}"]`)?.addEventListener('click',e=>{e.stopPropagation();clearMultiSkin(i);});
-                document.querySelector(`[data-simple-multi-clear="${i}"]`)?.addEventListener('click',e=>{e.stopPropagation();clearMultiSkin(i);});
-            }
-        }
-        wireMultiInputs();
-        updateMultiSkinUI();
-        for(let i=0;i<4;i++) updateMultiSlotUI(i);
-
         function checkModelMismatch() {
-            if (isMultiSkinMode()) {
-                const count = requiredMultiSkinCount();
-                const loaded = multiModels.slice(0,count).every(Boolean);
-                const same = loaded && multiFormat && multiCanvases.slice(0,count).every(c => getSkinFormat(c) === multiFormat);
-                btnMerge.disabled = isLoadingAuth || !firebaseUser || !loaded || !same;
-                resultInfo.removeAttribute('data-i18n');
-                resultInfo.textContent = same ? t('readyStatus', multiModels[0], multiModels[1], t(`mode_${selectedMode}_title`)) : t(`mode_${selectedMode}_title`);
-                if (loaded && !same) warningBox.classList.add('active'); else warningBox.classList.remove('active');
-                syncDownloadAllButton();
-                return;
-            }
             if (model1 && model2) {
                 const f1 = getSkinFormat(canvas1);
                 const f2 = getSkinFormat(canvas2);
@@ -3646,13 +3365,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 reportUserError(new Error(t('downloadLoginRequired')), 'warn');
                 return false;
             }
-            if (isMultiSkinMode()) {
-                const need = requiredMultiSkinCount();
-                if (!multiModels.slice(0,need).every(Boolean) || !multiFormat || !multiCanvases.slice(0,need).every(c => getSkinFormat(c) === multiFormat)) {
-                    reportUserError(new Error(t('unexpectedError')), 'error');
-                    return false;
-                }
-            } else if (!model1 || !model2) {
+            if (!model1 || !model2) {
                 reportUserError(new Error(t('unexpectedError')), 'error');
                 return false;
             }
@@ -3677,7 +3390,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 return false;
             } finally {
                 AppState.mergeInProgress = false;
-                btnMerge.disabled = isMultiSkinMode() ? !(firebaseUser && multiModels.slice(0,requiredMultiSkinCount()).every(Boolean) && multiFormat) : !(model1 && model2 && firebaseUser);
+                btnMerge.disabled = !(model1 && model2 && firebaseUser);
                 btnDownload.disabled = !firebaseUser || !resultReady;
             }
         }
@@ -4446,58 +4159,30 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 // saydamlıktan farklı olarak burada karışım oranı konuma bağlıdır.
                 {
                     const size = resultCanvas.width;
-                    const scale = size >= 128 ? 2 : 1;
                     const ca = document.createElement('canvas');
                     const cb = document.createElement('canvas');
                     ca.width = cb.width = size;
                     ca.height = cb.height = size;
-                    const caCtx = ca.getContext('2d', {willReadFrequently:true});
-                    const cbCtx = cb.getContext('2d', {willReadFrequently:true});
+                    const caCtx = ca.getContext('2d');
+                    const cbCtx = cb.getContext('2d');
                     caCtx.imageSmoothingEnabled = false;
                     cbCtx.imageSmoothingEnabled = false;
-                    caCtx.drawImage(canvas1,0,0,size,size);
-                    cbCtx.drawImage(canvas2,0,0,size,size);
-                    const a = caCtx.getImageData(0,0,size,size);
-                    const b = cbCtx.getImageData(0,0,size,size);
-                    const out = ctxOut.createImageData(size,size);
-
-                    // UV atlasındaki ham Y koordinatı karakterin Y ekseni değildir.
-                    // Bu nedenle her anatomik UV adasını gerçek vücut yüksekliğine
-                    // eşliyoruz: kafa 0-8, gövde/kollar 8-20, bacaklar 20-32.
-                    function gradientBodyY(lx,ly){
-                        // Head base + hat: x 0-64, y 0-16.
-                        if (ly >= 0 && ly < 16) return (ly / 15) * 8;
-                        // Right leg base/overlay: x 0-16, y 16-48.
-                        if (lx >= 0 && lx < 16 && ly >= 16 && ly < 48) return 20 + ((ly-16)/31)*12;
-                        // Torso base/overlay: x 16-40, y 16-44.
-                        if (lx >= 16 && lx < 40 && ly >= 16 && ly < 44) return 8 + ((ly-16)/27)*12;
-                        // Right arm base/overlay: x 40-64, y 16-48.
-                        if (lx >= 40 && lx < 64 && ly >= 16 && ly < 48) return 8 + ((ly-16)/31)*12;
-                        // Left leg base/overlay: x 0-32, y 48-64.
-                        if (lx >= 0 && lx < 32 && ly >= 48 && ly < 64) return 20 + ((ly-48)/15)*12;
-                        // Left arm base/overlay: x 32-64, y 48-64.
-                        if (lx >= 32 && lx < 64 && ly >= 48 && ly < 64) return 8 + ((ly-48)/15)*12;
-                        return null;
-                    }
-
-                    for(let y=0;y<size;y++) for(let x=0;x<size;x++){
-                        const i=(y*size+x)*4;
-                        const lx=Math.floor(x/scale), ly=Math.floor(y/scale);
-                        const bodyY=gradientBodyY(lx,ly);
-                        // Unused/transparent atlas pixels keep the original skin 1
-                        // rather than producing coloured seams between UV islands.
-                        if(bodyY===null){
-                            out.data[i]=a.data[i]; out.data[i+1]=a.data[i+1];
-                            out.data[i+2]=a.data[i+2]; out.data[i+3]=a.data[i+3];
-                            continue;
+                    caCtx.drawImage(canvas1, 0, 0, size, size);
+                    cbCtx.drawImage(canvas2, 0, 0, size, size);
+                    const a = caCtx.getImageData(0, 0, size, size);
+                    const b = cbCtx.getImageData(0, 0, size, size);
+                    const out = ctxOut.createImageData(size, size);
+                    for (let y = 0; y < size; y++) {
+                        const mix = size <= 1 ? 0 : y / (size - 1); // 0 (Skin1) -> 1 (Skin2)
+                        for (let x = 0; x < size; x++) {
+                            const i = (y * size + x) * 4;
+                            out.data[i]   = a.data[i]   + (b.data[i]   - a.data[i])   * mix;
+                            out.data[i+1] = a.data[i+1] + (b.data[i+1] - a.data[i+1]) * mix;
+                            out.data[i+2] = a.data[i+2] + (b.data[i+2] - a.data[i+2]) * mix;
+                            out.data[i+3] = a.data[i+3] + (b.data[i+3] - a.data[i+3]) * mix;
                         }
-                        const mix=Math.max(0,Math.min(1,bodyY/32));
-                        out.data[i]=Math.round(a.data[i]+(b.data[i]-a.data[i])*mix);
-                        out.data[i+1]=Math.round(a.data[i+1]+(b.data[i+1]-a.data[i+1])*mix);
-                        out.data[i+2]=Math.round(a.data[i+2]+(b.data[i+2]-a.data[i+2])*mix);
-                        out.data[i+3]=Math.max(a.data[i+3],b.data[i+3]);
                     }
-                    ctxOut.putImageData(out,0,0);
+                    ctxOut.putImageData(out, 0, 0);
                 }
                 log(t('mode_gradient_blend_title') + ': ' + t('mode_gradient_blend_desc'), 'success');
 
@@ -4541,7 +4226,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             progressBarFill.style.width = '100%';
             progressText.textContent = '100%';
             resultInfo.removeAttribute('data-i18n');
-            resultInfo.textContent = isMultiSkinMode() ? t('multiMergeComplete', requiredMultiSkinCount()) : t('mergeComplete', t(`mode_${selectedMode}_title`), model1, model2);
+            resultInfo.textContent = t('mergeComplete', t(`mode_${selectedMode}_title`), model1, model2);
             document.dispatchEvent(new CustomEvent('nvo:result-updated'));
             trackEvent('skin_merge_completed', { mode: selectedMode, model1: model1, model2: model2 });
 
@@ -4615,47 +4300,12 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
          * all reads/writes are scaled to the native 128×128 atlas; no resize or
          * 64×64 intermediate image is created.
          */
-
-        function executeMultiMergeLogic(){
-            const count=requiredMultiSkinCount();
-            const sources=multiCanvases.slice(0,count);
-            const models=multiModels.slice(0,count);
-            if(count!==3 && count!==4) throw new Error(t('unexpectedError'));
-            const format=getSkinFormat(sources[0]);
-            if(!sources.every(c=>getSkinFormat(c)===format)) throw new Error(t('multiFormatMismatch'));
-
-            resultCanvas.width=sources[0].width;
-            resultCanvas.height=sources[0].height;
-            ctxOut.imageSmoothingEnabled=false;
-            ctxOut.clearRect(0,0,resultCanvas.width,resultCanvas.height);
-
-            const srcCtx=i=>sources[i].getContext('2d',{alpha:true,willReadFrequently:true});
-            const dstModel=models[0];
-
-            // 3-skin: head=S1, torso+arms=S2, legs=S3.
-            // 4-skin: head=S1, torso=S2, arms=S3, legs=S4.
-            const torsoSrc=count===3?1:1;
-            const armsSrc=count===3?1:2;
-            const legsSrc=count===3?2:3;
-
-            copyCharacterPart(srcCtx(0),ctxOut,'head',models[0],dstModel);
-            copyCharacterPart(srcCtx(torsoSrc),ctxOut,'torso',models[torsoSrc],dstModel);
-            copyCharacterPart(srcCtx(armsSrc),ctxOut,'arms',models[armsSrc],dstModel);
-            copyCharacterPart(srcCtx(legsSrc),ctxOut,'legs',models[legsSrc],dstModel);
-
-            log(t(`mode_${selectedMode}_title`) + ': ' + t(`mode_${selectedMode}_desc`), 'success');
-        }
-
         function execute128x128MergeLogic() {
             executeModernMergeLogic();
         }
 
         /** @returns {void} @throws {Error} */
         function executeMergeLogic() {
-            if (isMultiSkinMode()) {
-                executeMultiMergeLogic();
-                return;
-            }
             const f1 = getSkinFormat(canvas1), f2 = getSkinFormat(canvas2);
             if (f1 !== f2) throw new Error(t('skinFormatMismatch', f1, f2));
 
@@ -4796,7 +4446,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         // modları üreteceğini belirler. Daha önce head_torso_swap, arms_legs_swap
         // ve alternating_parts modları burada UNUTULMUŞTU — o modlar ZIP'e hiç
         // dahil edilmiyordu. Şimdi tüm hazır modlar (yeni eklenen 3 tanesi dahil) eksiksiz listelendi.
-        const ALL_MERGE_MODES = ['half','head_swap','top_bottom','arm_swap','leg_swap','outer_overlay','base_only','front_back','blend','chimera','body_swap','head_legs_swap','reverse_overlay','checker_blend','head_torso_swap','arms_legs_swap','alternating_parts','cross_limb_swap','gradient_blend','three_skin','four_skin','custom'];
+        const ALL_MERGE_MODES = ['half','head_swap','top_bottom','arm_swap','leg_swap','outer_overlay','base_only','front_back','blend','chimera','body_swap','head_legs_swap','reverse_overlay','checker_blend','head_torso_swap','arms_legs_swap','alternating_parts','cross_limb_swap','gradient_blend','custom'];
 
         async function downloadAllModes(){
             if (isLoadingAuth) { reportUserError(new Error(t('authNotReady')), 'warn'); return; }
@@ -5150,22 +4800,6 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
     else $('simpleFile2').textContent=typeof t==='function'?t('simpleChoose'):'Choose PNG';
   }
 
-  function syncSimpleMultiPreviews(){
-    for(let i=0;i<4;i++){
-      const src=window.__nvoMultiCanvases?.[i];
-      const out=$(`simpleMultiPreview${i+1}`);
-      if(!out || !src) continue;
-      const cx=out.getContext('2d');
-      cx.clearRect(0,0,64,64);
-      if(window.__nvoMultiFiles?.[i]){
-        cx.imageSmoothingEnabled=false;
-        cx.drawImage(src,0,0,64,64);
-      }
-      const name=$(`simpleMultiName${i+1}`);
-      if(name) name.textContent=window.__nvoMultiFiles?.[i]?.name || (typeof t==='function'?t('multiPending'):'Upload PNG');
-    }
-  }
-
   function syncSimpleResult(){
     const r=$('resultCanvas'), out=$('simpleResultCanvas');
     if(r && out){
@@ -5221,12 +4855,10 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
   function wire(){
     fillModes();
-    syncSimpleMultiPreviews();
     const sel=$('simpleModeSelect');
     sel?.addEventListener('change',()=>{
       const card=document.querySelector(`.mode-card[data-mode="${CSS.escape(sel.value)}"]`);
       card?.click();
-      if(typeof updateMultiSkinUI==='function') updateMultiSkinUI();
     });
     $('simpleMergeBtn')?.addEventListener('click',()=>{
       const real=$('btnMerge'); if(real && !real.disabled){ real.click(); setTimeout(()=>{syncSimpleResult();setSimpleMergeState();},80); }
@@ -5247,9 +4879,9 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
     $('btnMerge')?.addEventListener('click',()=>setTimeout(()=>{syncSimpleResult();setSimpleMergeState();},80));
     $('btnDownload')?.addEventListener('click',()=>setTimeout(syncSimpleResult,30));
     $('googleLogin')?.addEventListener('click',()=>setTimeout(syncSimpleAuth,50));
-    document.addEventListener('nvo:skin-updated',()=>{syncSimplePreviews();syncSimpleMultiPreviews();setSimpleMergeState();syncSimpleAuth();});
+    document.addEventListener('nvo:skin-updated',()=>{syncSimplePreviews();setSimpleMergeState();syncSimpleAuth();});
     document.addEventListener('nvo:result-updated',()=>{syncSimpleResult();setSimpleMergeState();});
-    document.addEventListener('nvo:state-reset',()=>{syncSimplePreviews();syncSimpleMultiPreviews();setSimpleMergeState();syncSimpleAuth();});
+    document.addEventListener('nvo:state-reset',()=>{syncSimplePreviews();syncSimpleResult();setSimpleMergeState();syncSimpleAuth();});
     document.addEventListener('nvo:auth-updated',()=>{syncSimpleAuth();setSimpleMergeState();});
     window.addEventListener('focus',syncSimpleAuth,{passive:true});
   }
