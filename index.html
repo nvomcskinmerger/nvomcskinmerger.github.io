@@ -321,14 +321,21 @@
             margin-top: 10px;
         }
 
+        /* Bluesky logosu resmi marka SVG'sini KAYNAK olarak kullanır, ama
+           <img> yerine CSS mask ile çizilir; böylece FontAwesome ikonları
+           gibi `currentColor`'ı miras alıp kırmızı-siyah temayla otomatik
+           uyumlu olur (sabit mavi kelebek rengiyle çakışmaz). Bu sayede
+           açık/koyu tema için ayrı bir görsel dosyasına da gerek kalmaz. */
         .social-bluesky-logo {
             width: 18px;
             height: 18px;
             display: block;
-            object-fit: contain;
             flex: 0 0 auto;
             opacity: .84;
             transition: opacity .16s ease;
+            background-color: currentColor;
+            -webkit-mask: url("https://bsky.social/about/brand-assets/butterfly/bluesky_media_kit_logo_transparent_3.svg") center / contain no-repeat;
+            mask: url("https://bsky.social/about/brand-assets/butterfly/bluesky_media_kit_logo_transparent_3.svg") center / contain no-repeat;
         }
         .icon-link:hover .social-bluesky-logo,
         .footer-link-btn:hover .social-bluesky-logo {
@@ -341,6 +348,9 @@
             width: 16px;
             height: 16px;
             margin-right: 7px;
+            /* footer-link-btn'deki <i> ikonlarıyla AYNI vurgu rengini kullanır
+               (bkz. ".footer-link-btn i { color: var(--accent-cyan); }") */
+            background-color: var(--accent-cyan);
         }
 
         .mode-tabs { display:flex; gap:8px; margin:4px 0 12px; flex-wrap:wrap; }
@@ -869,9 +879,10 @@
     }
 
 
-    html[data-theme="light"] .social-bluesky-logo {
-        content: url("https://bsky.social/about/brand-assets/butterfly/bluesky_media_kit_logo_transparent_4.svg");
-    }
+    /* NOT: Bluesky logosu artık CSS mask + currentColor ile çizildiği için
+       (bkz. .social-bluesky-logo tanımı) açık/koyu tema arasında ayrı bir
+       görsel dosyası DEĞİŞTİRMEYE gerek yok — otomatik olarak metin rengini
+       takip eder. Önceki `content: url(...)` geçişi bu yüzden kaldırıldı. */
     body.ui-premium .header-links {
         margin-top: 14px;
         gap: 6px;
@@ -1280,7 +1291,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         <div class="header-links">
             <a class="icon-link" href="https://github.com/nvomcskinmerger/nvomcskinmerger.github.io" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
             <a class="icon-link" href="https://www.threads.com/@necronvoo" target="_blank" rel="noopener noreferrer" title="Threads" aria-label="Threads"><i class="fa-brands fa-threads"></i></a>
-            <a class="icon-link bluesky-link" href="https://bsky.app/profile/necronvo.bsky.social" target="_blank" rel="noopener noreferrer" title="Bluesky" aria-label="Bluesky"><img class="social-bluesky-logo" src="https://bsky.social/about/brand-assets/butterfly/bluesky_media_kit_logo_transparent_3.svg" alt="Bluesky"></a>
+            <a class="icon-link bluesky-link" href="https://bsky.app/profile/necronvo.bsky.social" target="_blank" rel="noopener noreferrer" title="Bluesky" aria-label="Bluesky"><span class="social-bluesky-logo" aria-hidden="true"></span></a>
             <button class="icon-link" id="langToggle" type="button" title="Switch language / Dili değiştir" aria-label="Switch language">
                 <span id="langToggleLabel">EN</span>
             </button>
@@ -1448,6 +1459,16 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                     <span data-i18n="mode_alternating_parts_title">Dengeli Parça Karışımı</span>
                     <p data-i18n="mode_alternating_parts_desc">Kafa ve bacaklar Skin 1, gövde ve kollar Skin 2'den.</p>
                 </div>
+                <div class="mode-card" data-mode="cross_limb_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-arrows-split-up-and-left"></i>
+                    <span data-i18n="mode_cross_limb_swap_title">Çapraz Uzuv Değişimi</span>
+                    <p data-i18n="mode_cross_limb_swap_desc">Kafa, gövde ve sağ kol/bacak Skin 1'den; sol kol ve sol bacak Skin 2'den alınır.</p>
+                </div>
+                <div class="mode-card" data-mode="gradient_blend" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-fill-drip"></i>
+                    <span data-i18n="mode_gradient_blend_title">Gradyan Geçiş</span>
+                    <p data-i18n="mode_gradient_blend_desc">Kafadan ayağa doğru Skin 1'den Skin 2'ye yumuşak, doğrusal bir renk geçişi uygulanır.</p>
+                </div>
                 <div class="mode-card" data-mode="custom" data-mode-type="custom" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-hand-pointer"></i>
                     <span data-i18n="mode_custom_title">Özel Seçmeli Merger</span>
@@ -1603,7 +1624,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             <button type="button" class="footer-link-btn" onclick="openModal('mitModal')"><i class="fa-solid fa-scale-balanced"></i> <span data-i18n="mitModalTitle">MIT Lisansı</span></button>
             <a class="footer-link-btn" href="https://github.com/nvomcskinmerger/nvomcskinmerger.github.io" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>
             <a class="footer-link-btn" href="https://www.threads.com/@necronvoo" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-threads"></i> <span data-i18n="footerDeveloperLink">Geliştirici</span></a>
-            <a class="footer-link-btn bluesky-link" href="https://bsky.app/profile/necronvo.bsky.social" target="_blank" rel="noopener noreferrer"><img class="social-bluesky-logo" src="https://bsky.social/about/brand-assets/butterfly/bluesky_media_kit_logo_transparent_3.svg" alt="Bluesky">Bluesky</a>
+            <a class="footer-link-btn bluesky-link" href="https://bsky.app/profile/necronvo.bsky.social" target="_blank" rel="noopener noreferrer"><span class="social-bluesky-logo" aria-hidden="true"></span>Bluesky</a>
         </div>
     </footer>
 
@@ -1833,6 +1854,10 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 mode_arms_legs_swap_desc: 'Skin 1\'in kafa ve gövdesi korunur; kollar ve bacaklar Skin 2\'den alınır.',
                 mode_alternating_parts_title: 'Dengeli Parça Karışımı',
                 mode_alternating_parts_desc: 'Kafa ve bacaklar Skin 1, gövde ve kollar Skin 2\'den.',
+                mode_cross_limb_swap_title: 'Çapraz Uzuv Değişimi',
+                mode_cross_limb_swap_desc: 'Kafa, gövde ve sağ kol/bacak Skin 1\'den; sol kol ve sol bacak Skin 2\'den alınır.',
+                mode_gradient_blend_title: 'Gradyan Geçiş',
+                mode_gradient_blend_desc: 'Kafadan ayağa doğru Skin 1\'den Skin 2\'ye yumuşak, doğrusal bir renk geçişi uygulanır.',
                 readyModesTab: 'Hazır Modlar',
                 customModesTab: 'Özel Modlar',
                 premiumStyle: 'Premium',
@@ -2013,6 +2038,10 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 mode_arms_legs_swap_desc: 'Keep Skin 1 head and torso; take both arms and legs from Skin 2.',
                 mode_alternating_parts_title: 'Balanced Part Mix',
                 mode_alternating_parts_desc: 'Head and legs from Skin 1; torso and arms from Skin 2.',
+                mode_cross_limb_swap_title: 'Cross Limb Swap',
+                mode_cross_limb_swap_desc: 'Head, torso and the right arm/leg come from Skin 1; the left arm and left leg come from Skin 2.',
+                mode_gradient_blend_title: 'Gradient Fade',
+                mode_gradient_blend_desc: 'A smooth, linear color fade from Skin 1 to Skin 2, running from head to feet.',
                 readyModesTab: 'Ready Modes',
                 customModesTab: 'Custom Modes',
                 premiumStyle: 'Premium',
@@ -3788,6 +3817,29 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                         copyFace(src2,ctxOut,f.bottom,f.bottom);
                     }
                     break;
+                case 'cross_limb_swap':
+                    // Legacy atlas'ta sol/sağ ayrı bir doku bölgesi YOKTUR (istemci
+                    // render sırasında sağ kolu/bacağı aynalar). Bu yüzden "sadece
+                    // sol taraf" mantığı burada ifade edilemez; en yakın anlamlı
+                    // karşılığı 'arms_legs_swap' ile aynıdır (kol+bacak tamamen Skin 2).
+                    drawSkinToOutput(canvas1); legacyCopyPart(src2, ctxOut, 'arms'); legacyCopyPart(src2, ctxOut, 'legs'); break;
+                case 'gradient_blend': {
+                    const size = resultCanvas.width;
+                    const a = src1.getImageData(0, 0, size, size);
+                    const b = src2.getImageData(0, 0, size, size);
+                    const out = ctxOut.createImageData(size, size);
+                    for (let y = 0; y < size; y++) {
+                        const mix = size <= 1 ? 0 : y / (size - 1);
+                        for (let x = 0; x < size; x++) {
+                            const i = (y * size + x) * 4;
+                            out.data[i]   = a.data[i]   + (b.data[i]   - a.data[i])   * mix;
+                            out.data[i+1] = a.data[i+1] + (b.data[i+1] - a.data[i+1]) * mix;
+                            out.data[i+2] = a.data[i+2] + (b.data[i+2] - a.data[i+2]) * mix;
+                            out.data[i+3] = a.data[i+3] + (b.data[i+3] - a.data[i+3]) * mix;
+                        }
+                    }
+                    ctxOut.putImageData(out, 0, 0); break;
+                }
                 case 'front_back':
                     drawSkinToOutput(canvas1);
                     for (const box of [LEGACY_BOX.head,LEGACY_BOX.torso,LEGACY_BOX.rightArm,LEGACY_BOX.rightLeg]) {
@@ -4088,6 +4140,52 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 copyCharacterPart(ctx2, ctxOut, 'arms', model2, model1);
                 log(t('mode_alternating_parts_title') + ': ' + t('mode_alternating_parts_desc'), 'success');
 
+            } else if (selectedMode === 'cross_limb_swap') {
+                // Kafa + gövde + SAĞ kol/bacak Skin 1'den kalır; SADECE sol kol ve
+                // sol bacak Skin 2'den alınır. 'half' modundan farklı olarak bu,
+                // ham piksel sütunu değil, karakterin KENDİ anatomik sol/sağ
+                // tarafına göre yapılan bir parça ataması.
+                drawSkinToOutput(canvas1);
+                copyCustomPartLayer(ctx2, ctxOut, 'leftArm', 'base', model2, model1);
+                copyCustomPartLayer(ctx2, ctxOut, 'leftArm', 'overlay', model2, model1);
+                copyCustomPartLayer(ctx2, ctxOut, 'leftLeg', 'base', model2, model1);
+                copyCustomPartLayer(ctx2, ctxOut, 'leftLeg', 'overlay', model2, model1);
+                log(t('mode_cross_limb_swap_title') + ': ' + t('mode_cross_limb_swap_desc'), 'success');
+
+            } else if (selectedMode === 'gradient_blend') {
+                // Piksel düzeyinde, yukarıdan aşağıya (kafadan ayağa) doğrusal geçiş:
+                // y=0 satırı %100 Skin 1, y=size-1 satırı %100 Skin 2; aradaki
+                // satırlar orantılı olarak karışır. 'blend' modundaki SABİT %50
+                // saydamlıktan farklı olarak burada karışım oranı konuma bağlıdır.
+                {
+                    const size = resultCanvas.width;
+                    const ca = document.createElement('canvas');
+                    const cb = document.createElement('canvas');
+                    ca.width = cb.width = size;
+                    ca.height = cb.height = size;
+                    const caCtx = ca.getContext('2d');
+                    const cbCtx = cb.getContext('2d');
+                    caCtx.imageSmoothingEnabled = false;
+                    cbCtx.imageSmoothingEnabled = false;
+                    caCtx.drawImage(canvas1, 0, 0, size, size);
+                    cbCtx.drawImage(canvas2, 0, 0, size, size);
+                    const a = caCtx.getImageData(0, 0, size, size);
+                    const b = cbCtx.getImageData(0, 0, size, size);
+                    const out = ctxOut.createImageData(size, size);
+                    for (let y = 0; y < size; y++) {
+                        const mix = size <= 1 ? 0 : y / (size - 1); // 0 (Skin1) -> 1 (Skin2)
+                        for (let x = 0; x < size; x++) {
+                            const i = (y * size + x) * 4;
+                            out.data[i]   = a.data[i]   + (b.data[i]   - a.data[i])   * mix;
+                            out.data[i+1] = a.data[i+1] + (b.data[i+1] - a.data[i+1]) * mix;
+                            out.data[i+2] = a.data[i+2] + (b.data[i+2] - a.data[i+2]) * mix;
+                            out.data[i+3] = a.data[i+3] + (b.data[i+3] - a.data[i+3]) * mix;
+                        }
+                    }
+                    ctxOut.putImageData(out, 0, 0);
+                }
+                log(t('mode_gradient_blend_title') + ': ' + t('mode_gradient_blend_desc'), 'success');
+
             } else if (selectedMode === 'custom') {
                 // Özel Seçmeli Merger: kullanıcı her vücut parçasının temel (base)
                 // ve dış katman (overlay) kaynağını tıklamalı arayüzden ayrı ayrı
@@ -4344,7 +4442,11 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         // çalıştırıp tek bir .zip dosyasında toplar. `selectedMode` global
         // durumunu geçici olarak değiştirdiğimiz için işlem bitince kullanıcının
         // GERÇEKTEN seçili olduğu moda ve görünen sonuca geri dönülür.
-        const ALL_MERGE_MODES = ['half','head_swap','top_bottom','arm_swap','leg_swap','outer_overlay','base_only','front_back','blend','chimera','body_swap','head_legs_swap','reverse_overlay','checker_blend','custom'];
+        // HATA DÜZELTMESİ: Bu liste "Tüm Modları İndir" (ZIP) butonunun hangi
+        // modları üreteceğini belirler. Daha önce head_torso_swap, arms_legs_swap
+        // ve alternating_parts modları burada UNUTULMUŞTU — o modlar ZIP'e hiç
+        // dahil edilmiyordu. Şimdi tüm hazır modlar (yeni eklenen 3 tanesi dahil) eksiksiz listelendi.
+        const ALL_MERGE_MODES = ['half','head_swap','top_bottom','arm_swap','leg_swap','outer_overlay','base_only','front_back','blend','chimera','body_swap','head_legs_swap','reverse_overlay','checker_blend','head_torso_swap','arms_legs_swap','alternating_parts','cross_limb_swap','gradient_blend','custom'];
 
         async function downloadAllModes(){
             if (isLoadingAuth) { reportUserError(new Error(t('authNotReady')), 'warn'); return; }
@@ -4675,6 +4777,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
     base_only:'mode_base_only_title', front_back:'mode_front_back_title', blend:'mode_blend_title',
     chimera:'mode_chimera_title', head_torso_swap:'mode_head_torso_swap_title', arms_legs_swap:'mode_arms_legs_swap_title', alternating_parts:'mode_alternating_parts_title', body_swap:'mode_body_swap_title', head_legs_swap:'mode_head_legs_swap_title',
     reverse_overlay:'mode_reverse_overlay_title', checker_blend:'mode_checker_blend_title',
+    cross_limb_swap:'mode_cross_limb_swap_title', gradient_blend:'mode_gradient_blend_title',
     custom:'mode_custom_title'
   };
   const $ = id => document.getElementById(id);
