@@ -1843,7 +1843,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 switchToEnglish: 'Switch language',
                 usageTitle: 'Firebase üzerindeki toplam birleştirme kullanımı',
                 terminalTitle: 'Derin Tarama Konsolu',
-                terminalReady: '[INFO] Sistem hazır. 64×32, 64×64, 128×64 ve 128×128 PNG skin desteklenir; Tüm formatlar kendi yerel çözünürlüğünde korunur; formatlar birbirine dönüştürülmez.',
+                terminalReady: '[INFO] Sistem hazır. 64×32, 64×64, 128×64 ve 128×128 PNG skin desteklenir; 64×32 UV dönüşümüyle 64×64\'e yükseltilir; 128×128 native çözünürlükte ayrı sistemle işlenir.',
                 result3dTitle: 'Sonuç & 3D Canlı İnteraktif Model',
                 modelMismatchTitle: 'Model Farkı Algılandı!',
                 modelMismatchText: 'Skin 1: ',
@@ -2023,7 +2023,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 switchToEnglish: 'Switch to English',
                 usageTitle: 'Total merge usage on Firebase',
                 terminalTitle: 'Deep Scan Console',
-                terminalReady: '[INFO] System ready. 64×32, 64×64, 128×64 and 128×128 PNG skins are supported; All formats keep their native resolution; formats are never converted into another atlas.',
+                terminalReady: '[INFO] System ready. 64×32, 64×64, 128×64 and 128×128 PNG skins are supported; 64×32 is UV-upgraded to 64×64; 128×128 stays native and uses its dedicated pipeline.',
                 result3dTitle: 'Result & Live Interactive 3D Model',
                 modelMismatchTitle: 'Model Difference Detected!',
                 modelMismatchText: 'Skin 1: ',
@@ -3069,12 +3069,40 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         }
 
         /**
-         * Validates and loads one local Minecraft skin. Every supported atlas stays at its original native resolution; no format conversion is performed.
-         * @param {File|null|undefined} file
-         * @param {CanvasRenderingContext2D} ctx
-         * @param {string} labelId
-         * @param {boolean} isFirst
-         * @returns {Promise<void>}
+         * Legacy 64×32 -> modern 64×64 conversion. This is a UV/layout
+         * conversion, not a resize. The original pixels stay 1:1; only the
+         * missing independent left limbs are created by horizontal mirroring.
+         */
+        function convertLegacy64x32To64x64(sourceCanvas) {
+            const out = document.createElement('canvas');
+            out.width = 64;
+            out.height = 64;
+            const o = out.getContext('2d', { alpha: true, willReadFrequently: true });
+            o.imageSmoothingEnabled = false;
+            o.clearRect(0, 0, 64, 64);
+
+            // Preserve the complete legacy atlas pixel-for-pixel.
+            o.drawImage(sourceCanvas, 0, 0, 64, 32, 0, 0, 64, 32);
+
+            const mirrorRegion = (sx, sy, sw, sh, dx, dy) => {
+                o.save();
+                o.translate(dx + sw, dy);
+                o.scale(-1, 1);
+                o.drawImage(sourceCanvas, sx, sy, sw, sh, 0, 0, sw, sh);
+                o.restore();
+            };
+
+            // Legacy right leg -> modern independent left leg.
+            mirrorRegion(0, 16, 16, 16, 16, 48);
+            // Legacy right arm -> modern independent left arm.
+            mirrorRegion(40, 16, 16, 16, 32, 48);
+
+            return out;
+        }
+
+        /**
+         * Loads a skin while keeping 128×128 native. 64×32 is the only format
+         * converted to 64×64 here. 128×64 remains on the native legacy system.
          */
         async function handleFile(file, ctx, labelId, isFirst) {
             if (!file) return;
@@ -3083,8 +3111,8 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 if (file.size <= 0 || file.size > APP_CONFIG.MAX_FILE_BYTES) throw new Error(t('fileTooLarge'));
 
                 const { width, height } = await readPngDimensions(file);
-                const format = `${width}×${height}`;
-                if (!APP_CONFIG.SUPPORTED_SKIN_FORMATS.includes(format)) {
+                const sourceFormat = `${width}×${height}`;
+                if (!APP_CONFIG.SUPPORTED_SKIN_FORMATS.includes(sourceFormat)) {
                     throw new Error(t('invalidDimensions', width, height));
                 }
 
@@ -3093,55 +3121,44 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                     throw new Error(t('invalidDimensions', image.naturalWidth, image.naturalHeight));
                 }
 
-                // IMPORTANT: never convert one skin atlas into another.
-                // Every supported format keeps its native canvas and native pixels.
-                // The merger engine selects the matching UV system at merge time.
-                ctx.canvas.width = width;
-                ctx.canvas.height = height;
-                ctx.imageSmoothingEnabled = false;
-                ctx.clearRect(0, 0, width, height);
-                ctx.drawImage(image, 0, 0, width, height);
+                const sourceCanvas = document.createElement('canvas');
+                sourceCanvas.width = width;
+                sourceCanvas.height = height;
+                const sourceCtx = sourceCanvas.getContext('2d', { alpha: true, willReadFrequently: true });
+                sourceCtx.imageSmoothingEnabled = false;
+                sourceCtx.drawImage(image, 0, 0, width, height);
 
-                if (isFirst) skinResolution1 = width;
-                else skinResolution2 = width;
-                finishLoadSkin(ctx, labelId, isFirst, file, format);
+                let loadedWidth = width;
+                let loadedHeight = height;
+                let displayFormat = sourceFormat;
+
+                if (sourceFormat === '64×32') {
+                    const converted = convertLegacy64x32To64x64(sourceCanvas);
+                    loadedWidth = 64;
+                    loadedHeight = 64;
+                    displayFormat = '64×64 • 64×32 dönüştürüldü';
+                    ctx.canvas.width = 64;
+                    ctx.canvas.height = 64;
+                    ctx.imageSmoothingEnabled = false;
+                    ctx.clearRect(0, 0, 64, 64);
+                    ctx.drawImage(converted, 0, 0);
+                } else {
+                    // 64×64, 128×64 and 128×128 remain at their real dimensions.
+                    // In particular, 128×128 is NEVER reduced to 64×64.
+                    ctx.canvas.width = loadedWidth;
+                    ctx.canvas.height = loadedHeight;
+                    ctx.imageSmoothingEnabled = false;
+                    ctx.clearRect(0, 0, loadedWidth, loadedHeight);
+                    ctx.drawImage(sourceCanvas, 0, 0);
+                }
+
+                if (isFirst) skinResolution1 = loadedWidth;
+                else skinResolution2 = loadedWidth;
+                finishLoadSkin(ctx, labelId, isFirst, file, displayFormat);
                 document.dispatchEvent(new CustomEvent('nvo:skin-updated'));
             } catch (error) {
                 reportUserError(error, 'error');
             }
-        }
-
-        /**
-         * Finalizes a validated skin already rendered into a canvas context.
-         * @param {CanvasRenderingContext2D} ctx
-         * @param {string} labelId
-         * @param {boolean} isFirst
-         * @param {File} file
-         * @returns {void}
-         */
-        function finishLoadSkin(ctx, labelId, isFirst, file, sourceFormat = '64×64'){
-            const labelEl = document.getElementById(labelId);
-            labelEl.removeAttribute('data-i18n');
-            labelEl.textContent = file.name;
-
-            const detected = detectSkinModel(ctx);
-            const sizeLabel = `${Math.round(file.size / 1024)} KB`;
-            if (isFirst) {
-                model1 = detected;
-                updateModelTag(tagSkin1, model1);
-                meta1.textContent = `${sourceFormat} PNG • native • ${sizeLabel}`;
-                log(t('skinLoaded', 1, file.name, model1), 'success');
-            } else {
-                model2 = detected;
-                updateModelTag(tagSkin2, model2);
-                meta2.textContent = `${sourceFormat} PNG • native • ${sizeLabel}`;
-                log(t('skinLoaded', 2, file.name, model2), 'success');
-            }
-            resultReady = false;
-            AppState.resultReady = false;
-            btnDownload.disabled = true;
-            btnUseAsSkin1.disabled = true;
-            checkModelMismatch();
         }
 
         inputSkin1.addEventListener('change', event => { void handleFile(event.target.files?.[0], ctx1, 'label1', true); });
@@ -3553,12 +3570,16 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         // Şapka, ceket, kol kılıfı ve pantolon gibi tüm "dış katman" (overlay) UV
         // bölgelerini tamamen şeffaflaştırır. 'base_only' modu tarafından kullanılır.
         function clearOverlayLayers(ctx){
-            ctx.clearRect(32, 0, 32, 16); // Şapka katmanı (tüm kafa dış katmanı)
-            ctx.clearRect(16, 32, 32, 16); // Ceket katmanı (gövde dış katmanı)
-            ctx.clearRect(40, 32, 16, 16); // Sağ kol kılıfı
-            ctx.clearRect(48, 48, 16, 16); // Sol kol kılıfı
-            ctx.clearRect(0, 32, 16, 16);  // Sağ pantolon
-            ctx.clearRect(0, 48, 16, 16);  // Sol pantolon
+            const clearLogical = (x, y, w, h) => {
+                const [dx,dy,dw,dh] = scaleLogicalRect([x,y,w,h], ctx.canvas);
+                ctx.clearRect(dx,dy,dw,dh);
+            };
+            clearLogical(32, 0, 32, 16);
+            clearLogical(16, 32, 32, 16);
+            clearLogical(40, 32, 16, 16);
+            clearLogical(48, 48, 16, 16);
+            clearLogical(0, 32, 16, 16);
+            clearLogical(0, 48, 16, 16);
         }
 
         function copyCharacterPart(srcCtx, dstCtx, part, srcModel, dstModel){
@@ -3603,7 +3624,8 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             const faces = boxFaces(...box);
             for (const name of ['top', 'bottom', 'left', 'front', 'right', 'back']) {
                 const [x, y, w, h] = faces[name];
-                dstCtx.clearRect(x, y, w, h);
+                const [dx, dy, dw, dh] = scaleLogicalRect([x, y, w, h], dstCtx.canvas);
+                dstCtx.clearRect(dx, dy, dw, dh);
             }
         }
 
@@ -3734,14 +3756,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             }
         }
 
-        /** @returns {void} @throws {Error} */
-        function executeMergeLogic() {
-            const f1 = getSkinFormat(canvas1), f2 = getSkinFormat(canvas2);
-            if (f1 !== f2) throw new Error(t('skinFormatMismatch', f1, f2));
-            if (isLegacySkinCanvas(canvas1)) {
-                legacyExecuteMergeLogic();
-                return;
-            }
+        function executeModernMergeLogic() {
             prepareResultCanvas();
             ctxOut.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
 
@@ -4136,6 +4151,35 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         document.addEventListener('nvo:auth-updated', syncDownloadAllButton);
         document.addEventListener('nvo:result-updated', syncDownloadAllButton);
         syncDownloadAllButton();
+
+        /**
+         * Dedicated native 128×128 system. The modern UV logic is reused, but
+         * all reads/writes are scaled to the native 128×128 atlas; no resize or
+         * 64×64 intermediate image is created.
+         */
+        function execute128x128MergeLogic() {
+            executeModernMergeLogic();
+        }
+
+        /** @returns {void} @throws {Error} */
+        function executeMergeLogic() {
+            const f1 = getSkinFormat(canvas1), f2 = getSkinFormat(canvas2);
+            if (f1 !== f2) throw new Error(t('skinFormatMismatch', f1, f2));
+
+            if (f1 === '128×128') {
+                execute128x128MergeLogic();
+                return;
+            }
+
+            // 64×32 input is already upgraded to 64×64 during loading.
+            // 128×64 stays on the separate native legacy atlas system.
+            if (f1 === '128×64') {
+                legacyExecuteMergeLogic();
+                return;
+            }
+
+            executeModernMergeLogic();
+        }
 
         // ===== Öncesi/Sonrası Karşılaştırma (3D önizlemede Skin1 / Skin2 / Sonuç arası geçiş) =====
         let compareMode = 'result';
