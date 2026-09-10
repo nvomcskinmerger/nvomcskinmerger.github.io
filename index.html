@@ -3471,10 +3471,27 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 if (e.key === 'Enter') { e.preventDefault(); run(); }
             });
         }
+        async function wireExtraUsernameFetch(btnId, inputId, slot){
+            const btn=document.getElementById(btnId), input=document.getElementById(inputId);
+            if(!btn || !input) return;
+            const run=async()=>{
+                if(btn.disabled) return;
+                const username=input.value;
+                if(!username.trim()){ reportUserError(new Error(t('usernameRequired')),'error'); return; }
+                btn.disabled=true; btn.classList.add('is-loading');
+                try{
+                    const file=await fetchSkinByUsername(username);
+                    await handleExtraSkin(file,slot);
+                }catch(error){ reportUserError(error,'error'); }
+                finally{ btn.disabled=false; btn.classList.remove('is-loading'); }
+            };
+            btn.addEventListener('click',run);
+            input.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); run(); } });
+        }
         wireUsernameFetch('usernameFetchBtn1', 'usernameFetch1', ctx1, 'label1', true);
         wireUsernameFetch('usernameFetchBtn2', 'usernameFetch2', ctx2, 'label2', false);
-        wireUsernameFetch('usernameFetchBtn3', 'usernameFetch3', ctx3, 'label3', false);
-        wireUsernameFetch('usernameFetchBtn4', 'usernameFetch4', ctx4, 'label4', false);
+        wireExtraUsernameFetch('usernameFetchBtn3', 'usernameFetch3', 3);
+        wireExtraUsernameFetch('usernameFetchBtn4', 'usernameFetch4', 4);
         // ===================== /Kullanıcı Adıyla Skin Çekme =====================
 
 
@@ -4312,7 +4329,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             log(t("mergeEngineSuccess"), "success");
             resultReady = true;
             AppState.resultReady = true;
-            btnMerge.disabled = !(firebaseUser && model1 && model2 && multiInputsReady());
+            btnMerge.disabled = !(model1 && model2 && multiInputsReady());
             btnDownload.disabled = !firebaseUser;
             btnUseAsSkin1.disabled = false;
             compareSkin1Btn.disabled = false;
