@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NVO MC SKIN MERGER v6.4 - Mobile Safe Area</title>
-    <meta name="description" content="NVO MC Skin Merger: iki Minecraft skinini gerçek UV koordinat motoruyla kusursuz biçimde birleştirin. Yarı-yarıya, kafa değişimi, kol/bacak değişimi, dış katman, rastgele karışım ve daha fazlası — ücretsiz ve tarayıcıda çalışır.">
+    <title>NVO MC SKIN MERGER — V1.0.0</title>
+    <meta name="description" content="NVO MC Skin Merger V1.0.0 — Minecraft skinlerini mevcut merger sistemleriyle yeni nesil arayüz üzerinden birleştirin.">
     <meta name="theme-color" content="#0c0707">
     <!-- Open Graph / Sosyal Medya Paylaşım Önizlemesi -->
     <meta property="og:type" content="website">
@@ -1089,7 +1089,33 @@
         body.ui-premium .glass-card { animation: none; }
     }
 
-    </style>
+    
+/* ===== V1.0.0 NEXT-GEN UI ===== */
+:root{--v1-border:rgba(255,255,255,.10);--v1-surface:rgba(18,20,28,.78);--v1-surface2:rgba(255,255,255,.045);--v1-accent:#ff4d67;--v1-accent2:#ff8a4d;}
+body{background:
+ radial-gradient(circle at 15% 0%,rgba(255,77,103,.12),transparent 32%),
+ radial-gradient(circle at 88% 8%,rgba(255,138,77,.08),transparent 28%),
+ linear-gradient(180deg,#08090d 0%,#0c0d12 55%,#08090d 100%);}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:36px 36px;mask-image:linear-gradient(to bottom,black,transparent 75%);}
+header{position:relative;padding:34px 18px 22px!important;}
+header h1{letter-spacing:-.045em!important;font-weight:900!important;font-size:clamp(2rem,5vw,3.5rem)!important;}
+header .subtitle{max-width:680px;margin:10px auto 0;opacity:.72;}
+.version-pill{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border:1px solid var(--v1-border);background:rgba(255,255,255,.045);border-radius:999px;font:600 .72rem/1 'Fira Code',monospace;letter-spacing:.08em;color:rgba(255,255,255,.72);margin-bottom:13px;backdrop-filter:blur(12px);}
+.version-dot{width:7px;height:7px;border-radius:50%;background:var(--v1-accent);box-shadow:0 0 14px rgba(255,77,103,.7);}
+.glass-card{border:1px solid var(--v1-border)!important;background:var(--v1-surface)!important;box-shadow:0 18px 55px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.035)!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;border-radius:20px!important;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;}
+.glass-card:hover{border-color:rgba(255,255,255,.16)!important;box-shadow:0 22px 65px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.05)!important;}
+.card-title{font-weight:700;letter-spacing:-.01em;}
+.upload-box{background:var(--v1-surface2)!important;border:1px dashed rgba(255,255,255,.12)!important;border-radius:16px!important;}
+.preview-canvas{image-rendering:pixelated;filter:drop-shadow(0 12px 22px rgba(0,0,0,.35));}
+.model-tag{border-radius:999px!important;font-size:.68rem!important;}
+.mode-grid{gap:14px!important;}
+.mode-card{border:1px solid var(--v1-border)!important;background:rgba(255,255,255,.035)!important;border-radius:16px!important;transition:all .18s ease!important;}
+.mode-card:hover{transform:translateY(-2px);border-color:rgba(255,77,103,.38)!important;background:rgba(255,77,103,.06)!important;}
+.btn-primary{border-radius:14px!important;box-shadow:0 12px 30px rgba(255,77,103,.18)!important;}
+.utility-btn,.username-fetch-input{border-radius:11px!important;}
+.container{position:relative;z-index:1;}
+
+</style>
 
     <!-- skinview3d Library -->
     <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.4.2/bundles/skinview3d.bundle.js"></script>
@@ -1299,8 +1325,9 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
 
     <header class="animate-fade">
-        <h1 data-i18n="title">NVO MC SKIN MERGER v6.4</h1>
-        <p class="subtitle" data-i18n="subtitle">Gelişmiş UV koordinat motoru ile Minecraft skinlerinizi kusursuz biçimde harmanlayın.</p>
+        <div class="version-pill"><span class="version-dot"></span> V1.0.0 <span>•</span> YENİDEN BAŞLIYOR</div>
+        <h1 data-i18n="title">NVO MC SKIN MERGER</h1>
+        <p class="subtitle" data-i18n="subtitle">Yeni nesil arayüz • Mevcut merger sistemi korunarak geliştirildi.</p>
         <div class="header-links">
             <a class="icon-link" href="https://github.com/nvomcskinmerger/nvomcskinmerger.github.io" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
             <a class="icon-link" href="https://www.threads.com/@necronvoo" target="_blank" rel="noopener noreferrer" title="Threads" aria-label="Threads"><i class="fa-brands fa-threads"></i></a>
