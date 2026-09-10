@@ -365,7 +365,9 @@
         .multi-upload-box{min-height:0}
         .multi-skin-panel ~ .glass-card{}
         .container.multi-active #skinCard1,.container.multi-active #skinCard2{display:none}
-        .container.multi-active #multiSkinPanel{grid-column:span 2}
+        .container.multi-active #multiSkinPanel{grid-column:span 2;grid-row:1;order:-1}
+        .container.multi-active .multi-skin-panel{display:block}
+        .container.multi-active .multi-skin-panel + .glass-card{}
         @media(max-width:900px){.multi-skin-panel{grid-column:span 1}.container.multi-active #multiSkinPanel{grid-column:span 1}}
         .multi-skin-title{font-size:.88rem;font-weight:800;color:var(--text-main);margin-bottom:4px;display:flex;align-items:center;gap:8px}
         .multi-skin-desc{font-size:.72rem;color:var(--text-muted);line-height:1.45;margin-bottom:12px}
@@ -1639,8 +1641,8 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
         <!-- 3/4 Skin çoklu merger girişleri: normal Skin 1/2 kutularının yerini alır -->
         <div class="glass-card full-width multi-skin-panel" id="multiSkinPanel">
-            <div class="multi-skin-title"><i class="fa-solid fa-layer-group"></i> <span id="multiSkinTitle">Çoklu Skin Merger</span></div>
-            <div class="multi-skin-desc" id="multiSkinDesc">Her Skin için PNG yükleyebilir veya Minecraft kullanıcı adıyla skin çekebilirsiniz.</div>
+            <div class="multi-skin-title"><i class="fa-solid fa-layer-group"></i> <span id="multiSkinTitle">Skin Yükleme</span></div>
+            <div class="multi-skin-desc" id="multiSkinDesc">Skin 1–4 için PNG yükleyin veya Minecraft kullanıcı adıyla skin getirin.</div>
             <div class="multi-skin-grid multi-skin-grid-main">
                 <div class="multi-skin-card" id="multiCard1">
                     <div class="card-header"><div class="card-title"><i class="fa-solid fa-1"></i> <span>Skin 1</span></div><span class="model-tag" id="multiTag1">Model: Bekleniyor</span></div>
@@ -3470,8 +3472,8 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             if(skinCard2) skinCard2.style.display=active?'none':'';
             [1,2,3,4].forEach(n=>{ const c=document.getElementById('multiCard'+n); if(c)c.style.display=(active && n<=requiredMultiCount())?'block':'none'; });
             const title=document.getElementById('multiSkinTitle'), desc=document.getElementById('multiSkinDesc');
-            if(title) title.textContent=selectedMode==='four_skin'?'4 Skin Merger':'3 Skin Merger';
-            if(desc) desc.textContent=selectedMode==='four_skin'?'Skin 1–4 kutularından PNG yükleyin veya Minecraft kullanıcı adıyla skin çekin.':'Skin 1–3 kutularından PNG yükleyin veya Minecraft kullanıcı adıyla skin çekin.';
+            if(title) title.textContent=selectedMode==='four_skin'?'4 Skin Girişi':'3 Skin Girişi';
+            if(desc) desc.textContent=selectedMode==='four_skin'?'4 skin için dosya veya kullanıcı adı ile yükleme.':'3 skin için dosya veya kullanıcı adı ile yükleme.';
             updateMultiStatus();
             syncMultiPreviews();
         }
@@ -3506,8 +3508,13 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         async function handleExtraSkin(file,slot){
             if(!file)return;
             const ctx=slot===3?ctx3:ctx4, labelId=slot===3?'label3':'label4';
-            try{ await handleFile(file,ctx,labelId,false); syncMultiPreviews(); updateMultiStatus(); }
-            catch(e){ reportUserError(e,'error'); }
+            try{
+                await handleFile(file,ctx,labelId,false);
+                if(slot===3) model3=detectSkinModel(ctx3); else model4=detectSkinModel(ctx4);
+                const tag=document.getElementById('multiTag'+slot);
+                if(tag) updateModelTag(tag, slot===3?model3:model4);
+                syncMultiPreviews(); updateMultiStatus();
+            } catch(e){ reportUserError(e,'error'); }
         }
         function clearExtraSkin(slot){
             const input=document.getElementById(slot===3?'inputSkin3':'inputSkin4');
@@ -3520,25 +3527,26 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             syncMultiPreviews();
         }
         // 3/4 Skin modları yeni bir bölme algoritması eklemez:
-        // mevcut "50/50 Yarı Yarıya" ve "Üst / Alt Bölme" motorlarını zincirler.
-        function runExistingMergeModeToCanvas(mode, sourceA, sourceB, destination){
+        // mevcut 50/50 ve Üst/Alt motorları sırayla çalıştırılır.
+        function runExistingMergeModeToCanvas(mode, sourceA, sourceB, destination, sourceModelA=null, sourceModelB=null){
             const w=sourceA.width, h=sourceA.height;
-            const savedA=document.createElement('canvas');
-            const savedB=document.createElement('canvas');
-            savedA.width=w; savedA.height=h; savedB.width=w; savedB.height=h;
-            savedA.getContext('2d').drawImage(canvas1,0,0);
-            savedB.getContext('2d').drawImage(canvas2,0,0);
+            const savedA=document.createElement('canvas'), savedB=document.createElement('canvas');
+            savedA.width=w; savedA.height=h; savedB.width=sourceB.width; savedB.height=sourceB.height;
+            savedA.getContext('2d').drawImage(sourceA,0,0);
+            savedB.getContext('2d').drawImage(sourceB,0,0);
 
             const oldMode=selectedMode;
             const oldW=resultCanvas.width, oldH=resultCanvas.height;
+            const oldModel1=model1, oldModel2=model2;
 
             ctx1.canvas.width=w; ctx1.canvas.height=h;
-            ctx2.canvas.width=w; ctx2.canvas.height=h;
+            ctx2.canvas.width=sourceB.width; ctx2.canvas.height=sourceB.height;
             ctx1.imageSmoothingEnabled=false; ctx2.imageSmoothingEnabled=false;
-            ctx1.clearRect(0,0,w,h); ctx2.clearRect(0,0,w,h);
-            ctx1.drawImage(sourceA,0,0,w,h);
-            ctx2.drawImage(sourceB,0,0,w,h);
+            ctx1.clearRect(0,0,w,h); ctx2.clearRect(0,0,sourceB.width,sourceB.height);
+            ctx1.drawImage(savedA,0,0); ctx2.drawImage(savedB,0,0);
 
+            model1=sourceModelA || oldModel1 || 'steve';
+            model2=sourceModelB || oldModel2 || 'steve';
             selectedMode=mode;
             prepareResultCanvas();
             executeModernMergeLogic();
@@ -3550,31 +3558,33 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             dctx.clearRect(0,0,destination.width,destination.height);
             dctx.drawImage(resultCanvas,0,0);
 
+            const outputModel=model1;
+
             selectedMode=oldMode;
             ctx1.canvas.width=savedA.width; ctx1.canvas.height=savedA.height;
             ctx2.canvas.width=savedB.width; ctx2.canvas.height=savedB.height;
-            ctx1.imageSmoothingEnabled=false; ctx2.imageSmoothingEnabled=false;
-            ctx1.clearRect(0,0,savedA.width,savedA.height);
-            ctx2.clearRect(0,0,savedB.width,savedB.height);
+            ctx1.clearRect(0,0,savedA.width,savedA.height); ctx2.clearRect(0,0,savedB.width,savedB.height);
             ctx1.drawImage(savedA,0,0); ctx2.drawImage(savedB,0,0);
+            model1=oldModel1; model2=oldModel2;
             resultCanvas.width=oldW; resultCanvas.height=oldH;
             ctxOut.imageSmoothingEnabled=false;
+            return outputModel;
         }
 
         function executeThreeSkinMerge(){
-            // 1+2 mevcut 50/50 -> çıkan sonuç + 3 mevcut Üst/Alt Bölme.
+            // (Skin 1 + Skin 2) 50/50 -> sonuç + Skin 3 Üst/Alt.
             const firstHalf=document.createElement('canvas');
-            runExistingMergeModeToCanvas('half',canvas1,canvas2,firstHalf);
-            runExistingMergeModeToCanvas('top_bottom',firstHalf,canvas3,resultCanvas);
+            const firstModel=runExistingMergeModeToCanvas('half',canvas1,canvas2,firstHalf,model1,model2);
+            runExistingMergeModeToCanvas('top_bottom',firstHalf,canvas3,resultCanvas,firstModel,model3);
         }
 
         function executeFourSkinMerge(){
-            // 1+2 mevcut 50/50; 3+4 mevcut 50/50; iki sonuç mevcut Üst/Alt Bölme.
+            // (Skin 1 + Skin 2) 50/50; (Skin 3 + Skin 4) 50/50 -> iki sonuç Üst/Alt.
             const topHalf=document.createElement('canvas');
             const bottomHalf=document.createElement('canvas');
-            runExistingMergeModeToCanvas('half',canvas1,canvas2,topHalf);
-            runExistingMergeModeToCanvas('half',canvas3,canvas4,bottomHalf);
-            runExistingMergeModeToCanvas('top_bottom',topHalf,bottomHalf,resultCanvas);
+            const topModel=runExistingMergeModeToCanvas('half',canvas1,canvas2,topHalf,model1,model2);
+            const bottomModel=runExistingMergeModeToCanvas('half',canvas3,canvas4,bottomHalf,model3,model4);
+            runExistingMergeModeToCanvas('top_bottom',topHalf,bottomHalf,resultCanvas,topModel,bottomModel);
         }
         document.getElementById('inputSkin3')?.addEventListener('change',e=>void handleExtraSkin(e.target.files?.[0],3));
         document.getElementById('inputSkin4')?.addEventListener('change',e=>void handleExtraSkin(e.target.files?.[0],4));
@@ -3593,80 +3603,28 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         // (Crafatar, tarayıcıdan çağrım için CORS açık). Sonuç, mevcut
         // handleFile() doğrulama/işleme hattına AYNEN bir dosya gibi verilir.
         async function fetchSkinByUsername(username){
-            username = (username || '').trim();
-            if (!username) throw new Error(t('usernameRequired'));
-            if (!/^[A-Za-z0-9_]{2,16}$/.test(username)) throw new Error(t('usernameInvalid'));
+            username=(username||'').trim();
+            if(!username) throw new Error(t('usernameRequired'));
+            if(!/^[A-Za-z0-9_]{2,16}$/.test(username)) throw new Error(t('usernameInvalid'));
 
-            let uuid = null;
-
-            // İstekler bazen tek bir dış serviste geçici olarak başarısız olabiliyor.
-            // Bu yüzden kısa timeout + birden fazla kaynak kullanıyoruz.
-            const fetchWithTimeout = async (url, ms = 9000) => {
-                const controller = new AbortController();
-                const timer = setTimeout(() => controller.abort(), ms);
-                try {
-                    return await fetch(url, {
-                        signal: controller.signal,
-                        cache: 'no-store',
-                        headers: { 'Accept': 'application/json, image/png, image/*' }
-                    });
-                } finally {
-                    clearTimeout(timer);
-                }
-            };
-
-            // 1) Birincil kaynak: resmi Mojang API.
-            try {
-                const r1 = await fetchWithTimeout(`https://api.mojang.com/users/profiles/minecraft/${encodeURIComponent(username)}`);
-                if (r1.status === 404) throw new Error(t('usernameNotFound', username));
-                if (r1.ok) {
-                    const data = await r1.json();
-                    uuid = data && data.id ? String(data.id).replace(/-/g, '') : null;
-                }
-            } catch (e) {
-                if (e instanceof Error && e.message === t('usernameNotFound', username)) throw e;
-            }
-
-            // 2) Yedek UUID kaynağı.
-            if (!uuid) {
-                try {
-                    const r2 = await fetchWithTimeout(`https://playerdb.co/api/player/minecraft/${encodeURIComponent(username)}`);
-                    if (r2.ok) {
-                        const data2 = await r2.json();
-                        const rawId = data2 && data2.data && data2.data.player ? data2.data.player.id : null;
-                        uuid = rawId ? String(rawId).replace(/-/g, '') : null;
-                    }
-                } catch (e) { /* sonraki kaynağa geç */ }
-            }
-
-            if (!uuid) throw new Error(t('usernameNotFound', username));
-
-            // 3) UUID -> ham 64x64 skin PNG'si.
-            // Tek bir Crafatar sunucusuna bağlı kalmamak için sırayla
-            // resmi/aktif Crafatar aynaları ve Mineatar denenir.
-            const skinUrls = [
-                `https://crafatar.com/skins/${uuid}.png`,
-                `https://crafatar.imc.moe/skins/${uuid}.png`,
-                `https://skins.legacyminecraft.com/skins/${uuid}.png`,
-                `https://api.mineatar.io/skin/${uuid}?format=png`
+            // MCHeads kullanıcı adıyla doğrudan ham skin PNG'si verir ve CORS destekler.
+            // Böylece tarayıcıdan Mojang API'sine yapılan CORS engelli UUID isteğine bağlı kalmayız.
+            const providers=[
+                `https://mc-heads.net/skin/${encodeURIComponent(username)}`,
+                `https://heads.playcdu.co/skin/${encodeURIComponent(username)}`,
+                `https://api.mcheads.org/skin/${encodeURIComponent(username)}`
             ];
-
-            let lastError = null;
-            for (const url of skinUrls) {
-                try {
-                    const response = await fetchWithTimeout(url, 10000);
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    const blob = await response.blob();
-                    if (!blob || blob.size < 100 || !String(blob.type || '').toLowerCase().includes('image')) {
-                        throw new Error('Geçersiz görsel yanıtı');
-                    }
-                    return new File([blob], `${username}.png`, { type: 'image/png' });
-                } catch (e) {
-                    lastError = e;
-                }
+            let lastError=null;
+            for(const url of providers){
+                try{
+                    const response=await fetch(url,{cache:'no-store',mode:'cors'});
+                    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const blob=await response.blob();
+                    if(!blob || blob.size<100 || !String(blob.type||'').toLowerCase().includes('image')) throw new Error('Geçersiz skin görseli');
+                    return new File([blob],`${username}.png`,{type:'image/png'});
+                }catch(e){ lastError=e; }
             }
-
-            console.warn('[NVO] Skin servislerinin tamamı başarısız:', lastError);
+            console.warn('[NVO] Kullanıcı adıyla skin servisleri başarısız:',lastError);
             throw new Error(t('skinFetchFailed'));
         }
 
