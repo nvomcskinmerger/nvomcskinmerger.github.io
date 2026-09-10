@@ -3148,7 +3148,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 const sameFormat = f1 === f2;
                 // A 64×64 skin must never be merged with 128×128 (or any other format).
                 // Each atlas has its own native merger pipeline.
-                btnMerge.disabled = isLoadingAuth || !firebaseUser || !sameFormat || !multiInputsReady();
+                btnMerge.disabled = isLoadingAuth || !sameFormat || !multiInputsReady();
                 resultInfo.removeAttribute('data-i18n');
                 resultInfo.textContent = sameFormat
                     ? t('readyStatus', model1, model2, t(`mode_${selectedMode}_title`))
@@ -3488,10 +3488,6 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 reportUserError(new Error(t('authNotReady')), 'warn');
                 return false;
             }
-            if (!firebaseUser) {
-                reportUserError(new Error(t('downloadLoginRequired')), 'warn');
-                return false;
-            }
             if (!model1 || !model2 || !multiInputsReady()) {
                 reportUserError(new Error(t('unexpectedError')), 'error');
                 return false;
@@ -3517,7 +3513,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 return false;
             } finally {
                 AppState.mergeInProgress = false;
-                btnMerge.disabled = !(model1 && model2 && firebaseUser);
+                btnMerge.disabled = !(model1 && model2 && multiInputsReady()) && !isLoadingAuth;
                 btnDownload.disabled = !firebaseUser || !resultReady;
             }
         }
