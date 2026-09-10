@@ -358,8 +358,15 @@
         .mode-tab.active { color:var(--text); border-color:var(--accent-cyan); background:rgba(255,59,59,.08); box-shadow:0 0 18px rgba(255,59,59,.08); }
         .mode-tab:hover { transform:translateY(-1px); border-color:var(--accent-cyan); }
         .mode-card.mode-hidden { display:none !important; }
-        .multi-skin-panel{display:none;margin-top:14px;padding:14px;border:1px solid var(--card-border);border-radius:12px;background:rgba(255,255,255,.025)}
+        .multi-skin-panel{display:none;grid-column:span 2;margin-top:0;padding:14px;border:1px solid var(--card-border);border-radius:12px;background:rgba(255,255,255,.025)}
         .multi-skin-panel.active{display:block;animation:nvoReveal .2s ease both}
+        .multi-skin-card{min-width:0;background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-lg);padding:18px}
+        .multi-skin-card .card-header{margin-bottom:12px}
+        .multi-upload-box{min-height:0}
+        .multi-skin-panel ~ .glass-card{}
+        .container.multi-active #skinCard1,.container.multi-active #skinCard2{display:none}
+        .container.multi-active #multiSkinPanel{grid-column:span 2}
+        @media(max-width:900px){.multi-skin-panel{grid-column:span 1}.container.multi-active #multiSkinPanel{grid-column:span 1}}
         .multi-skin-title{font-size:.88rem;font-weight:800;color:var(--text-main);margin-bottom:4px;display:flex;align-items:center;gap:8px}
         .multi-skin-desc{font-size:.72rem;color:var(--text-muted);line-height:1.45;margin-bottom:12px}
         .multi-skin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
@@ -369,7 +376,7 @@
         .multi-upload i{font-size:1rem;color:var(--accent-cyan)} .multi-upload strong{font-size:.72rem;color:var(--text-main)} .multi-upload small{font-size:.62rem;color:var(--text-muted);max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         .multi-preview{width:58px;height:58px;image-rendering:pixelated;border:1px solid var(--card-border);border-radius:6px;display:none;background:rgba(0,0,0,.15)} .multi-preview.has-image{display:block}
         .multi-status{font-size:.6rem;color:var(--text-muted);min-height:12px}
-        @media(max-width:700px){.multi-skin-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:700px){.multi-skin-grid{grid-template-columns:repeat(1,1fr)} .multi-skin-card{padding:14px}}
 
 
         /* Mod kartları eski (orijinal grid) stiliyle kalır; sadece etraflarına
@@ -1178,6 +1185,11 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
     }
   }
 </script>
+
+<style>
+.simple-multi-desc{font-size:.78rem;color:var(--text-muted);margin:-5px 0 12px}.simple-multi-files{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.simple-multi-card{border:1px solid var(--card-border);border-radius:9px;padding:10px;background:transparent}.simple-multi-card strong{display:block;margin-bottom:7px}.simple-multi-card input[type=file]{width:100%;font-size:.72rem}.simple-multi-preview{display:block;width:64px;height:64px;image-rendering:pixelated;margin:8px auto;border-radius:6px;border:1px solid var(--card-border);visibility:hidden}.simple-multi-preview.has-image{visibility:visible}.simple-multi-name{display:flex;gap:5px;margin-top:7px}.simple-multi-name input{min-width:0;flex:1;background:transparent;border:1px solid var(--card-border);border-radius:7px;padding:7px;font-size:.72rem;color:var(--text-main)}.simple-multi-name button{padding:7px 9px;border:1px solid var(--card-border);border-radius:7px;background:transparent;color:var(--text-main);cursor:pointer}.simple-multi-clear{width:100%;margin-top:6px;padding:6px;border:1px solid var(--card-border);border-radius:7px;background:transparent;color:var(--text-muted);cursor:pointer;font-size:.7rem}@media(max-width:600px){.simple-multi-files{grid-template-columns:1fr}}
+</style>
+
 <!-- SIMPLE INTERFACE: separate DOM, not a restyle of the premium layout -->
 <section id="simpleApp" aria-label="Simple interface">
   <div class="simple-shell">
@@ -1224,6 +1236,12 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
           <button id="simpleClear2" class="simple-mini-btn" type="button" data-i18n="clearBtn">Temizle</button>
         </div>
       </div>
+    </div>
+
+    <div class="simple-panel" id="simpleMultiSkinPanel" style="display:none;">
+      <div class="simple-panel-title"><i class="fa-solid fa-layer-group"></i> <span id="simpleMultiTitle">Çoklu Skinler</span></div>
+      <div class="simple-multi-desc" id="simpleMultiDesc">Her skin için PNG yükleyin veya Minecraft kullanıcı adıyla skin çekin.</div>
+      <div class="simple-files simple-multi-files" id="simpleMultiFiles"></div>
     </div>
 
     <div class="simple-panel">
@@ -1340,7 +1358,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
     <main class="container">
         <!-- Sol Skin -->
-        <div class="glass-card animate-fade">
+        <div class="glass-card animate-fade" id="skinCard1">
             <div class="card-header">
                 <div class="card-title"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="skin1CardTitle">Ana Skin (Skin 1)</span></div>
                 <span class="model-tag" id="tagSkin1" data-i18n="modelPending">Model: Bekleniyor</span>
@@ -1359,7 +1377,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         </div>
 
         <!-- Sağ Skin -->
-        <div class="glass-card animate-fade">
+        <div class="glass-card animate-fade" id="skinCard2">
             <div class="card-header">
                 <div class="card-title"><i class="fa-solid fa-arrow-right"></i> <span data-i18n="skin2CardTitle">İkincil Skin (Skin 2)</span></div>
                 <span class="model-tag" id="tagSkin2" data-i18n="modelPending">Model: Bekleniyor</span>
@@ -1498,13 +1516,176 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             </div>
         </div>
 
-        <!-- 3/4 Skin çoklu merger girişleri -->
+        <!-- Birleştirme Modu Seçimi -->
+        <div class="glass-card full-width animate-fade">
+            <div class="card-title" style="margin-bottom:12px;"><i class="fa-solid fa-sliders"></i> <span data-i18n="modeSectionTitle">Birleştirme (Merger) Modunu Seçin</span></div>
+            <div class="mode-tabs" role="tablist" aria-label="Merger kategorisi">
+                <button type="button" class="mode-tab active" data-mode-tab="ready" role="tab" aria-selected="true"><i class="fa-solid fa-bolt"></i> <span data-i18n="readyModesTab">Hazır Modlar</span></button>
+                <button type="button" class="mode-tab" data-mode-tab="custom" role="tab" aria-selected="false"><i class="fa-solid fa-sliders"></i> <span data-i18n="customModesTab">Özel Modlar</span></button>
+            </div>
+            <div class="mode-scroll-window">
+            <div class="mode-grid">
+                <div class="mode-card active" data-mode="half" data-mode-type="ready" role="button" tabindex="0" aria-pressed="true">
+                    <i class="fa-solid fa-columns"></i>
+                    <span data-i18n="mode_half_title">50/50 Yarı Yarıya</span>
+                    <p data-i18n="mode_half_desc">Sol yarısı Skin 1, sağ yarısı Skin 2 simetrik harmanlama.</p>
+                </div>
+                <div class="mode-card" data-mode="three_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-layer-group"></i><span data-i18n="mode_three_skin_title">3 Skin Merger</span>
+                    <p data-i18n="mode_three_skin_desc">Skin 1 üst yarı; Skin 2 ve 3 alt yarıyı ortadan yan bölerek tamamlar.</p>
+                </div>
+                <div class="mode-card" data-mode="four_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-table-cells-large"></i><span data-i18n="mode_four_skin_title">4 Skin Merger</span>
+                    <p data-i18n="mode_four_skin_desc">1+2 üst, 3+4 alt yarı; her çift ortadan yan bölünür.</p>
+                </div>
+                <div class="mode-card" data-mode="head_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-head-side-mask"></i>
+                    <span data-i18n="mode_head_swap_title">Kafa Değişimi</span>
+                    <p data-i18n="mode_head_swap_desc">Skin 1'in kafası ve şapkası, Skin 2'nin vücudu.</p>
+                </div>
+                <div class="mode-card" data-mode="top_bottom" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-arrows-up-down"></i>
+                    <span data-i18n="mode_top_bottom_title">Üst / Alt Bölme</span>
+                    <p data-i18n="mode_top_bottom_desc">Gövde ve iki kol tam ortadan 6+6 piksel bölünür; üst Skin 1, alt Skin 2. Bacaklar Skin 2.</p>
+                </div>
+                <div class="mode-card" data-mode="arm_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-arrows-left-right"></i>
+                    <span data-i18n="mode_arm_swap_title">Kol Değişimi</span>
+                    <p data-i18n="mode_arm_swap_desc">Skin 1'in kafa, gövde ve bacakları korunur; iki kol Skin 2'den alınır.</p>
+                </div>
+                <div class="mode-card" data-mode="leg_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-person-walking-arrow-right"></i>
+                    <span data-i18n="mode_leg_swap_title">Bacak Değişimi</span>
+                    <p data-i18n="mode_leg_swap_desc">Skin 1'in kafa, gövde ve kolları korunur; iki bacak Skin 2'den alınır.</p>
+                </div>
+                <div class="mode-card" data-mode="outer_overlay" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-shirt"></i>
+                    <span data-i18n="mode_outer_overlay_title">Ceket & Zırh Katmanı</span>
+                    <p data-i18n="mode_outer_overlay_desc">Temel vücut Skin 1, dış kıyafet/katman Skin 2.</p>
+                </div>
+                <div class="mode-card" data-mode="base_only" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-user"></i>
+                    <span data-i18n="mode_base_only_title">Sadece Temel Katman</span>
+                    <p data-i18n="mode_base_only_desc">50/50 harmanlama yapılır, ardından şapka/ceket/kol kılıfı gibi tüm dış katmanlar temizlenir.</p>
+                </div>
+                <div class="mode-card" data-mode="front_back" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-repeat"></i>
+                    <span data-i18n="mode_front_back_title">Ön / Arka Bölme</span>
+                    <p data-i18n="mode_front_back_desc">Karakterin ön yüzü Skin 1, sırt kısmı Skin 2.</p>
+                </div>
+                <div class="mode-card" data-mode="blend" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-droplet"></i>
+                    <span data-i18n="mode_blend_title">Opacity Blend</span>
+                    <p data-i18n="mode_blend_desc">İki texture %50 saydamlıkla üst üste bindirilir; hayalet/karışım efekti.</p>
+                </div>
+                <div class="mode-card" data-mode="chimera" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-shuffle"></i>
+                    <span data-i18n="mode_chimera_title">Rastgele Karışım</span>
+                    <p data-i18n="mode_chimera_desc">Kafa, gövde, kollar ve bacaklar için her parça rastgele Skin 1 veya Skin 2'den seçilir.</p>
+                </div>
+                <div class="mode-card" data-mode="body_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-vest"></i>
+                    <span data-i18n="mode_body_swap_title">Gövde Değişimi</span>
+                    <p data-i18n="mode_body_swap_desc">Skin 1'in kafa ve kolları korunur; gövde ve iki bacak Skin 2'den alınır.</p>
+                </div>
+                <div class="mode-card" data-mode="head_legs_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-person"></i>
+                    <span data-i18n="mode_head_legs_swap_title">Kafa & Bacak Değişimi</span>
+                    <p data-i18n="mode_head_legs_swap_desc">Skin 2'nin kafa ve bacakları, Skin 1'in gövde ve kollarıyla birleştirilir.</p>
+                </div>
+                <div class="mode-card" data-mode="reverse_overlay" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span data-i18n="mode_reverse_overlay_title">Ters Katman</span>
+                    <p data-i18n="mode_reverse_overlay_desc">Skin 2 temel beden olarak kullanılır; Skin 1'in dış kıyafet ve katmanları üzerine uygulanır.</p>
+                </div>
+                <div class="mode-card" data-mode="checker_blend" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-chess-board"></i>
+                    <span data-i18n="mode_checker_blend_title">Piksel Mozaik</span>
+                    <p data-i18n="mode_checker_blend_desc">UV haritasındaki pikseller dama düzeninde Skin 1 ve Skin 2 arasında dağıtılır.</p>
+                </div>
+                <div class="mode-card" data-mode="head_torso_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-user"></i>
+                    <span data-i18n="mode_head_torso_swap_title">Kafa & Gövde Değişimi</span>
+                    <p data-i18n="mode_head_torso_swap_desc">Skin 1 temel alınır; kafa ve gövde Skin 2'den alınır.</p>
+                </div>
+                <div class="mode-card" data-mode="arms_legs_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-person-running"></i>
+                    <span data-i18n="mode_arms_legs_swap_title">Kol & Bacak Değişimi</span>
+                    <p data-i18n="mode_arms_legs_swap_desc">Skin 1'in kafa ve gövdesi korunur; kollar ve bacaklar Skin 2'den alınır.</p>
+                </div>
+                <div class="mode-card" data-mode="alternating_parts" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-shuffle"></i>
+                    <span data-i18n="mode_alternating_parts_title">Dengeli Parça Karışımı</span>
+                    <p data-i18n="mode_alternating_parts_desc">Kafa ve bacaklar Skin 1, gövde ve kollar Skin 2'den.</p>
+                </div>
+                <div class="mode-card" data-mode="cross_limb_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-arrows-split-up-and-left"></i>
+                    <span data-i18n="mode_cross_limb_swap_title">Çapraz Uzuv Değişimi</span>
+                    <p data-i18n="mode_cross_limb_swap_desc">Kafa, gövde ve sağ kol/bacak Skin 1'den; sol kol ve sol bacak Skin 2'den alınır.</p>
+                </div>
+                <div class="mode-card" data-mode="gradient_blend" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-fill-drip"></i>
+                    <span data-i18n="mode_gradient_blend_title">Gradyan Geçiş</span>
+                    <p data-i18n="mode_gradient_blend_desc">Kafadan ayağa doğru Skin 1'den Skin 2'ye yumuşak, doğrusal bir renk geçişi uygulanır.</p>
+                </div>
+                <div class="mode-card" data-mode="custom" data-mode-type="custom" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-hand-pointer"></i>
+                    <span data-i18n="mode_custom_title">Özel Seçmeli Merger</span>
+                    <p data-i18n="mode_custom_desc">Kafa, gövde, kollar, bacaklar ve dış katmanı ayrı ayrı Skin 1 veya Skin 2'den seçerek kendi kombinasyonunuzu oluşturun.</p>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- 3/4 Skin çoklu merger girişleri: normal Skin 1/2 kutularının yerini alır -->
         <div class="glass-card full-width multi-skin-panel" id="multiSkinPanel">
             <div class="multi-skin-title"><i class="fa-solid fa-layer-group"></i> <span id="multiSkinTitle">Çoklu Skin Merger</span></div>
-            <div class="multi-skin-desc" id="multiSkinDesc">Bu merger için uyumlu skinleri yükleyin.</div>
-            <div class="multi-skin-grid">
-                <label class="multi-upload"><input type="file" id="inputSkin3" accept="image/png"><i class="fa-solid fa-image"></i><strong>Skin 3</strong><small id="label3">PNG seç</small><canvas id="multiPreview3" class="multi-preview" width="64" height="64"></canvas><span id="status3" class="multi-status">Bekleniyor</span></label>
-                <label class="multi-upload" id="multiSlot4"><input type="file" id="inputSkin4" accept="image/png"><i class="fa-solid fa-image"></i><strong>Skin 4</strong><small id="label4">PNG seç</small><canvas id="multiPreview4" class="multi-preview" width="64" height="64"></canvas><span id="status4" class="multi-status">Bekleniyor</span></label>
+            <div class="multi-skin-desc" id="multiSkinDesc">Her Skin için PNG yükleyebilir veya Minecraft kullanıcı adıyla skin çekebilirsiniz.</div>
+            <div class="multi-skin-grid multi-skin-grid-main">
+                <div class="multi-skin-card" id="multiCard1">
+                    <div class="card-header"><div class="card-title"><i class="fa-solid fa-1"></i> <span>Skin 1</span></div><span class="model-tag" id="multiTag1">Model: Bekleniyor</span></div>
+                    <div class="upload-box multi-upload-box">
+                        <input type="file" id="multiInputSkin1" accept="image/png">
+                        <p id="multiLabel1" style="font-size:0.9rem;color:var(--text-muted);">Görsel Seç veya Sürükle</p>
+                        <canvas id="multiPreview1" class="preview-canvas" width="64" height="64"></canvas>
+                        <div class="file-meta"><span><span class="status-dot"></span> <span id="multiStatus1">Bekleniyor</span></span></div>
+                        <div class="utility-row"><button class="utility-btn" id="multiClear1" type="button"><i class="fa-solid fa-trash"></i> Temizle</button></div>
+                        <div class="username-fetch-row"><input type="text" class="username-fetch-input" id="multiUsernameFetch1" data-i18n-placeholder="usernameFetchPlaceholder" placeholder="Minecraft kullanıcı adı..." autocomplete="off" spellcheck="false"><button type="button" class="utility-btn username-fetch-btn" id="multiUsernameFetchBtn1"><i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="usernameFetchBtn">Getir</span></button></div>
+                    </div>
+                </div>
+                <div class="multi-skin-card" id="multiCard2">
+                    <div class="card-header"><div class="card-title"><i class="fa-solid fa-2"></i> <span>Skin 2</span></div><span class="model-tag" id="multiTag2">Model: Bekleniyor</span></div>
+                    <div class="upload-box multi-upload-box">
+                        <input type="file" id="multiInputSkin2" accept="image/png">
+                        <p id="multiLabel2" style="font-size:0.9rem;color:var(--text-muted);">Görsel Seç veya Sürükle</p>
+                        <canvas id="multiPreview2" class="preview-canvas" width="64" height="64"></canvas>
+                        <div class="file-meta"><span><span class="status-dot"></span> <span id="multiStatus2">Bekleniyor</span></span></div>
+                        <div class="utility-row"><button class="utility-btn" id="multiClear2" type="button"><i class="fa-solid fa-trash"></i> Temizle</button></div>
+                        <div class="username-fetch-row"><input type="text" class="username-fetch-input" id="multiUsernameFetch2" data-i18n-placeholder="usernameFetchPlaceholder" placeholder="Minecraft kullanıcı adı..." autocomplete="off" spellcheck="false"><button type="button" class="utility-btn username-fetch-btn" id="multiUsernameFetchBtn2"><i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="usernameFetchBtn">Getir</span></button></div>
+                    </div>
+                </div>
+                <div class="multi-skin-card" id="multiCard3">
+                    <div class="card-header"><div class="card-title"><i class="fa-solid fa-3"></i> <span>Skin 3</span></div><span class="model-tag" id="multiTag3">Model: Bekleniyor</span></div>
+                    <div class="upload-box multi-upload-box">
+                        <input type="file" id="inputSkin3" accept="image/png">
+                        <p id="label3" style="font-size:0.9rem;color:var(--text-muted);">Görsel Seç veya Sürükle</p>
+                        <canvas id="multiPreview3" class="preview-canvas" width="64" height="64"></canvas>
+                        <div class="file-meta"><span><span class="status-dot"></span> <span id="status3">Bekleniyor</span></span></div>
+                        <div class="utility-row"><button class="utility-btn" id="multiClear3" type="button"><i class="fa-solid fa-trash"></i> Temizle</button></div>
+                        <div class="username-fetch-row"><input type="text" class="username-fetch-input" id="multiUsernameFetch3" data-i18n-placeholder="usernameFetchPlaceholder" placeholder="Minecraft kullanıcı adı..." autocomplete="off" spellcheck="false"><button type="button" class="utility-btn username-fetch-btn" id="multiUsernameFetchBtn3"><i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="usernameFetchBtn">Getir</span></button></div>
+                    </div>
+                </div>
+                <div class="multi-skin-card" id="multiCard4">
+                    <div class="card-header"><div class="card-title"><i class="fa-solid fa-4"></i> <span>Skin 4</span></div><span class="model-tag" id="multiTag4">Model: Bekleniyor</span></div>
+                    <div class="upload-box multi-upload-box">
+                        <input type="file" id="inputSkin4" accept="image/png">
+                        <p id="label4" style="font-size:0.9rem;color:var(--text-muted);">Görsel Seç veya Sürükle</p>
+                        <canvas id="multiPreview4" class="preview-canvas" width="64" height="64"></canvas>
+                        <div class="file-meta"><span><span class="status-dot"></span> <span id="status4">Bekleniyor</span></span></div>
+                        <div class="utility-row"><button class="utility-btn" id="multiClear4" type="button"><i class="fa-solid fa-trash"></i> Temizle</button></div>
+                        <div class="username-fetch-row"><input type="text" class="username-fetch-input" id="multiUsernameFetch4" data-i18n-placeholder="usernameFetchPlaceholder" placeholder="Minecraft kullanıcı adı..." autocomplete="off" spellcheck="false"><button type="button" class="utility-btn username-fetch-btn" id="multiUsernameFetchBtn4"><i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="usernameFetchBtn">Getir</span></button></div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -3277,28 +3458,132 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
         // ===================== 3/4 Skin Merger =====================
         const multiSkinPanel=document.getElementById('multiSkinPanel');
-        const multiSlot4=document.getElementById('multiSlot4');
-        const multiModeIds=new Set(['three_skin','four_skin']);
-        function activeMultiMode(){return multiModeIds.has(selectedMode);}
-        function requiredMultiCount(){return selectedMode==='four_skin'?4:selectedMode==='three_skin'?3:2;}
+        const skinCard1=document.getElementById('skinCard1'), skinCard2=document.getElementById('skinCard2');
+        function activeMultiMode(){ return selectedMode==='three_skin'||selectedMode==='four_skin'; }
+        function requiredMultiCount(){ return selectedMode==='four_skin'?4:3; }
         function syncMultiSkinPanel(){
             if(!multiSkinPanel)return;
-            const active=activeMultiMode(); multiSkinPanel.classList.toggle('active',active);
-            if(multiSlot4)multiSlot4.style.display=selectedMode==='four_skin'?'flex':'none';
-            const title=document.getElementById('multiSkinTitle'),desc=document.getElementById('multiSkinDesc');
-            if(title)title.textContent=selectedMode==='four_skin'?'4 Skin Merger':'3 Skin Merger';
-            if(desc)desc.textContent=selectedMode==='four_skin'?'Skin 1 + 2 üst yarıyı, Skin 3 + 4 alt yarıyı oluşturur. Her çift ortadan yan bölünür.':'Skin 1 üst yarıyı oluşturur; Skin 2 + 3 alt yarıyı ortadan yan bölerek tamamlar.';
+            const active=activeMultiMode();
+            multiSkinPanel.classList.toggle('active',active);
+            document.querySelector('.container')?.classList.toggle('multi-active',active);
+            if(skinCard1) skinCard1.style.display=active?'none':'';
+            if(skinCard2) skinCard2.style.display=active?'none':'';
+            [1,2,3,4].forEach(n=>{ const c=document.getElementById('multiCard'+n); if(c)c.style.display=(active && n<=requiredMultiCount())?'block':'none'; });
+            const title=document.getElementById('multiSkinTitle'), desc=document.getElementById('multiSkinDesc');
+            if(title) title.textContent=selectedMode==='four_skin'?'4 Skin Merger':'3 Skin Merger';
+            if(desc) desc.textContent=selectedMode==='four_skin'?'Skin 1–4 kutularından PNG yükleyin veya Minecraft kullanıcı adıyla skin çekin.':'Skin 1–3 kutularından PNG yükleyin veya Minecraft kullanıcı adıyla skin çekin.';
+            updateMultiStatus();
+            syncMultiPreviews();
         }
-        function multiFormatCompatible(){const n=requiredMultiCount(),cs=[canvas1,canvas2,canvas3,canvas4].slice(0,n);if(cs.some(c=>!c||!c.width))return false;const f=getSkinFormat(cs[0]);return cs.every(c=>getSkinFormat(c)===f);}
-        function multiInputsReady(){if(!activeMultiMode())return true;const n=requiredMultiCount();return [model1,model2,model3,model4].slice(0,n).every(Boolean)&&multiFormatCompatible();}
-        function updateMultiStatus(slot,ctx,model){const l=document.getElementById('label'+slot),st=document.getElementById('status'+slot),pr=document.getElementById('multiPreview'+slot);if(l)l.textContent=`${ctx.canvas.width}×${ctx.canvas.height} PNG`;if(st)st.textContent=`${model.toUpperCase()} • ${ctx.canvas.width}×${ctx.canvas.height}`;if(pr){pr.width=ctx.canvas.width;pr.height=ctx.canvas.height;const pc=pr.getContext('2d');pc.imageSmoothingEnabled=false;pc.clearRect(0,0,pr.width,pr.height);pc.drawImage(ctx.canvas,0,0);pr.classList.add('has-image');}}
-        async function handleExtraSkin(file,slot){if(!file)return;try{if(file.type!==APP_CONFIG.PNG_MIME)throw new Error(t('invalidPng'));if(file.size<=0||file.size>APP_CONFIG.MAX_FILE_BYTES)throw new Error(t('fileTooLarge'));const {width,height}=await readPngDimensions(file);const fmt=`${width}×${height}`;if(!APP_CONFIG.SUPPORTED_SKIN_FORMATS.includes(fmt))throw new Error(t('invalidDimensions',width,height));const img=await decodeLocalPng(file);const src=document.createElement('canvas');src.width=width;src.height=height;const sc=src.getContext('2d',{alpha:true});sc.imageSmoothingEnabled=false;sc.drawImage(img,0,0);const ctx=slot===3?ctx3:ctx4;if(fmt==='64×32'){const cv=convertLegacy64x32To64x64(src);ctx.canvas.width=ctx.canvas.height=64;ctx.clearRect(0,0,64,64);ctx.drawImage(cv,0,0)}else{ctx.canvas.width=width;ctx.canvas.height=height;ctx.clearRect(0,0,width,height);ctx.drawImage(src,0,0)}const model=detectSkinModel(ctx);if(slot===3)model3=model;else model4=model;updateMultiStatus(slot,ctx,model);checkModelMismatch();log(`Skin ${slot} yüklendi: ${ctx.canvas.width}×${ctx.canvas.height} (${model.toUpperCase()})`,'success')}catch(e){reportUserError(e,'error')}}
+        function multiFormatCompatible(){
+            const formats=[getSkinFormat(canvas1),getSkinFormat(canvas2)];
+            if(requiredMultiCount()>=3) formats.push(getSkinFormat(canvas3));
+            if(requiredMultiCount()>=4) formats.push(getSkinFormat(canvas4));
+            return formats.every(Boolean) && formats.every(f=>f===formats[0]);
+        }
+        function multiInputsReady(){
+            return !!canvas1.width && !!canvas2.width && (requiredMultiCount()<3 || !!canvas3.width) && (requiredMultiCount()<4 || !!canvas4.width);
+        }
+        function updateMultiStatus(){
+            const count=requiredMultiCount();
+            [1,2,3,4].forEach(n=>{
+                const st=document.getElementById('multiStatus'+n);
+                const src=n===1?canvas1:n===2?canvas2:n===3?canvas3:canvas4;
+                if(!st)return;
+                st.textContent=(n<=count && src && src.width)?'Hazır':'Bekleniyor';
+            });
+        }
+        function syncMultiPreviews(){
+            [1,2,3,4].forEach(n=>{
+                const src=n===1?canvas1:n===2?canvas2:n===3?canvas3:canvas4;
+                copyPreview(src,document.getElementById('multiPreview'+n),!!src && src.width>0 && src.height>0);
+                const mainInput=n===1?inputSkin1:n===2?inputSkin2:null;
+                const label=document.getElementById('multiLabel'+n) || document.getElementById('label'+n);
+                if(label && mainInput?.files?.[0]) label.textContent=mainInput.files[0].name;
+            });
+            updateMultiStatus();
+        }
+        async function handleExtraSkin(file,slot){
+            if(!file)return;
+            const ctx=slot===3?ctx3:ctx4, labelId=slot===3?'label3':'label4';
+            try{ await handleFile(file,ctx,labelId,false); syncMultiPreviews(); updateMultiStatus(); }
+            catch(e){ reportUserError(e,'error'); }
+        }
+        function clearExtraSkin(slot){
+            const input=document.getElementById(slot===3?'inputSkin3':'inputSkin4');
+            const ctx=slot===3?ctx3:ctx4;
+            ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+            ctx.canvas.width=64;ctx.canvas.height=64;ctx.clearRect(0,0,64,64);
+            if(input) input.value='';
+            const preview=document.getElementById('multiPreview'+slot); if(preview) preview.classList.remove('has-image');
+            const label=document.getElementById('label'+slot); if(label) label.textContent='Görsel Seç veya Sürükle';
+            syncMultiPreviews();
+        }
+        // 3/4 Skin modları yeni bir bölme algoritması eklemez:
+        // mevcut "50/50 Yarı Yarıya" ve "Üst / Alt Bölme" motorlarını zincirler.
+        function runExistingMergeModeToCanvas(mode, sourceA, sourceB, destination){
+            const w=sourceA.width, h=sourceA.height;
+            const savedA=document.createElement('canvas');
+            const savedB=document.createElement('canvas');
+            savedA.width=w; savedA.height=h; savedB.width=w; savedB.height=h;
+            savedA.getContext('2d').drawImage(canvas1,0,0);
+            savedB.getContext('2d').drawImage(canvas2,0,0);
+
+            const oldMode=selectedMode;
+            const oldW=resultCanvas.width, oldH=resultCanvas.height;
+
+            ctx1.canvas.width=w; ctx1.canvas.height=h;
+            ctx2.canvas.width=w; ctx2.canvas.height=h;
+            ctx1.imageSmoothingEnabled=false; ctx2.imageSmoothingEnabled=false;
+            ctx1.clearRect(0,0,w,h); ctx2.clearRect(0,0,w,h);
+            ctx1.drawImage(sourceA,0,0,w,h);
+            ctx2.drawImage(sourceB,0,0,w,h);
+
+            selectedMode=mode;
+            prepareResultCanvas();
+            executeModernMergeLogic();
+
+            destination.width=resultCanvas.width;
+            destination.height=resultCanvas.height;
+            const dctx=destination.getContext('2d');
+            dctx.imageSmoothingEnabled=false;
+            dctx.clearRect(0,0,destination.width,destination.height);
+            dctx.drawImage(resultCanvas,0,0);
+
+            selectedMode=oldMode;
+            ctx1.canvas.width=savedA.width; ctx1.canvas.height=savedA.height;
+            ctx2.canvas.width=savedB.width; ctx2.canvas.height=savedB.height;
+            ctx1.imageSmoothingEnabled=false; ctx2.imageSmoothingEnabled=false;
+            ctx1.clearRect(0,0,savedA.width,savedA.height);
+            ctx2.clearRect(0,0,savedB.width,savedB.height);
+            ctx1.drawImage(savedA,0,0); ctx2.drawImage(savedB,0,0);
+            resultCanvas.width=oldW; resultCanvas.height=oldH;
+            ctxOut.imageSmoothingEnabled=false;
+        }
+
+        function executeThreeSkinMerge(){
+            // 1+2 mevcut 50/50 -> çıkan sonuç + 3 mevcut Üst/Alt Bölme.
+            const firstHalf=document.createElement('canvas');
+            runExistingMergeModeToCanvas('half',canvas1,canvas2,firstHalf);
+            runExistingMergeModeToCanvas('top_bottom',firstHalf,canvas3,resultCanvas);
+        }
+
+        function executeFourSkinMerge(){
+            // 1+2 mevcut 50/50; 3+4 mevcut 50/50; iki sonuç mevcut Üst/Alt Bölme.
+            const topHalf=document.createElement('canvas');
+            const bottomHalf=document.createElement('canvas');
+            runExistingMergeModeToCanvas('half',canvas1,canvas2,topHalf);
+            runExistingMergeModeToCanvas('half',canvas3,canvas4,bottomHalf);
+            runExistingMergeModeToCanvas('top_bottom',topHalf,bottomHalf,resultCanvas);
+        }
         document.getElementById('inputSkin3')?.addEventListener('change',e=>void handleExtraSkin(e.target.files?.[0],3));
         document.getElementById('inputSkin4')?.addEventListener('change',e=>void handleExtraSkin(e.target.files?.[0],4));
-        function executeThreeSkinMerge(){prepareResultCanvas();const w=resultCanvas.width,h=resultCanvas.height,my=Math.floor(h/2),mx=Math.floor(w/2),a=ctx1.getImageData(0,0,w,h).data,b=ctx2.getImageData(0,0,w,h).data,c=ctx3.getImageData(0,0,w,h).data,o=ctxOut.createImageData(w,h);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=(y*w+x)*4,q=y<my?a:(x<mx?b:c);o.data[i]=q[i];o.data[i+1]=q[i+1];o.data[i+2]=q[i+2];o.data[i+3]=q[i+3]}ctxOut.putImageData(o,0,0);log('3 Skin Merger tamamlandı: 1 üstte, 2/3 altta yan bölündü.','success')}
-        function executeFourSkinMerge(){prepareResultCanvas();const w=resultCanvas.width,h=resultCanvas.height,my=Math.floor(h/2),mx=Math.floor(w/2),a=ctx1.getImageData(0,0,w,h).data,b=ctx2.getImageData(0,0,w,h).data,c=ctx3.getImageData(0,0,w,h).data,d=ctx4.getImageData(0,0,w,h).data,o=ctxOut.createImageData(w,h);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=(y*w+x)*4,q=y<my?(x<mx?a:b):(x<mx?c:d);o.data[i]=q[i];o.data[i+1]=q[i+1];o.data[i+2]=q[i+2];o.data[i+3]=q[i+3]}ctxOut.putImageData(o,0,0);log('4 Skin Merger tamamlandı: 1/2 üst, 3/4 alt; çiftler yan bölündü.','success')}
+        document.getElementById('multiInputSkin1')?.addEventListener('change',e=>{ if(e.target.files?.[0]) handleFile(e.target.files[0],ctx1,'label1',true).then(syncMultiPreviews); });
+        document.getElementById('multiInputSkin2')?.addEventListener('change',e=>{ if(e.target.files?.[0]) handleFile(e.target.files[0],ctx2,'label2',false).then(syncMultiPreviews); });
+        [1,2].forEach(n=>document.getElementById('multiClear'+n)?.addEventListener('click',()=>document.getElementById('clear'+n)?.click()));
+        document.getElementById('multiClear3')?.addEventListener('click',()=>clearExtraSkin(3));
+        document.getElementById('multiClear4')?.addEventListener('click',()=>clearExtraSkin(4));
         syncMultiSkinPanel();
-        // ===================== /3/4 Skin Merger =====================
         inputSkin1.addEventListener('change', event => { void handleFile(event.target.files?.[0], ctx1, 'label1', true); });
         inputSkin2.addEventListener('change', event => { void handleFile(event.target.files?.[0], ctx2, 'label2', false); });
 
@@ -3412,6 +3697,10 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         }
         wireUsernameFetch('usernameFetchBtn1', 'usernameFetch1', ctx1, 'label1', true);
         wireUsernameFetch('usernameFetchBtn2', 'usernameFetch2', ctx2, 'label2', false);
+        wireUsernameFetch('multiUsernameFetchBtn1', 'multiUsernameFetch1', ctx1, 'label1', true);
+        wireUsernameFetch('multiUsernameFetchBtn2', 'multiUsernameFetch2', ctx2, 'label2', false);
+        wireUsernameFetch('multiUsernameFetchBtn3', 'multiUsernameFetch3', ctx3, 'label3', false);
+        wireUsernameFetch('multiUsernameFetchBtn4', 'multiUsernameFetch4', ctx4, 'label4', false);
         // ===================== /Kullanıcı Adıyla Skin Çekme =====================
 
 
@@ -4830,6 +5119,29 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
     else dst.classList.remove('has-image');
   }
 
+  function isSimpleMultiMode(){ const v=$('simpleModeSelect')?.value; return v==='three_skin'||v==='four_skin'; }
+  function renderSimpleMultiCards(){
+    const panel=$('simpleMultiSkinPanel'), box=$('simpleMultiFiles'); if(!panel||!box) return;
+    const count=$('simpleModeSelect')?.value==='four_skin'?4:3;
+    panel.style.display=isSimpleMultiMode()?'':'none';
+    if(!isSimpleMultiMode()) return;
+    $('simpleMultiTitle').textContent=count===4?'4 Skin Merger':'3 Skin Merger';
+    box.innerHTML='';
+    for(let n=1;n<=count;n++){
+      const card=document.createElement('div'); card.className='simple-multi-card';
+      card.innerHTML=`<strong>Skin ${n}</strong><input type="file" accept="image/png" data-simple-multi-file="${n}"><canvas class="simple-multi-preview" width="64" height="64" data-simple-multi-preview="${n}"></canvas><button type="button" class="simple-multi-clear" data-simple-multi-clear="${n}">Temizle</button><div class="simple-multi-name"><input type="text" placeholder="Minecraft kullanıcı adı..." data-simple-multi-name="${n}" autocomplete="off" spellcheck="false"><button type="button" data-simple-multi-fetch="${n}"><i class="fa-solid fa-magnifying-glass"></i> Getir</button></div>`;
+      box.appendChild(card);
+    }
+    box.querySelectorAll('[data-simple-multi-file]').forEach(el=>el.addEventListener('change',()=>{ const n=el.dataset.simpleMultiFile; const real=$('multiInputSkin'+n); if(real&&el.files?.[0]){ const dt=new DataTransfer(); dt.items.add(el.files[0]); real.files=dt.files; real.dispatchEvent(new Event('change',{bubbles:true})); setTimeout(syncSimpleMultiPreviews,120); }}));
+    box.querySelectorAll('[data-simple-multi-clear]').forEach(el=>el.addEventListener('click',()=>{ const n=el.dataset.simpleMultiClear; $('multiClear'+n)?.click(); setTimeout(syncSimpleMultiPreviews,80); }));
+    box.querySelectorAll('[data-simple-multi-fetch]').forEach(el=>el.addEventListener('click',()=>{ const n=el.dataset.simpleMultiFetch, inp=box.querySelector(`[data-simple-multi-name="${n}"]`), real=$('multiUsernameFetch'+n), btn=$('multiUsernameFetchBtn'+n); if(real&&btn){real.value=inp?.value||'';btn.click();setTimeout(syncSimpleMultiPreviews,900);}}));
+    syncSimpleMultiPreviews();
+  }
+  function syncSimpleMultiPreviews(){
+    const count=$('simpleModeSelect')?.value==='four_skin'?4:3;
+    for(let n=1;n<=count;n++){ const src=$('multiPreview'+n), dst=document.querySelector(`[data-simple-multi-preview="${n}"]`); if(src&&dst){ const c=dst.getContext('2d'); c.clearRect(0,0,64,64); if(src.classList.contains('has-image')){try{c.drawImage(src,0,0,64,64);}catch(e){} dst.classList.add('has-image')}else dst.classList.remove('has-image'); } }
+  }
+
   function syncSimplePreviews(){
     const i1=$('inputSkin1'), i2=$('inputSkin2');
     copyPreview($('canvas1'),$('simplePreview1'),!!i1?.files?.length);
@@ -4838,6 +5150,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
     else $('simpleFile1').textContent=typeof t==='function'?t('simpleChoose'):'Choose PNG';
     if(i2?.files?.[0]) $('simpleFile2').textContent=i2.files[0].name;
     else $('simpleFile2').textContent=typeof t==='function'?t('simpleChoose'):'Choose PNG';
+    syncSimpleMultiPreviews();
   }
 
   function syncSimpleResult(){
@@ -4895,10 +5208,12 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
   function wire(){
     fillModes();
+    renderSimpleMultiCards();
     const sel=$('simpleModeSelect');
     sel?.addEventListener('change',()=>{
       const card=document.querySelector(`.mode-card[data-mode="${CSS.escape(sel.value)}"]`);
       card?.click();
+      setTimeout(renderSimpleMultiCards,30);
     });
     $('simpleMergeBtn')?.addEventListener('click',()=>{
       const real=$('btnMerge'); if(real && !real.disabled){ real.click(); setTimeout(()=>{syncSimpleResult();setSimpleMergeState();},80); }
@@ -4927,7 +5242,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
   }
 
   window.__refreshSimpleUI=function(){
-    fillModes(); refreshModeTexts(); syncSimplePreviews(); syncSimpleResult(); setSimpleMergeState(); syncSimpleAuth();
+    fillModes(); refreshModeTexts(); renderSimpleMultiCards(); syncSimplePreviews(); syncSimpleResult(); setSimpleMergeState(); syncSimpleAuth();
     const lang=$('langToggle'); if(lang) $('simpleLangLabel').textContent=lang.textContent.trim();
     const realTheme=$('themeToggleIcon'), simpleTheme=$('simpleThemeIcon'); if(realTheme&&simpleTheme) simpleTheme.className=realTheme.className;
   };
