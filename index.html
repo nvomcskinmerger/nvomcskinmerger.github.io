@@ -358,6 +358,7 @@
         .mode-tab.active { color:var(--text); border-color:var(--accent-cyan); background:rgba(255,59,59,.08); box-shadow:0 0 18px rgba(255,59,59,.08); }
         .mode-tab:hover { transform:translateY(-1px); border-color:var(--accent-cyan); }
         .mode-card.mode-hidden { display:none !important; }
+        .multi-input-card{min-width:0}
         .multi-skin-panel{display:none;margin-top:14px;padding:14px;border:1px solid var(--card-border);border-radius:12px;background:rgba(255,255,255,.025)}
         .multi-skin-panel.active{display:block;animation:nvoReveal .2s ease both}
         .multi-skin-title{font-size:.88rem;font-weight:800;color:var(--text-main);margin-bottom:4px;display:flex;align-items:center;gap:8px}
@@ -1141,23 +1142,6 @@ body.ui-simple>#simpleApp{display:block!important}
 body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 </style>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-
-<style id="nvo-multi-skin-css">
-.nvo-multi-panel{display:none;margin-top:12px;padding:14px;border:1px solid var(--card-border);border-radius:12px;background:rgba(255,255,255,.025)}
-.nvo-multi-panel.active{display:block}
-.nvo-multi-title{font-size:.88rem;font-weight:800;color:var(--text-main);margin-bottom:5px}
-.nvo-multi-desc{font-size:.72rem;color:var(--text-muted);line-height:1.45;margin-bottom:10px}
-.nvo-multi-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.nvo-multi-upload{position:relative;min-height:112px;border:1px dashed var(--card-border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:rgba(0,0,0,.12);overflow:hidden}
-.nvo-multi-upload input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2}
-.nvo-multi-upload i{font-size:1rem;color:var(--accent-cyan)}
-.nvo-multi-upload strong{font-size:.72rem;color:var(--text-main)}
-.nvo-multi-upload small{font-size:.62rem;color:var(--text-muted);max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nvo-multi-upload canvas{width:58px;height:58px;image-rendering:pixelated;border:1px solid var(--card-border);border-radius:6px;display:none}
-.nvo-multi-upload canvas.has-image{display:block}
-@media(max-width:600px){.nvo-multi-grid{grid-template-columns:1fr 1fr}}
-</style>
-
 </head>
 <body class="nvo-gate-active">
 <!-- Turnstile giriş doğrulama ekranı: yoğunluk/şüpheli trafikte kutucuk gösterir, normal ziyaretçide görünmeden geçer -->
@@ -1394,6 +1378,43 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             </div>
         </div>
 
+        <!-- Skin 3 / Skin 4 — Skin 1 ve Skin 2 ile aynı yükleme mekaniği -->
+        <div class="glass-card animate-fade multi-input-card" id="skinCard3" style="display:none;">
+            <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-arrow-left"></i> <span>Ek Skin (Skin 3)</span></div>
+                <span class="model-tag" id="tagSkin3">Model: Bekleniyor</span>
+            </div>
+            <div class="upload-box">
+                <input type="file" id="inputSkin3" accept="image/png">
+                <p id="label3" style="font-size:0.9rem; color:var(--text-muted);">Görsel Seç veya Sürükle</p>
+                <canvas id="canvas3" class="preview-canvas" width="64" height="64"></canvas>
+                <div class="file-meta" id="meta3"><span><span class="status-dot"></span> Bekleniyor</span></div>
+                <div class="utility-row"><button class="utility-btn" id="clear3" type="button"><i class="fa-solid fa-trash"></i> <span>Temizle</span></button></div>
+                <div class="username-fetch-row">
+                    <input type="text" class="username-fetch-input" id="usernameFetch3" placeholder="Minecraft kullanıcı adı..." autocomplete="off" spellcheck="false">
+                    <button type="button" class="utility-btn username-fetch-btn" id="usernameFetchBtn3"><i class="fa-solid fa-magnifying-glass"></i> <span>Getir</span></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card animate-fade multi-input-card" id="skinCard4" style="display:none;">
+            <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-arrow-right"></i> <span>Ek Skin (Skin 4)</span></div>
+                <span class="model-tag" id="tagSkin4">Model: Bekleniyor</span>
+            </div>
+            <div class="upload-box">
+                <input type="file" id="inputSkin4" accept="image/png">
+                <p id="label4" style="font-size:0.9rem; color:var(--text-muted);">Görsel Seç veya Sürükle</p>
+                <canvas id="canvas4" class="preview-canvas" width="64" height="64"></canvas>
+                <div class="file-meta" id="meta4"><span><span class="status-dot"></span> Bekleniyor</span></div>
+                <div class="utility-row"><button class="utility-btn" id="clear4" type="button"><i class="fa-solid fa-trash"></i> <span>Temizle</span></button></div>
+                <div class="username-fetch-row">
+                    <input type="text" class="username-fetch-input" id="usernameFetch4" placeholder="Minecraft kullanıcı adı..." autocomplete="off" spellcheck="false">
+                    <button type="button" class="utility-btn username-fetch-btn" id="usernameFetchBtn4"><i class="fa-solid fa-magnifying-glass"></i> <span>Getir</span></button>
+                </div>
+            </div>
+        </div>
+
         <!-- Birleştirme Modu Seçimi -->
         <div class="glass-card full-width animate-fade">
             <div class="card-title" style="margin-bottom:12px;"><i class="fa-solid fa-sliders"></i> <span data-i18n="modeSectionTitle">Birleştirme (Merger) Modunu Seçin</span></div>
@@ -1408,25 +1429,6 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                     <span data-i18n="mode_half_title">50/50 Yarı Yarıya</span>
                     <p data-i18n="mode_half_desc">Sol yarısı Skin 1, sağ yarısı Skin 2 simetrik harmanlama.</p>
                 </div>
-<div id="nvoMultiSkinPanel" class="nvo-multi-panel" aria-hidden="true">
-  <div class="nvo-multi-title"><i class="fa-solid fa-images"></i> Ek Skinler</div>
-  <div class="nvo-multi-desc">3 Skin modunda Skin 3, 4 Skin modunda Skin 3 ve Skin 4'ü yükleyin.</div>
-  <div class="nvo-multi-grid">
-    <label class="nvo-multi-upload">
-      <input id="nvoSkin3Input" type="file" accept="image/png">
-      <i class="fa-solid fa-plus"></i><strong>Skin 3</strong>
-      <small id="nvoSkin3Name">PNG seç</small>
-      <canvas id="nvoSkin3Preview" width="64" height="64"></canvas>
-    </label>
-    <label id="nvoSkin4Slot" class="nvo-multi-upload" style="display:none">
-      <input id="nvoSkin4Input" type="file" accept="image/png">
-      <i class="fa-solid fa-plus"></i><strong>Skin 4</strong>
-      <small id="nvoSkin4Name">PNG seç</small>
-      <canvas id="nvoSkin4Preview" width="64" height="64"></canvas>
-    </label>
-  </div>
-</div>
-
                 <div class="mode-card" data-mode="three_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-layer-group"></i><span data-i18n="mode_three_skin_title">3 Skin Merger</span>
                     <p data-i18n="mode_three_skin_desc">Skin 1 üst yarı; Skin 2 ve 3 alt yarıyı ortadan yan bölerek tamamlar.</p>
@@ -1531,16 +1533,6 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                     <p data-i18n="mode_custom_desc">Kafa, gövde, kollar, bacaklar ve dış katmanı ayrı ayrı Skin 1 veya Skin 2'den seçerek kendi kombinasyonunuzu oluşturun.</p>
                 </div>
             </div>
-            </div>
-        </div>
-
-        <!-- 3/4 Skin çoklu merger girişleri -->
-        <div class="glass-card full-width multi-skin-panel" id="multiSkinPanel">
-            <div class="multi-skin-title"><i class="fa-solid fa-layer-group"></i> <span id="multiSkinTitle">Çoklu Skin Merger</span></div>
-            <div class="multi-skin-desc" id="multiSkinDesc">Bu merger için uyumlu skinleri yükleyin.</div>
-            <div class="multi-skin-grid">
-                <label class="multi-upload"><input type="file" id="inputSkin3" accept="image/png"><i class="fa-solid fa-image"></i><strong>Skin 3</strong><small id="label3">PNG seç</small><canvas id="multiPreview3" class="multi-preview" width="64" height="64"></canvas><span id="status3" class="multi-status">Bekleniyor</span></label>
-                <label class="multi-upload" id="multiSlot4"><input type="file" id="inputSkin4" accept="image/png"><i class="fa-solid fa-image"></i><strong>Skin 4</strong><small id="label4">PNG seç</small><canvas id="multiPreview4" class="multi-preview" width="64" height="64"></canvas><span id="status4" class="multi-status">Bekleniyor</span></label>
             </div>
         </div>
 
@@ -2771,8 +2763,8 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         const inputSkin2 = document.getElementById('inputSkin2');
         const canvas1 = document.getElementById('canvas1');
         const canvas2 = document.getElementById('canvas2');
-        const canvas3 = document.createElement('canvas'); canvas3.width=canvas3.height=64;
-        const canvas4 = document.createElement('canvas'); canvas4.width=canvas4.height=64;
+        const canvas3 = document.getElementById('canvas3'); canvas3.width=canvas3.height=64;
+        const canvas4 = document.getElementById('canvas4'); canvas4.width=canvas4.height=64;
         const ctx3 = canvas3.getContext('2d',{alpha:true,willReadFrequently:true});
         const ctx4 = canvas4.getContext('2d',{alpha:true,willReadFrequently:true});
         let model3=null, model4=null;
@@ -3311,30 +3303,118 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             }
         }
 
-        // ===================== 3/4 Skin Merger =====================
-        const multiSkinPanel=document.getElementById('multiSkinPanel');
-        const multiSlot4=document.getElementById('multiSlot4');
-        const multiModeIds=new Set(['three_skin','four_skin']);
-        function activeMultiMode(){return multiModeIds.has(selectedMode);}
-        function requiredMultiCount(){return selectedMode==='four_skin'?4:selectedMode==='three_skin'?3:2;}
+        // ===================== 3/4 Skin girişleri (aynı Skin 1/2 mekaniği) =====================
+        const skinCard3 = document.getElementById('skinCard3');
+        const skinCard4 = document.getElementById('skinCard4');
+
+        function activeMultiMode(){ return selectedMode === 'three_skin' || selectedMode === 'four_skin'; }
+        function requiredMultiCount(){ return selectedMode === 'four_skin' ? 4 : selectedMode === 'three_skin' ? 3 : 2; }
         function syncMultiSkinPanel(){
-            if(!multiSkinPanel)return;
-            const active=activeMultiMode(); multiSkinPanel.classList.toggle('active',active);
-            if(multiSlot4)multiSlot4.style.display=selectedMode==='four_skin'?'flex':'none';
-            const title=document.getElementById('multiSkinTitle'),desc=document.getElementById('multiSkinDesc');
-            if(title)title.textContent=selectedMode==='four_skin'?'4 Skin Merger':'3 Skin Merger';
-            if(desc)desc.textContent=selectedMode==='four_skin'?'Skin 1 + 2 üst yarıyı, Skin 3 + 4 alt yarıyı oluşturur. Her çift ortadan yan bölünür.':'Skin 1 üst yarıyı oluşturur; Skin 2 + 3 alt yarıyı ortadan yan bölerek tamamlar.';
+            const active = activeMultiMode();
+            if (skinCard3) skinCard3.style.display = active ? '' : 'none';
+            if (skinCard4) skinCard4.style.display = selectedMode === 'four_skin' ? '' : 'none';
+            updateMultiStatus();
         }
-        function multiFormatCompatible(){const n=requiredMultiCount(),cs=[canvas1,canvas2,canvas3,canvas4].slice(0,n);if(cs.some(c=>!c||!c.width))return false;const f=getSkinFormat(cs[0]);return cs.every(c=>getSkinFormat(c)===f);}
-        function multiInputsReady(){if(!activeMultiMode())return true;const n=requiredMultiCount();return [model1,model2,model3,model4].slice(0,n).every(Boolean)&&multiFormatCompatible();}
-        function updateMultiStatus(slot,ctx,model){const l=document.getElementById('label'+slot),st=document.getElementById('status'+slot),pr=document.getElementById('multiPreview'+slot);if(l)l.textContent=`${ctx.canvas.width}×${ctx.canvas.height} PNG`;if(st)st.textContent=`${model.toUpperCase()} • ${ctx.canvas.width}×${ctx.canvas.height}`;if(pr){pr.width=ctx.canvas.width;pr.height=ctx.canvas.height;const pc=pr.getContext('2d');pc.imageSmoothingEnabled=false;pc.clearRect(0,0,pr.width,pr.height);pc.drawImage(ctx.canvas,0,0);pr.classList.add('has-image');}}
-        async function handleExtraSkin(file,slot){if(!file)return;try{if(file.type!==APP_CONFIG.PNG_MIME)throw new Error(t('invalidPng'));if(file.size<=0||file.size>APP_CONFIG.MAX_FILE_BYTES)throw new Error(t('fileTooLarge'));const {width,height}=await readPngDimensions(file);const fmt=`${width}×${height}`;if(!APP_CONFIG.SUPPORTED_SKIN_FORMATS.includes(fmt))throw new Error(t('invalidDimensions',width,height));const img=await decodeLocalPng(file);const src=document.createElement('canvas');src.width=width;src.height=height;const sc=src.getContext('2d',{alpha:true});sc.imageSmoothingEnabled=false;sc.drawImage(img,0,0);const ctx=slot===3?ctx3:ctx4;if(fmt==='64×32'){const cv=convertLegacy64x32To64x64(src);ctx.canvas.width=ctx.canvas.height=64;ctx.clearRect(0,0,64,64);ctx.drawImage(cv,0,0)}else{ctx.canvas.width=width;ctx.canvas.height=height;ctx.clearRect(0,0,width,height);ctx.drawImage(src,0,0)}const model=detectSkinModel(ctx);if(slot===3)model3=model;else model4=model;updateMultiStatus(slot,ctx,model);checkModelMismatch();log(`Skin ${slot} yüklendi: ${ctx.canvas.width}×${ctx.canvas.height} (${model.toUpperCase()})`,'success')}catch(e){reportUserError(e,'error')}}
+        function multiInputsReady(){
+            if (!activeMultiMode()) return true;
+            const needed = requiredMultiCount();
+            const models = [model1, model2, model3, model4].slice(0, needed);
+            const canvases = [canvas1, canvas2, canvas3, canvas4].slice(0, needed);
+            return models.every(Boolean) && canvases.every(c => c && c.width && c.height) &&
+                   canvases.every(c => getSkinFormat(c) === getSkinFormat(canvases[0]));
+        }
+        function updateMultiStatus(){
+            [[3,ctx3,model3],[4,ctx4,model4]].forEach(([slot,ctx,model])=>{
+                const meta=document.getElementById('meta'+slot);
+                const label=document.getElementById('label'+slot);
+                const tag=document.getElementById('tagSkin'+slot);
+                if(tag) tag.textContent = model ? `Model: ${model.toUpperCase()}` : 'Model: Bekleniyor';
+                if(meta && model) meta.innerHTML=`<span><span class="status-dot"></span> ${ctx.canvas.width}×${ctx.canvas.height} PNG • ${model.toUpperCase()}</span>`;
+                if(label && !model) label.textContent='Görsel Seç veya Sürükle';
+            });
+        }
+
+        async function handleExtraSkin(file, slot){
+            if(!file) return;
+            const ctx = slot === 3 ? ctx3 : ctx4;
+            const labelId = slot === 3 ? 'label3' : 'label4';
+            try {
+                if(file.type !== APP_CONFIG.PNG_MIME) throw new Error(t('invalidPng'));
+                if(file.size <= 0 || file.size > APP_CONFIG.MAX_FILE_BYTES) throw new Error(t('fileTooLarge'));
+                const {width,height}=await readPngDimensions(file);
+                const sourceFormat=`${width}×${height}`;
+                if(!APP_CONFIG.SUPPORTED_SKIN_FORMATS.includes(sourceFormat)) throw new Error(t('invalidDimensions',width,height));
+                const image=await decodeLocalPng(file);
+                const source=document.createElement('canvas'); source.width=width; source.height=height;
+                const sc=source.getContext('2d',{alpha:true,willReadFrequently:true}); sc.imageSmoothingEnabled=false; sc.drawImage(image,0,0,width,height);
+                if(sourceFormat==='64×32'){
+                    const converted=convertLegacy64x32To64x64(source);
+                    ctx.canvas.width=64; ctx.canvas.height=64; ctx.clearRect(0,0,64,64); ctx.drawImage(converted,0,0);
+                } else {
+                    ctx.canvas.width=width; ctx.canvas.height=height; ctx.clearRect(0,0,width,height); ctx.drawImage(source,0,0);
+                }
+                const model=detectSkinModel(ctx);
+                if(slot===3) model3=model; else model4=model;
+                const label=document.getElementById(labelId); if(label) label.textContent=file.name || `Skin ${slot}.png`;
+                const meta=document.getElementById('meta'+slot); if(meta) meta.innerHTML=`<span><span class="status-dot"></span> ${ctx.canvas.width}×${ctx.canvas.height} PNG • ${model.toUpperCase()}</span>`;
+                const tag=document.getElementById('tagSkin'+slot); if(tag) tag.textContent=`Model: ${model.toUpperCase()}`;
+                resultReady=false; AppState.resultReady=false; btnDownload.disabled=true; btnUseAsSkin1.disabled=true;
+                checkModelMismatch(); updateMultiStatus();
+                log(`Skin ${slot} yüklendi: ${ctx.canvas.width}×${ctx.canvas.height} (${model.toUpperCase()})`, 'success');
+            } catch(error){ reportUserError(error,'error'); }
+        }
         document.getElementById('inputSkin3')?.addEventListener('change',e=>void handleExtraSkin(e.target.files?.[0],3));
         document.getElementById('inputSkin4')?.addEventListener('change',e=>void handleExtraSkin(e.target.files?.[0],4));
-        function executeThreeSkinMerge(){prepareResultCanvas();const w=resultCanvas.width,h=resultCanvas.height,my=Math.floor(h/2),mx=Math.floor(w/2),a=ctx1.getImageData(0,0,w,h).data,b=ctx2.getImageData(0,0,w,h).data,c=ctx3.getImageData(0,0,w,h).data,o=ctxOut.createImageData(w,h);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=(y*w+x)*4,q=y<my?a:(x<mx?b:c);o.data[i]=q[i];o.data[i+1]=q[i+1];o.data[i+2]=q[i+2];o.data[i+3]=q[i+3]}ctxOut.putImageData(o,0,0);log('3 Skin Merger tamamlandı: 1 üstte, 2/3 altta yan bölündü.','success')}
-        function executeFourSkinMerge(){prepareResultCanvas();const w=resultCanvas.width,h=resultCanvas.height,my=Math.floor(h/2),mx=Math.floor(w/2),a=ctx1.getImageData(0,0,w,h).data,b=ctx2.getImageData(0,0,w,h).data,c=ctx3.getImageData(0,0,w,h).data,d=ctx4.getImageData(0,0,w,h).data,o=ctxOut.createImageData(w,h);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=(y*w+x)*4,q=y<my?(x<mx?a:b):(x<mx?c:d);o.data[i]=q[i];o.data[i+1]=q[i+1];o.data[i+2]=q[i+2];o.data[i+3]=q[i+3]}ctxOut.putImageData(o,0,0);log('4 Skin Merger tamamlandı: 1/2 üst, 3/4 alt; çiftler yan bölündü.','success')}
+
+        // 3/4 merger için mevcut 50/50 ve Üst/Alt motorlarının aynısını, farklı canvaslar üzerinde çalıştırır.
+        function mergeHalfPair(srcCanvas, srcModel, overlayCanvas, overlayModel, dstCanvas){
+            const dstCtx=dstCanvas.getContext('2d',{alpha:true,willReadFrequently:true});
+            dstCanvas.width=srcCanvas.width; dstCanvas.height=srcCanvas.height;
+            dstCtx.imageSmoothingEnabled=false; dstCtx.clearRect(0,0,dstCanvas.width,dstCanvas.height); dstCtx.drawImage(srcCanvas,0,0);
+            const copy=(sx,sy,sw,sh,dx=sx,dy=sy,dw=sw,dh=sh)=>copyRect(overlayCanvas.getContext('2d',{willReadFrequently:true}),dstCtx,[sx,sy,sw,sh],[dx,dy,dw,dh]);
+            const octx=overlayCanvas.getContext('2d',{willReadFrequently:true});
+            const swHalf=overlayModel==='alex'?3:4, dwHalf=srcModel==='alex'?3:4;
+            copyWholeBox(octx,dstCtx,[32,48,swHalf,12,4],[32,48,dwHalf,12,4]);
+            copyWholeBox(octx,dstCtx,[48,48,swHalf,12,4],[48,48,dwHalf,12,4]);
+            for(const box of [[16,48,16,16],[0,48,16,16],[12,0,4,8],[20,0,4,8],[12,8,4,8],[16,8,8,8],[24,8,4,8],[44,0,4,8],[52,0,4,8],[44,8,4,8],[48,8,8,8],[56,8,4,8],[24,16,4,4],[32,16,4,4],[24,20,4,12],[28,20,4,12],[32,20,4,12],[24,32,4,4],[32,32,4,4],[24,36,4,12],[28,36,4,12],[32,36,4,12]]) copy(...box);
+            return dstCanvas;
+        }
+
+        function mergeTopBottomPair(srcCanvas, srcModel, bottomCanvas, bottomModel, dstCanvas){
+            const dstCtx=dstCanvas.getContext('2d',{alpha:true,willReadFrequently:true});
+            const bctx=bottomCanvas.getContext('2d',{alpha:true,willReadFrequently:true});
+            dstCanvas.width=srcCanvas.width; dstCanvas.height=srcCanvas.height;
+            dstCtx.imageSmoothingEnabled=false; dstCtx.clearRect(0,0,dstCanvas.width,dstCanvas.height); dstCtx.drawImage(srcCanvas,0,0);
+            const dstModel=srcModel;
+            copyBottomPhysicalHalf(bctx,dstCtx,[16,16,8,12,4],[16,16,8,12,4],bottomModel,dstModel);
+            copyBottomPhysicalHalf(bctx,dstCtx,[16,32,8,12,4],[16,32,8,12,4],bottomModel,dstModel);
+            copyBottomPhysicalHalf(bctx,dstCtx,armBox('rightArm','base',bottomModel),armBox('rightArm','base',dstModel),bottomModel,dstModel);
+            copyBottomPhysicalHalf(bctx,dstCtx,armBox('rightArm','overlay',bottomModel),armBox('rightArm','overlay',dstModel),bottomModel,dstModel);
+            copyBottomPhysicalHalf(bctx,dstCtx,armBox('leftArm','base',bottomModel),armBox('leftArm','base',dstModel),bottomModel,dstModel);
+            copyBottomPhysicalHalf(bctx,dstCtx,armBox('leftArm','overlay',bottomModel),armBox('leftArm','overlay',dstModel),bottomModel,dstModel);
+            copyWholeBox(bctx,dstCtx,UV_MAP.rightLeg.base,UV_MAP.rightLeg.base);
+            copyWholeBox(bctx,dstCtx,UV_MAP.leftLeg.base,UV_MAP.leftLeg.base);
+            copyArea(bctx,dstCtx,...UV_MAP.outer.rightLeg); copyArea(bctx,dstCtx,...UV_MAP.outer.leftLeg);
+            copyWholeBox(bctx,dstCtx,UV_MAP.rightLeg.base,UV_MAP.rightLeg.base);
+            copyWholeBox(bctx,dstCtx,UV_MAP.leftLeg.base,UV_MAP.leftLeg.base);
+            return dstCanvas;
+        }
+
+        function executeThreeSkinMerge(){
+            const half=document.createElement('canvas');
+            mergeHalfPair(canvas1,model1,canvas2,model2,half);
+            mergeTopBottomPair(half,model1,canvas3,model3,resultCanvas);
+            log('3 Skin Merger tamamlandı: önce Skin 1 + 2 (50/50), ardından sonuç + Skin 3 (Üst/Alt).','success');
+        }
+        function executeFourSkinMerge(){
+            const top=document.createElement('canvas'), bottom=document.createElement('canvas');
+            mergeHalfPair(canvas1,model1,canvas2,model2,top);
+            mergeHalfPair(canvas3,model3,canvas4,model4,bottom);
+            mergeTopBottomPair(top,model1,bottom,model3,resultCanvas);
+            log('4 Skin Merger tamamlandı: (Skin 1 + 2) 50/50, (Skin 3 + 4) 50/50, ardından Üst/Alt.','success');
+        }
         syncMultiSkinPanel();
-        // ===================== /3/4 Skin Merger =====================
+        // ===================== /3/4 Skin girişleri =====================
         inputSkin1.addEventListener('change', event => { void handleFile(event.target.files?.[0], ctx1, 'label1', true); });
         inputSkin2.addEventListener('change', event => { void handleFile(event.target.files?.[0], ctx2, 'label2', false); });
 
@@ -3344,80 +3424,25 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         // (Crafatar, tarayıcıdan çağrım için CORS açık). Sonuç, mevcut
         // handleFile() doğrulama/işleme hattına AYNEN bir dosya gibi verilir.
         async function fetchSkinByUsername(username){
-            username = (username || '').trim();
-            if (!username) throw new Error(t('usernameRequired'));
-            if (!/^[A-Za-z0-9_]{2,16}$/.test(username)) throw new Error(t('usernameInvalid'));
-
-            let uuid = null;
-
-            // İstekler bazen tek bir dış serviste geçici olarak başarısız olabiliyor.
-            // Bu yüzden kısa timeout + birden fazla kaynak kullanıyoruz.
-            const fetchWithTimeout = async (url, ms = 9000) => {
-                const controller = new AbortController();
-                const timer = setTimeout(() => controller.abort(), ms);
-                try {
-                    return await fetch(url, {
-                        signal: controller.signal,
-                        cache: 'no-store',
-                        headers: { 'Accept': 'application/json, image/png, image/*' }
-                    });
-                } finally {
-                    clearTimeout(timer);
-                }
-            };
-
-            // 1) Birincil kaynak: resmi Mojang API.
-            try {
-                const r1 = await fetchWithTimeout(`https://api.mojang.com/users/profiles/minecraft/${encodeURIComponent(username)}`);
-                if (r1.status === 404) throw new Error(t('usernameNotFound', username));
-                if (r1.ok) {
-                    const data = await r1.json();
-                    uuid = data && data.id ? String(data.id).replace(/-/g, '') : null;
-                }
-            } catch (e) {
-                if (e instanceof Error && e.message === t('usernameNotFound', username)) throw e;
-            }
-
-            // 2) Yedek UUID kaynağı.
-            if (!uuid) {
-                try {
-                    const r2 = await fetchWithTimeout(`https://playerdb.co/api/player/minecraft/${encodeURIComponent(username)}`);
-                    if (r2.ok) {
-                        const data2 = await r2.json();
-                        const rawId = data2 && data2.data && data2.data.player ? data2.data.player.id : null;
-                        uuid = rawId ? String(rawId).replace(/-/g, '') : null;
-                    }
-                } catch (e) { /* sonraki kaynağa geç */ }
-            }
-
-            if (!uuid) throw new Error(t('usernameNotFound', username));
-
-            // 3) UUID -> ham 64x64 skin PNG'si.
-            // Tek bir Crafatar sunucusuna bağlı kalmamak için sırayla
-            // resmi/aktif Crafatar aynaları ve Mineatar denenir.
-            const skinUrls = [
-                `https://crafatar.com/skins/${uuid}.png`,
-                `https://crafatar.imc.moe/skins/${uuid}.png`,
-                `https://skins.legacyminecraft.com/skins/${uuid}.png`,
-                `https://api.mineatar.io/skin/${uuid}?format=png`
+            username=(username||'').trim();
+            if(!username) throw new Error(t('usernameRequired'));
+            if(!/^[A-Za-z0-9_]{2,16}$/.test(username)) throw new Error(t('usernameInvalid'));
+            const services=[
+                `https://mc-heads.net/skin/${encodeURIComponent(username)}`,
+                `https://heads.playcdu.co/skin/${encodeURIComponent(username)}`
             ];
-
-            let lastError = null;
-            for (const url of skinUrls) {
-                try {
-                    const response = await fetchWithTimeout(url, 10000);
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    const blob = await response.blob();
-                    if (!blob || blob.size < 100 || !String(blob.type || '').toLowerCase().includes('image')) {
-                        throw new Error('Geçersiz görsel yanıtı');
-                    }
-                    return new File([blob], `${username}.png`, { type: 'image/png' });
-                } catch (e) {
-                    lastError = e;
-                }
+            let lastError=null;
+            for(const url of services){
+                try{
+                    const controller=new AbortController(); const timer=setTimeout(()=>controller.abort(),10000);
+                    const response=await fetch(url,{signal:controller.signal,cache:'no-store'}); clearTimeout(timer);
+                    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const blob=await response.blob();
+                    if(!blob || blob.size<100 || !String(blob.type||'').toLowerCase().includes('image')) throw new Error('Geçersiz skin görseli');
+                    return new File([blob],`${username}.png`,{type:'image/png'});
+                }catch(e){lastError=e;}
             }
-
-            console.warn('[NVO] Skin servislerinin tamamı başarısız:', lastError);
+            console.warn('[NVO] Minecraft skin servisleri başarısız:',lastError);
             throw new Error(t('skinFetchFailed'));
         }
 
@@ -3448,6 +3473,8 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         }
         wireUsernameFetch('usernameFetchBtn1', 'usernameFetch1', ctx1, 'label1', true);
         wireUsernameFetch('usernameFetchBtn2', 'usernameFetch2', ctx2, 'label2', false);
+        wireUsernameFetch('usernameFetchBtn3', 'usernameFetch3', ctx3, 'label3', false);
+        wireUsernameFetch('usernameFetchBtn4', 'usernameFetch4', ctx4, 'label4', false);
         // ===================== /Kullanıcı Adıyla Skin Çekme =====================
 
 
@@ -4354,7 +4381,26 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
         document.getElementById('clear1').addEventListener('click', () => clearSkin(1));
         document.getElementById('clear2').addEventListener('click', () => clearSkin(2));
-        function clearExtraSkin(slot){const ctx=slot===3?ctx3:ctx4;ctx.canvas.width=ctx.canvas.height=64;ctx.clearRect(0,0,64,64);if(slot===3)model3=null;else model4=null;const input=document.getElementById('inputSkin'+slot),label=document.getElementById('label'+slot),status=document.getElementById('status'+slot),preview=document.getElementById('multiPreview'+slot);if(input)input.value='';if(label)label.textContent='PNG seç';if(status)status.textContent='Bekleniyor';if(preview)preview.classList.remove('has-image');}
+        function clearExtraSkin(slot){
+            const ctx=slot===3?ctx3:ctx4;
+            ctx.canvas.width=ctx.canvas.height=64;
+            ctx.clearRect(0,0,64,64);
+            if(slot===3) model3=null; else model4=null;
+            const input=document.getElementById('inputSkin'+slot);
+            const label=document.getElementById('label'+slot);
+            const meta=document.getElementById('meta'+slot);
+            const tag=document.getElementById('tagSkin'+slot);
+            if(input) input.value='';
+            if(label) label.textContent='Görsel Seç veya Sürükle';
+            if(meta) meta.innerHTML='<span><span class="status-dot"></span> Bekleniyor</span>';
+            if(tag) tag.textContent='Model: Bekleniyor';
+            resultReady=false; AppState.resultReady=false;
+            btnDownload.disabled=true; btnUseAsSkin1.disabled=true;
+            checkModelMismatch(); updateMultiStatus();
+            document.dispatchEvent(new CustomEvent('nvo:skin-updated'));
+        }
+        document.getElementById('clear3')?.addEventListener('click',()=>clearExtraSkin(3));
+        document.getElementById('clear4')?.addEventListener('click',()=>clearExtraSkin(4));
         document.getElementById('btnResetAll')?.addEventListener('click',()=>{clearExtraSkin(3);clearExtraSkin(4);});
 
 
@@ -4970,112 +5016,5 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
   document.addEventListener('DOMContentLoaded',wire,{once:true});
 })();
 </script>
-
-<script id="nvo-multi-skin-js">
-(function(){
-  const extra={3:null,4:null};
-
-  function mode(){
-    return window.selectedMode || document.querySelector('.mode-card.active')?.dataset?.mode || '';
-  }
-
-  function panel(){
-    const p=document.getElementById('nvoMultiSkinPanel');
-    const s4=document.getElementById('nvoSkin4Slot');
-    if(!p) return;
-    const m=mode(), active=m==='three_skin'||m==='four_skin';
-    p.classList.toggle('active',active);
-    p.setAttribute('aria-hidden',String(!active));
-    if(s4) s4.style.display=m==='four_skin'?'flex':'none';
-  }
-
-  function load(n,input){
-    const f=input.files?.[0]; if(!f) return;
-    const name=document.getElementById('nvoSkin'+n+'Name');
-    const preview=document.getElementById('nvoSkin'+n+'Preview');
-    if(name) name.textContent=f.name;
-
-    const img=new Image();
-    img.onload=function(){
-      if(![64,128].includes(img.width)||img.width!==img.height){
-        if(name) name.textContent='64x64 veya 128x128 gerekli';
-        return;
-      }
-      const c=document.createElement('canvas'); c.width=img.width;c.height=img.height;
-      const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(img,0,0);
-      extra[n]=c;
-      if(preview){
-        const p=preview.getContext('2d');p.imageSmoothingEnabled=false;
-        p.clearRect(0,0,64,64);p.drawImage(img,0,0,64,64);preview.classList.add('has-image');
-      }
-    };
-    img.onerror=function(){if(name) name.textContent='PNG okunamadı'};
-    img.src=URL.createObjectURL(f);
-  }
-
-  document.addEventListener('DOMContentLoaded',function(){
-    document.getElementById('nvoSkin3Input')?.addEventListener('change',function(){load(3,this)});
-    document.getElementById('nvoSkin4Input')?.addEventListener('change',function(){load(4,this)});
-
-    // Hook the existing selector only to show/hide the added panel.
-    const original=window.selectMode;
-    if(typeof original==='function'){
-      window.selectMode=function(m){original.apply(this,arguments);setTimeout(panel,0);}
-    }
-    panel();
-  });
-
-  // Make the extra canvases available to the merger logic.
-  window.NVO_EXTRA_SKINS=extra;
-})();
-</script>
-
-
-<script id="nvo-multi-merge-js">
-(function(){
-  function cloneCanvas(src){
-    const c=document.createElement('canvas');c.width=src.width;c.height=src.height;
-    const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(src,0,0);return c;
-  }
-
-  function runExisting(mode,a,b){
-    if(typeof window.runExistingMergeModeToCanvas==='function'){
-      const out=document.createElement('canvas');
-      window.runExistingMergeModeToCanvas(mode,a,b,out);
-      return out;
-    }
-    // If the reference file does not expose the helper, use its existing
-    // two-skin merge entry point by temporarily feeding the canvases.
-    if(typeof window.executeModernMergeLogic!=='function') return null;
-    return null;
-  }
-
-  window.executeThreeSkinMerge=function(){
-    const e=window.NVO_EXTRA_SKINS;
-    if(!e?.[3]) return;
-    const first=runExisting('half',window.canvas1,window.canvas2);
-    if(!first) return;
-    const final=runExisting('top_bottom',first,e[3]);
-    if(final && window.resultCanvas){
-      window.resultCanvas.width=final.width;window.resultCanvas.height=final.height;
-      const c=window.resultCanvas.getContext('2d');c.imageSmoothingEnabled=false;c.drawImage(final,0,0);
-    }
-  };
-
-  window.executeFourSkinMerge=function(){
-    const e=window.NVO_EXTRA_SKINS;
-    if(!e?.[3]||!e?.[4]) return;
-    const top=runExisting('half',window.canvas1,window.canvas2);
-    const bottom=runExisting('half',e[3],e[4]);
-    if(!top||!bottom) return;
-    const final=runExisting('top_bottom',top,bottom);
-    if(final && window.resultCanvas){
-      window.resultCanvas.width=final.width;window.resultCanvas.height=final.height;
-      const c=window.resultCanvas.getContext('2d');c.imageSmoothingEnabled=false;c.drawImage(final,0,0);
-    }
-  };
-})();
-</script>
-
 </body>
 </html>
