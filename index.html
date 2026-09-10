@@ -1255,6 +1255,55 @@ html[data-theme="light"] body{
     linear-gradient(180deg,#fffafa 0%,#f7f8fb 52%,#eef1f5 100%) !important;
 }
 </style>
+
+<style id="nvo-mobile-full-background">
+/* Mobile viewport / safe-area fix: background must cover the entire phone screen. */
+html, body {
+  width:100%;
+  min-width:100%;
+  min-height:100%;
+  background-color:#0c0707;
+}
+html {
+  min-height:100%;
+  background-attachment:fixed;
+}
+body {
+  min-height:100vh;
+  min-height:100svh;
+  min-height:100dvh;
+  background-attachment:fixed;
+}
+@media (max-width:600px){
+  html, body {
+    width:100%;
+    min-height:100%;
+    overflow-x:hidden;
+  }
+  body {
+    min-height:100vh;
+    min-height:100svh;
+    min-height:100dvh;
+    background-attachment:scroll;
+  }
+  body.ui-simple {
+    padding:0 !important;
+    min-height:100vh !important;
+    min-height:100svh !important;
+    min-height:100dvh !important;
+  }
+  body.ui-simple > #simpleApp {
+    width:100%;
+    min-height:100vh;
+    min-height:100svh;
+    min-height:100dvh;
+    padding-top:max(12px, env(safe-area-inset-top));
+    padding-right:max(12px, env(safe-area-inset-right));
+    padding-bottom:max(18px, env(safe-area-inset-bottom));
+    padding-left:max(12px, env(safe-area-inset-left));
+  }
+}
+</style>
 </head>
 <body class="nvo-gate-active">
 <!-- Turnstile giriş doğrulama ekranı: yoğunluk/şüpheli trafikte kutucuk gösterir, normal ziyaretçide görünmeden geçer -->
