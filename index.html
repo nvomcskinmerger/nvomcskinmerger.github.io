@@ -358,6 +358,18 @@
         .mode-tab.active { color:var(--text); border-color:var(--accent-cyan); background:rgba(255,59,59,.08); box-shadow:0 0 18px rgba(255,59,59,.08); }
         .mode-tab:hover { transform:translateY(-1px); border-color:var(--accent-cyan); }
         .mode-card.mode-hidden { display:none !important; }
+        .multi-skin-panel{display:none;margin-top:14px;padding:14px;border:1px solid var(--card-border);border-radius:12px;background:rgba(255,255,255,.025)}
+        .multi-skin-panel.active{display:block;animation:nvoReveal .2s ease both}
+        .multi-skin-title{font-size:.88rem;font-weight:800;color:var(--text-main);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+        .multi-skin-desc{font-size:.72rem;color:var(--text-muted);line-height:1.45;margin-bottom:12px}
+        .multi-skin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+        .multi-upload{position:relative;min-height:108px;border:1px dashed var(--card-border);border-radius:10px;padding:10px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:rgba(0,0,0,.12);overflow:hidden}
+        .multi-upload:hover{border-color:var(--accent-cyan);background:rgba(255,59,59,.035)}
+        .multi-upload input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2}
+        .multi-upload i{font-size:1rem;color:var(--accent-cyan)} .multi-upload strong{font-size:.72rem;color:var(--text-main)} .multi-upload small{font-size:.62rem;color:var(--text-muted);max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .multi-preview{width:58px;height:58px;image-rendering:pixelated;border:1px solid var(--card-border);border-radius:6px;display:none;background:rgba(0,0,0,.15)} .multi-preview.has-image{display:block}
+        .multi-status{font-size:.6rem;color:var(--text-muted);min-height:12px}
+        @media(max-width:700px){.multi-skin-grid{grid-template-columns:repeat(2,1fr)}}
 
 
         /* Mod kartları eski (orijinal grid) stiliyle kalır; sadece etraflarına
@@ -1379,6 +1391,14 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                     <span data-i18n="mode_half_title">50/50 Yarı Yarıya</span>
                     <p data-i18n="mode_half_desc">Sol yarısı Skin 1, sağ yarısı Skin 2 simetrik harmanlama.</p>
                 </div>
+                <div class="mode-card" data-mode="three_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-layer-group"></i><span data-i18n="mode_three_skin_title">3 Skin Merger</span>
+                    <p data-i18n="mode_three_skin_desc">Skin 1 üst yarı; Skin 2 ve 3 alt yarıyı ortadan yan bölerek tamamlar.</p>
+                </div>
+                <div class="mode-card" data-mode="four_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <i class="fa-solid fa-table-cells-large"></i><span data-i18n="mode_four_skin_title">4 Skin Merger</span>
+                    <p data-i18n="mode_four_skin_desc">1+2 üst, 3+4 alt yarı; her çift ortadan yan bölünür.</p>
+                </div>
                 <div class="mode-card" data-mode="head_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <i class="fa-solid fa-head-side-mask"></i>
                     <span data-i18n="mode_head_swap_title">Kafa Değişimi</span>
@@ -1475,6 +1495,16 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                     <p data-i18n="mode_custom_desc">Kafa, gövde, kollar, bacaklar ve dış katmanı ayrı ayrı Skin 1 veya Skin 2'den seçerek kendi kombinasyonunuzu oluşturun.</p>
                 </div>
             </div>
+            </div>
+        </div>
+
+        <!-- 3/4 Skin çoklu merger girişleri -->
+        <div class="glass-card full-width multi-skin-panel" id="multiSkinPanel">
+            <div class="multi-skin-title"><i class="fa-solid fa-layer-group"></i> <span id="multiSkinTitle">Çoklu Skin Merger</span></div>
+            <div class="multi-skin-desc" id="multiSkinDesc">Bu merger için uyumlu skinleri yükleyin.</div>
+            <div class="multi-skin-grid">
+                <label class="multi-upload"><input type="file" id="inputSkin3" accept="image/png"><i class="fa-solid fa-image"></i><strong>Skin 3</strong><small id="label3">PNG seç</small><canvas id="multiPreview3" class="multi-preview" width="64" height="64"></canvas><span id="status3" class="multi-status">Bekleniyor</span></label>
+                <label class="multi-upload" id="multiSlot4"><input type="file" id="inputSkin4" accept="image/png"><i class="fa-solid fa-image"></i><strong>Skin 4</strong><small id="label4">PNG seç</small><canvas id="multiPreview4" class="multi-preview" width="64" height="64"></canvas><span id="status4" class="multi-status">Bekleniyor</span></label>
             </div>
         </div>
 
@@ -1830,6 +1860,8 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 modeSectionTitle: 'Birleştirme (Merger) Modunu Seçin',
                 mode_half_title: '50/50 Yarı Yarıya',
                 mode_half_desc: 'Sol yarısı Skin 1, sağ yarısı Skin 2 simetrik harmanlama.',
+                 mode_three_skin_title:'3 Skin Merger', mode_three_skin_desc:'Skin 1 üst yarı; Skin 2 ve 3 alt yarıyı ortadan yan bölerek tamamlar.',
+                 mode_four_skin_title:'4 Skin Merger', mode_four_skin_desc:'1+2 üst yarı, 3+4 alt yarı; her çift ortadan yan bölünür.',
                 mode_head_swap_title: 'Kafa Değişimi',
                 mode_head_swap_desc: "Skin 1'in kafası ve şapkası, Skin 2'nin vücudu.",
                 mode_top_bottom_title: 'Üst / Alt Bölme',
@@ -2014,6 +2046,8 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 modeSectionTitle: 'Choose a Merger Mode',
                 mode_half_title: '50/50 Split',
                 mode_half_desc: 'Left half from Skin 1, right half from Skin 2 — symmetric blend.',
+                 mode_three_skin_title:'3 Skin Merger', mode_three_skin_desc:'Skin 1 forms the top half; Skin 2 and 3 split the bottom half vertically.',
+                 mode_four_skin_title:'4 Skin Merger', mode_four_skin_desc:'1+2 form the top half, 3+4 the bottom half; each pair is split vertically.',
                 mode_head_swap_title: 'Head Swap',
                 mode_head_swap_desc: "Skin 1's head and hat, Skin 2's body.",
                 mode_top_bottom_title: 'Top / Bottom Split',
@@ -2701,6 +2735,11 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         const inputSkin2 = document.getElementById('inputSkin2');
         const canvas1 = document.getElementById('canvas1');
         const canvas2 = document.getElementById('canvas2');
+        const canvas3 = document.createElement('canvas'); canvas3.width=canvas3.height=64;
+        const canvas4 = document.createElement('canvas'); canvas4.width=canvas4.height=64;
+        const ctx3 = canvas3.getContext('2d',{alpha:true,willReadFrequently:true});
+        const ctx4 = canvas4.getContext('2d',{alpha:true,willReadFrequently:true});
+        let model3=null, model4=null;
         const resultCanvas = document.getElementById('resultCanvas');
         const btnMerge = document.getElementById('btnMerge');
         const btnDownload = document.getElementById('btnDownload');
@@ -2773,6 +2812,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             card.classList.add('active');
             card.setAttribute('aria-pressed','true');
             selectedMode = card.getAttribute('data-mode');
+            if (typeof syncMultiSkinPanel === 'function') syncMultiSkinPanel();
             const tabCategory = card.dataset.modeType || (selectedMode === 'custom' ? 'custom' : 'ready');
             document.querySelectorAll('.mode-tab').forEach(tab => { const active = tab.dataset.modeTab === tabCategory; tab.classList.toggle('active', active); tab.setAttribute('aria-selected', active ? 'true' : 'false'); });
             // Özel Seçmeli Merger paneli hem gelişmiş (advanced) hem basit (simple)
@@ -3080,7 +3120,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 const sameFormat = f1 === f2;
                 // A 64×64 skin must never be merged with 128×128 (or any other format).
                 // Each atlas has its own native merger pipeline.
-                btnMerge.disabled = isLoadingAuth || !firebaseUser || !sameFormat;
+                btnMerge.disabled = isLoadingAuth || !firebaseUser || !sameFormat || !multiInputsReady();
                 resultInfo.removeAttribute('data-i18n');
                 resultInfo.textContent = sameFormat
                     ? t('readyStatus', model1, model2, t(`mode_${selectedMode}_title`))
@@ -3235,6 +3275,30 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             }
         }
 
+        // ===================== 3/4 Skin Merger =====================
+        const multiSkinPanel=document.getElementById('multiSkinPanel');
+        const multiSlot4=document.getElementById('multiSlot4');
+        const multiModeIds=new Set(['three_skin','four_skin']);
+        function activeMultiMode(){return multiModeIds.has(selectedMode);}
+        function requiredMultiCount(){return selectedMode==='four_skin'?4:selectedMode==='three_skin'?3:2;}
+        function syncMultiSkinPanel(){
+            if(!multiSkinPanel)return;
+            const active=activeMultiMode(); multiSkinPanel.classList.toggle('active',active);
+            if(multiSlot4)multiSlot4.style.display=selectedMode==='four_skin'?'flex':'none';
+            const title=document.getElementById('multiSkinTitle'),desc=document.getElementById('multiSkinDesc');
+            if(title)title.textContent=selectedMode==='four_skin'?'4 Skin Merger':'3 Skin Merger';
+            if(desc)desc.textContent=selectedMode==='four_skin'?'Skin 1 + 2 üst yarıyı, Skin 3 + 4 alt yarıyı oluşturur. Her çift ortadan yan bölünür.':'Skin 1 üst yarıyı oluşturur; Skin 2 + 3 alt yarıyı ortadan yan bölerek tamamlar.';
+        }
+        function multiFormatCompatible(){const n=requiredMultiCount(),cs=[canvas1,canvas2,canvas3,canvas4].slice(0,n);if(cs.some(c=>!c||!c.width))return false;const f=getSkinFormat(cs[0]);return cs.every(c=>getSkinFormat(c)===f);}
+        function multiInputsReady(){if(!activeMultiMode())return true;const n=requiredMultiCount();return [model1,model2,model3,model4].slice(0,n).every(Boolean)&&multiFormatCompatible();}
+        function updateMultiStatus(slot,ctx,model){const l=document.getElementById('label'+slot),st=document.getElementById('status'+slot),pr=document.getElementById('multiPreview'+slot);if(l)l.textContent=`${ctx.canvas.width}×${ctx.canvas.height} PNG`;if(st)st.textContent=`${model.toUpperCase()} • ${ctx.canvas.width}×${ctx.canvas.height}`;if(pr){pr.width=ctx.canvas.width;pr.height=ctx.canvas.height;const pc=pr.getContext('2d');pc.imageSmoothingEnabled=false;pc.clearRect(0,0,pr.width,pr.height);pc.drawImage(ctx.canvas,0,0);pr.classList.add('has-image');}}
+        async function handleExtraSkin(file,slot){if(!file)return;try{if(file.type!==APP_CONFIG.PNG_MIME)throw new Error(t('invalidPng'));if(file.size<=0||file.size>APP_CONFIG.MAX_FILE_BYTES)throw new Error(t('fileTooLarge'));const {width,height}=await readPngDimensions(file);const fmt=`${width}×${height}`;if(!APP_CONFIG.SUPPORTED_SKIN_FORMATS.includes(fmt))throw new Error(t('invalidDimensions',width,height));const img=await decodeLocalPng(file);const src=document.createElement('canvas');src.width=width;src.height=height;const sc=src.getContext('2d',{alpha:true});sc.imageSmoothingEnabled=false;sc.drawImage(img,0,0);const ctx=slot===3?ctx3:ctx4;if(fmt==='64×32'){const cv=convertLegacy64x32To64x64(src);ctx.canvas.width=ctx.canvas.height=64;ctx.clearRect(0,0,64,64);ctx.drawImage(cv,0,0)}else{ctx.canvas.width=width;ctx.canvas.height=height;ctx.clearRect(0,0,width,height);ctx.drawImage(src,0,0)}const model=detectSkinModel(ctx);if(slot===3)model3=model;else model4=model;updateMultiStatus(slot,ctx,model);checkModelMismatch();log(`Skin ${slot} yüklendi: ${ctx.canvas.width}×${ctx.canvas.height} (${model.toUpperCase()})`,'success')}catch(e){reportUserError(e,'error')}}
+        document.getElementById('inputSkin3')?.addEventListener('change',e=>void handleExtraSkin(e.target.files?.[0],3));
+        document.getElementById('inputSkin4')?.addEventListener('change',e=>void handleExtraSkin(e.target.files?.[0],4));
+        function executeThreeSkinMerge(){prepareResultCanvas();const w=resultCanvas.width,h=resultCanvas.height,my=Math.floor(h/2),mx=Math.floor(w/2),a=ctx1.getImageData(0,0,w,h).data,b=ctx2.getImageData(0,0,w,h).data,c=ctx3.getImageData(0,0,w,h).data,o=ctxOut.createImageData(w,h);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=(y*w+x)*4,q=y<my?a:(x<mx?b:c);o.data[i]=q[i];o.data[i+1]=q[i+1];o.data[i+2]=q[i+2];o.data[i+3]=q[i+3]}ctxOut.putImageData(o,0,0);log('3 Skin Merger tamamlandı: 1 üstte, 2/3 altta yan bölündü.','success')}
+        function executeFourSkinMerge(){prepareResultCanvas();const w=resultCanvas.width,h=resultCanvas.height,my=Math.floor(h/2),mx=Math.floor(w/2),a=ctx1.getImageData(0,0,w,h).data,b=ctx2.getImageData(0,0,w,h).data,c=ctx3.getImageData(0,0,w,h).data,d=ctx4.getImageData(0,0,w,h).data,o=ctxOut.createImageData(w,h);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=(y*w+x)*4,q=y<my?(x<mx?a:b):(x<mx?c:d);o.data[i]=q[i];o.data[i+1]=q[i+1];o.data[i+2]=q[i+2];o.data[i+3]=q[i+3]}ctxOut.putImageData(o,0,0);log('4 Skin Merger tamamlandı: 1/2 üst, 3/4 alt; çiftler yan bölündü.','success')}
+        syncMultiSkinPanel();
+        // ===================== /3/4 Skin Merger =====================
         inputSkin1.addEventListener('change', event => { void handleFile(event.target.files?.[0], ctx1, 'label1', true); });
         inputSkin2.addEventListener('change', event => { void handleFile(event.target.files?.[0], ctx2, 'label2', false); });
 
@@ -3365,7 +3429,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 reportUserError(new Error(t('downloadLoginRequired')), 'warn');
                 return false;
             }
-            if (!model1 || !model2) {
+            if (!model1 || !model2 || !multiInputsReady()) {
                 reportUserError(new Error(t('unexpectedError')), 'error');
                 return false;
             }
@@ -3857,7 +3921,9 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             prepareResultCanvas();
             ctxOut.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
 
-            if (selectedMode === 'half') {
+            if (selectedMode === 'three_skin') { executeThreeSkinMerge();
+            } else if (selectedMode === 'four_skin') { executeFourSkinMerge();
+            } else if (selectedMode === 'half') {
                 executeHalfMerge();
 
             } else if (selectedMode === 'head_swap') {
@@ -4153,39 +4219,10 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 log(t('mode_cross_limb_swap_title') + ': ' + t('mode_cross_limb_swap_desc'), 'success');
 
             } else if (selectedMode === 'gradient_blend') {
-                // Piksel düzeyinde, yukarıdan aşağıya (kafadan ayağa) doğrusal geçiş:
-                // y=0 satırı %100 Skin 1, y=size-1 satırı %100 Skin 2; aradaki
-                // satırlar orantılı olarak karışır. 'blend' modundaki SABİT %50
-                // saydamlıktan farklı olarak burada karışım oranı konuma bağlıdır.
-                {
-                    const size = resultCanvas.width;
-                    const ca = document.createElement('canvas');
-                    const cb = document.createElement('canvas');
-                    ca.width = cb.width = size;
-                    ca.height = cb.height = size;
-                    const caCtx = ca.getContext('2d');
-                    const cbCtx = cb.getContext('2d');
-                    caCtx.imageSmoothingEnabled = false;
-                    cbCtx.imageSmoothingEnabled = false;
-                    caCtx.drawImage(canvas1, 0, 0, size, size);
-                    cbCtx.drawImage(canvas2, 0, 0, size, size);
-                    const a = caCtx.getImageData(0, 0, size, size);
-                    const b = cbCtx.getImageData(0, 0, size, size);
-                    const out = ctxOut.createImageData(size, size);
-                    for (let y = 0; y < size; y++) {
-                        const mix = size <= 1 ? 0 : y / (size - 1); // 0 (Skin1) -> 1 (Skin2)
-                        for (let x = 0; x < size; x++) {
-                            const i = (y * size + x) * 4;
-                            out.data[i]   = a.data[i]   + (b.data[i]   - a.data[i])   * mix;
-                            out.data[i+1] = a.data[i+1] + (b.data[i+1] - a.data[i+1]) * mix;
-                            out.data[i+2] = a.data[i+2] + (b.data[i+2] - a.data[i+2]) * mix;
-                            out.data[i+3] = a.data[i+3] + (b.data[i+3] - a.data[i+3]) * mix;
-                        }
-                    }
-                    ctxOut.putImageData(out, 0, 0);
-                }
-                log(t('mode_gradient_blend_title') + ': ' + t('mode_gradient_blend_desc'), 'success');
-
+                // Bağımsız gradyan: önceki resultCanvas hiçbir zaman kaynak olarak kullanılmaz.
+                const size=resultCanvas.width,a=ctx1.getImageData(0,0,size,size).data,b=ctx2.getImageData(0,0,size,size).data,out=ctxOut.createImageData(size,size);
+                for(let y=0;y<size;y++){const mix=size<=1?0:y/(size-1);for(let x=0;x<size;x++){const i=(y*size+x)*4,aa=a[i+3]/255,bb=b[i+3]/255,oa=aa+(1-aa)*bb;if(!oa){out.data[i]=out.data[i+1]=out.data[i+2]=out.data[i+3]=0;continue}const wa=aa*(1-mix),wb=bb*mix;out.data[i]=Math.round((a[i]*wa+b[i]*wb)/oa);out.data[i+1]=Math.round((a[i+1]*wa+b[i+1]*wb)/oa);out.data[i+2]=Math.round((a[i+2]*wa+b[i+2]*wb)/oa);out.data[i+3]=Math.round(oa*255)}}
+                ctxOut.putImageData(out,0,0); log(t('mode_gradient_blend_title')+': '+t('mode_gradient_blend_desc'),'success');
             } else if (selectedMode === 'custom') {
                 // Özel Seçmeli Merger: kullanıcı her vücut parçasının temel (base)
                 // ve dış katman (overlay) kaynağını tıklamalı arayüzden ayrı ayrı
@@ -4216,7 +4253,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
             log(t("mergeEngineSuccess"), "success");
             resultReady = true;
             AppState.resultReady = true;
-            btnMerge.disabled = !(firebaseUser && model1 && model2);
+            btnMerge.disabled = !(firebaseUser && model1 && model2 && multiInputsReady());
             btnDownload.disabled = !firebaseUser;
             btnUseAsSkin1.disabled = false;
             compareSkin1Btn.disabled = false;
@@ -4281,6 +4318,9 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
         document.getElementById('clear1').addEventListener('click', () => clearSkin(1));
         document.getElementById('clear2').addEventListener('click', () => clearSkin(2));
+        function clearExtraSkin(slot){const ctx=slot===3?ctx3:ctx4;ctx.canvas.width=ctx.canvas.height=64;ctx.clearRect(0,0,64,64);if(slot===3)model3=null;else model4=null;const input=document.getElementById('inputSkin'+slot),label=document.getElementById('label'+slot),status=document.getElementById('status'+slot),preview=document.getElementById('multiPreview'+slot);if(input)input.value='';if(label)label.textContent='PNG seç';if(status)status.textContent='Bekleniyor';if(preview)preview.classList.remove('has-image');}
+        document.getElementById('btnResetAll')?.addEventListener('click',()=>{clearExtraSkin(3);clearExtraSkin(4);});
+
 
         // "Tüm Modları İndir" butonu HER ZAMAN btnMerge ile AYNI ön koşullara
         // (giriş yapılmış + iki skin de yüklü) bağlıdır. Ayrı ayrı her yerde
@@ -4446,7 +4486,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
         // modları üreteceğini belirler. Daha önce head_torso_swap, arms_legs_swap
         // ve alternating_parts modları burada UNUTULMUŞTU — o modlar ZIP'e hiç
         // dahil edilmiyordu. Şimdi tüm hazır modlar (yeni eklenen 3 tanesi dahil) eksiksiz listelendi.
-        const ALL_MERGE_MODES = ['half','head_swap','top_bottom','arm_swap','leg_swap','outer_overlay','base_only','front_back','blend','chimera','body_swap','head_legs_swap','reverse_overlay','checker_blend','head_torso_swap','arms_legs_swap','alternating_parts','cross_limb_swap','gradient_blend','custom'];
+        const ALL_MERGE_MODES = ['half','head_swap','top_bottom','arm_swap','leg_swap','outer_overlay','base_only','front_back','blend','chimera','body_swap','head_legs_swap','reverse_overlay','checker_blend','head_torso_swap','arms_legs_swap','alternating_parts','cross_limb_swap','gradient_blend','three_skin','four_skin','custom'];
 
         async function downloadAllModes(){
             if (isLoadingAuth) { reportUserError(new Error(t('authNotReady')), 'warn'); return; }
@@ -4771,7 +4811,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 <script>
 /* SIMPLE UI bridge: independent UI, shared validated merger engine. */
 (function(){
-  const simpleModeLabels = {
+  const simpleModeLabels = { three_skin:'mode_three_skin_title', four_skin:'mode_four_skin_title',
     half:'mode_half_title', head_swap:'mode_head_swap_title', top_bottom:'mode_top_bottom_title',
     arm_swap:'mode_arm_swap_title', leg_swap:'mode_leg_swap_title', outer_overlay:'mode_outer_overlay_title',
     base_only:'mode_base_only_title', front_back:'mode_front_back_title', blend:'mode_blend_title',
