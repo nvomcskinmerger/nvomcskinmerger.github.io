@@ -1157,6 +1157,21 @@ body.ui-simple>#simpleApp{display:block!important}
 .simple-hidden-input{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}
 @media(max-width:480px){.simple-files{grid-template-columns:1fr}.simple-file{min-height:94px}.simple-actions{grid-template-columns:1fr}}
 
+/* ===== Basit mod 3/4 Skin desteği ===== */
+.simple-multi-desc{font-size:.78rem;color:var(--text-muted);margin:-5px 0 12px}
+.simple-multi-files{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.simple-multi-card{border:1px solid var(--card-border);border-radius:9px;padding:10px;background:rgba(255,255,255,.02);min-width:0}
+.simple-multi-card strong{display:block;margin-bottom:7px;color:var(--text-main)}
+.simple-multi-card input[type=file]{width:100%;font-size:.72rem;color:var(--text-main)}
+.simple-multi-preview{display:block;width:64px;height:64px;image-rendering:pixelated;margin:8px auto;border-radius:6px;border:1px solid var(--card-border);visibility:hidden;background:rgba(255,255,255,.02)}
+.simple-multi-preview.has-image{visibility:visible}
+.simple-multi-name{display:flex;gap:5px;margin-top:7px}
+.simple-multi-name input{min-width:0;flex:1;background:var(--bg-main);border:1px solid var(--card-border);border-radius:7px;padding:7px;color:var(--text-main);font:inherit;font-size:.72rem}
+.simple-multi-name button,.simple-multi-clear{border:1px solid var(--card-border);border-radius:7px;background:transparent;color:var(--text-main);cursor:pointer}
+.simple-multi-name button{padding:7px 9px}
+.simple-multi-clear{width:100%;margin-top:6px;padding:6px;color:var(--text-muted);font-size:.7rem}
+@media(max-width:600px){.simple-multi-files{grid-template-columns:1fr}}
+
 /* ===== Turnstile giriş doğrulama ekranı ===== */
 #nvoTurnstileGate{position:fixed;inset:0;z-index:999999;background:var(--bg-main);background-image:radial-gradient(circle at 10% 10%, var(--bg-gradient-1) 0%, transparent 40%),radial-gradient(circle at 90% 90%, var(--bg-gradient-2) 0%, transparent 40%);display:flex;align-items:center;justify-content:center;transition:opacity .35s ease;}
 #nvoTurnstileGate.nvo-gate-hidden{opacity:0;pointer-events:none;}
@@ -1251,6 +1266,12 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
           <button id="simpleClear2" class="simple-mini-btn" type="button" data-i18n="clearBtn">Temizle</button>
         </div>
       </div>
+    </div>
+
+    <div class="simple-panel" id="simpleMultiSkinPanel" style="display:none;">
+      <div class="simple-panel-title"><i class="fa-solid fa-layer-group"></i> <span id="simpleMultiTitle">Çoklu Skinler</span></div>
+      <div class="simple-multi-desc" id="simpleMultiDesc">Her skin için PNG yükleyin veya Minecraft kullanıcı adıyla skin çekin.</div>
+      <div class="simple-files simple-multi-files" id="simpleMultiFiles"></div>
     </div>
 
     <div class="simple-panel">
@@ -2324,7 +2345,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 if (saved === 'light' || saved === 'dark') return saved;
             } catch (e) { /* yoksay */ }
             // Kayıtlı tercih yoksa, kullanıcının sistem tercihine bak.
-            return (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+            return 'dark';
         })();
 
         function applyTheme(){
@@ -3557,7 +3578,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
                 return false;
             } finally {
                 AppState.mergeInProgress = false;
-                btnMerge.disabled = !(model1 && model2 && multiInputsReady()) && !isLoadingAuth;
+                btnMerge.disabled = !(model1 && model2 && multiInputsReady()) || isLoadingAuth;
                 btnDownload.disabled = !firebaseUser || !resultReady;
             }
         }
@@ -4952,6 +4973,42 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
     else dst.classList.remove('has-image');
   }
 
+  function isSimpleMultiMode(){ const v=$('simpleModeSelect')?.value; return v==='three_skin'||v==='four_skin'; }
+
+  function syncSimpleMultiPreviews(){
+    const count=$('simpleModeSelect')?.value==='four_skin'?4:3;
+    for(let n=1;n<=count;n++){
+      const src=$('multiPreview'+n), dst=document.querySelector(`[data-simple-multi-preview="${n}"]`);
+      if(src&&dst){ const c=dst.getContext('2d'); c.clearRect(0,0,64,64); if(src.classList.contains('has-image')){ try{c.drawImage(src,0,0,64,64);}catch(e){} dst.classList.add('has-image'); } else dst.classList.remove('has-image'); }
+    }
+  }
+
+  function renderSimpleMultiCards(){
+    const panel=$('simpleMultiSkinPanel'), box=$('simpleMultiFiles'); if(!panel||!box) return;
+    const active=isSimpleMultiMode();
+    const count=$('simpleModeSelect')?.value==='four_skin'?4:3;
+    panel.style.display=active?'':'none';
+    if(!active) return;
+    $('simpleMultiTitle').textContent=count===4?'4 Skin Merger':'3 Skin Merger';
+    $('simpleMultiDesc').textContent=count===4?'Skin 1–4 kutularından PNG yükleyin veya Minecraft kullanıcı adıyla skin çekin.':'Skin 1–3 kutularından PNG yükleyin veya Minecraft kullanıcı adıyla skin çekin.';
+    box.innerHTML='';
+    for(let n=1;n<=count;n++){
+      const card=document.createElement('div'); card.className='simple-multi-card';
+      card.innerHTML=`<strong>Skin ${n}</strong><input type="file" accept="image/png" data-simple-multi-file="${n}"><canvas class="simple-multi-preview" width="64" height="64" data-simple-multi-preview="${n}"></canvas><button type="button" class="simple-multi-clear" data-simple-multi-clear="${n}">Temizle</button><div class="simple-multi-name"><input type="text" placeholder="Minecraft kullanıcı adı..." data-simple-multi-name="${n}" autocomplete="off" spellcheck="false"><button type="button" data-simple-multi-fetch="${n}"><i class="fa-solid fa-magnifying-glass"></i> Getir</button></div>`;
+      box.appendChild(card);
+    }
+    box.querySelectorAll('[data-simple-multi-file]').forEach(el=>el.addEventListener('change',()=>{
+      const n=el.dataset.simpleMultiFile, real=$('inputSkin'+n);
+      if(real&&el.files?.[0]){ const dt=new DataTransfer(); dt.items.add(el.files[0]); real.files=dt.files; real.dispatchEvent(new Event('change',{bubbles:true})); setTimeout(syncSimpleMultiPreviews,180); }
+    }));
+    box.querySelectorAll('[data-simple-multi-clear]').forEach(el=>el.addEventListener('click',()=>{ const n=el.dataset.simpleMultiClear; $('clear'+n)?.click(); setTimeout(syncSimpleMultiPreviews,100); }));
+    box.querySelectorAll('[data-simple-multi-fetch]').forEach(el=>el.addEventListener('click',()=>{
+      const n=el.dataset.simpleMultiFetch, inp=box.querySelector(`[data-simple-multi-name="${n}"]`), real=$('usernameFetch'+n), btn=$('usernameFetchBtn'+n);
+      if(real&&btn){ real.value=inp?.value||''; btn.click(); setTimeout(syncSimpleMultiPreviews,1200); }
+    }));
+    syncSimpleMultiPreviews();
+  }
+
   function syncSimplePreviews(){
     const i1=$('inputSkin1'), i2=$('inputSkin2');
     copyPreview($('canvas1'),$('simplePreview1'),!!i1?.files?.length);
@@ -4960,6 +5017,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
     else $('simpleFile1').textContent=typeof t==='function'?t('simpleChoose'):'Choose PNG';
     if(i2?.files?.[0]) $('simpleFile2').textContent=i2.files[0].name;
     else $('simpleFile2').textContent=typeof t==='function'?t('simpleChoose'):'Choose PNG';
+    syncSimpleMultiPreviews();
   }
 
   function syncSimpleResult(){
@@ -5017,10 +5075,12 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
 
   function wire(){
     fillModes();
+    renderSimpleMultiCards();
     const sel=$('simpleModeSelect');
     sel?.addEventListener('change',()=>{
       const card=document.querySelector(`.mode-card[data-mode="${CSS.escape(sel.value)}"]`);
       card?.click();
+      setTimeout(renderSimpleMultiCards,30);
     });
     $('simpleMergeBtn')?.addEventListener('click',()=>{
       const real=$('btnMerge'); if(real && !real.disabled){ real.click(); setTimeout(()=>{syncSimpleResult();setSimpleMergeState();},80); }
@@ -5035,8 +5095,8 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
     $('simpleClear1')?.addEventListener('click',e=>{e.stopPropagation();$('clear1')?.click();});
     $('simpleClear2')?.addEventListener('click',e=>{e.stopPropagation();$('clear2')?.click();});
 
-    ['inputSkin1','inputSkin2','clear1','clear2','btnResetAll','btnUseAsSkin1'].forEach(id=>{
-      const el=$(id); if(el){ el.addEventListener('change',()=>setTimeout(syncSimplePreviews,40)); el.addEventListener('click',()=>setTimeout(()=>{syncSimplePreviews();syncSimpleResult();},60)); }
+    ['inputSkin1','inputSkin2','inputSkin3','inputSkin4','clear1','clear2','clear3','clear4','btnResetAll','btnUseAsSkin1'].forEach(id=>{
+      const el=$(id); if(el){ el.addEventListener('change',()=>setTimeout(()=>{syncSimplePreviews();setSimpleMergeState();},80)); el.addEventListener('click',()=>setTimeout(()=>{syncSimplePreviews();syncSimpleResult();setSimpleMergeState();},80)); }
     });
     $('btnMerge')?.addEventListener('click',()=>setTimeout(()=>{syncSimpleResult();setSimpleMergeState();},80));
     $('btnDownload')?.addEventListener('click',()=>setTimeout(syncSimpleResult,30));
@@ -5049,7 +5109,7 @@ body.nvo-gate-active > *:not(#nvoTurnstileGate){visibility:hidden;}
   }
 
   window.__refreshSimpleUI=function(){
-    fillModes(); refreshModeTexts(); syncSimplePreviews(); syncSimpleResult(); setSimpleMergeState(); syncSimpleAuth();
+    fillModes(); refreshModeTexts(); renderSimpleMultiCards(); syncSimplePreviews(); syncSimpleResult(); setSimpleMergeState(); syncSimpleAuth();
     const lang=$('langToggle'); if(lang) $('simpleLangLabel').textContent=lang.textContent.trim();
     const realTheme=$('themeToggleIcon'), simpleTheme=$('simpleThemeIcon'); if(realTheme&&simpleTheme) simpleTheme.className=realTheme.className;
   };

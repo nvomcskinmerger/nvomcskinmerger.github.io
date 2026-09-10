@@ -1,19 +1,18 @@
 # 🎨 NVO MC SKIN MERGER
 
 <div align="center">
+
 ### Next-Generation Minecraft Skin Merger
 
 **Combine • Remix • Preview • Export Minecraft Skins — directly in your browser.**
 
-[🌐 Live Demo](https://nvomcskinmerger.github.io/) · [💻
-GitHub](https://github.com/nvomcskinmerger/nvomcskinmerger.github.io) ·
-[🐛 Report a
-Bug](https://github.com/nvomcskinmerger/nvomcskinmerger.github.io/issues)
+[🌐 Live Demo](https://nvomcskinmerger.github.io/) · [💻 GitHub](https://github.com/nvomcskinmerger/nvomcskinmerger.github.io) · [🐛 Report a Bug](https://github.com/nvomcskinmerger/nvomcskinmerger.github.io/issues)
 
 ![Version](https://img.shields.io/badge/version-V1.0.0-8A2BE2?style=for-the-badge)
 ![License](https://img.shields.io/badge/license-MIT-success?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/platform-Web-blue?style=for-the-badge)
 ![Minecraft](https://img.shields.io/badge/Minecraft-Skins-62B47A?style=for-the-badge)
+
 </div>
 
 ---
@@ -23,6 +22,7 @@ Bug](https://github.com/nvomcskinmerger/nvomcskinmerger.github.io/issues)
 <p align="center">
   <img src="./og-preview.png" alt="NVO MC Skin Merger preview" width="900">
 </p>
+
 > **NVO MC Skin Merger** is a browser-based Minecraft skin creation and
 > merging studio focused on fast workflows, detailed skin manipulation,
 > multi-skin composition, previewing and exporting.
@@ -39,8 +39,7 @@ Bug](https://github.com/nvomcskinmerger/nvomcskinmerger.github.io/issues)
 -   [👤 Minecraft Username → Skin](#-minecraft-username--skin)
 -   [📐 Supported Skin Formats](#-supported-skin-formats)
 -   [🧊 3D Preview & Animation](#-3d-preview--animation)
--   [🖼️ Preview, Compare & Result
-    Workflow](#-preview-compare--result-workflow)
+- [🖼️ Preview, Compare & Result Workflow](#-preview-compare--result-workflow)
 -   [🔐 Authentication & History](#-authentication--history)
 -   [🛡️ Privacy](#-privacy)
 -   [⚡ How to Use](#-how-to-use)
@@ -766,14 +765,13 @@ If this project helps you create skins, consider giving the repository a
 ⭐ on GitHub.
 
 <div align="center">
-[![GitHub
-Stars](https://img.shields.io/github/stars/nvomcskinmerger/nvomcskinmerger.github.io?style=for-the-badge&logo=github)](https://github.com/nvomcskinmerger/nvomcskinmerger.github.io)
-[![GitHub
-Issues](https://img.shields.io/github/issues/nvomcskinmerger/nvomcskinmerger.github.io?style=for-the-badge&logo=github)](https://github.com/nvomcskinmerger/nvomcskinmerger.github.io/issues)
+[![GitHub Stars](https://img.shields.io/github/stars/nvomcskinmerger/nvomcskinmerger.github.io?style=for-the-badge&logo=github)](https://github.com/nvomcskinmerger/nvomcskinmerger.github.io)
+[![GitHub Issues](https://img.shields.io/github/issues/nvomcskinmerger/nvomcskinmerger.github.io?style=for-the-badge&logo=github)](https://github.com/nvomcskinmerger/nvomcskinmerger.github.io/issues)
 
 ### ⭐ Star the project if you find it useful!
 
 **NVO MC SKIN MERGER — V1.0.0**
 
 *Merge your skins. Build your character. Create something unique.*
+
 </div>
