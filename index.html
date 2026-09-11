@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NVO MC SKIN MERGER — V1.0.0</title>
-    <meta name="description" content="NVO MC Skin Merger V1.0.0 — Minecraft skinlerini mevcut merger sistemleriyle yeni nesil arayüz üzerinden birleştirin.">
+    <title>NVO MC SKIN MERGER — V1.1.0</title>
+    <meta name="description" content="NVO MC Skin Merger V1.1.0 — Minecraft skinlerini mevcut merger sistemleriyle yeni nesil arayüz üzerinden birleştirin.">
     <meta name="theme-color" content="#0c0707">
     <!-- Open Graph / Sosyal Medya Paylaşım Önizlemesi -->
     <meta property="og:type" content="website">
@@ -126,7 +126,7 @@
         body.ui-simple{background-image:none}
         body.ui-simple .glass-card{background:var(--card-bg);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none;border-radius:10px;padding:18px}
         body.ui-simple .glass-card:hover{border-color:var(--card-border)}
-        body.ui-simple .upload-box{background:transparent;border:1px solid var(--card-border);border-radius:8px;padding:18px}
+        body.ui-simple .upload-box{background:transparent;border:1px solid var(--card-border);border-radius:8px;padding:10px}
         body.ui-simple .upload-box:hover{transform:none;background:rgba(127,127,127,.04)}
         body.ui-simple .mode-card{background:transparent;border:1px solid var(--card-border);border-radius:8px;padding:11px}
         body.ui-simple .mode-card:hover,body.ui-simple .mode-card.active{transform:none;box-shadow:none}
@@ -148,7 +148,18 @@
             margin-bottom: 30px;
         }
 
-        /* .brand-badge kaldırıldı (v1.0.0 sadeleştirmesinde header'dan çıkarıldı, dead CSS temizlendi) */
+        /* Site logosu: kök dizine logo.png eklenince otomatik görünür.
+           Dosya yoksa <img onerror> kendini kaldırır, kırık görsel ikonu göstermez. */
+        .site-logo {
+            display: block;
+            width: 68px;
+            height: 68px;
+            object-fit: contain;
+            margin: 0 auto 12px;
+            border-radius: 16px;
+        }
+
+        /* .brand-badge kaldırıldı (v1.1.0 sadeleştirmesinde header'dan çıkarıldı, dead CSS temizlendi) */
 
         .header-links {
             display: flex;
@@ -264,7 +275,7 @@
         .upload-box {
             border: 2px dashed rgba(255, 255, 255, 0.12);
             border-radius: var(--radius-md);
-            padding: 22px 15px;
+            padding: 14px 10px;
             text-align: center;
             cursor: pointer;
             transition: var(--transition);
@@ -302,12 +313,12 @@
         }
 
         .preview-canvas {
-            width: 100px;
-            height: 100px;
+            width: 68px;
+            height: 68px;
             image-rendering: pixelated;
             background-color: rgba(255, 255, 255, 0.02);
             border-radius: var(--radius-md);
-            margin: 12px auto 0;
+            margin: 8px auto 0;
             display: block;
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: var(--transition);
@@ -444,6 +455,19 @@
             color: var(--text-muted);
             transition: var(--transition);
         }
+
+        /* Merger logoları: her mode-card'a mergers/<data-mode>.png (1800x1800)
+           yerleştirilirse otomatik gösterilir. Dosya yoksa <img onerror> kendini
+           DOM'dan kaldırır ve az önceki FontAwesome ikonu (aşağıdaki :has() kuralı
+           sayesinde) otomatik olarak tekrar görünür hale gelir. */
+        .mode-card .merger-logo {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+            border-radius: 8px;
+            display: block;
+        }
+        .mode-card:has(.merger-logo) i { display: none; }
 
         .mode-card span {
             font-size: 0.85rem;
@@ -1090,7 +1114,7 @@
     }
 
     
-/* ===== V1.0.0 NEXT-GEN UI ===== */
+/* ===== V1.1.0 NEXT-GEN UI ===== */
 :root{--v1-border:rgba(255,255,255,.10);--v1-surface:rgba(18,20,28,.78);--v1-surface2:rgba(255,255,255,.045);--v1-accent:#ff4d67;--v1-accent2:#ff8a4d;}
 body{background:
  radial-gradient(circle at 15% 0%,rgba(255,77,103,.12),transparent 32%),
@@ -1116,7 +1140,7 @@ header .subtitle{max-width:680px;margin:10px auto 0;opacity:.72;}
 .container{position:relative;z-index:1;}
 
 
-/* ===== V1.0.0 LIGHT THEME FIX ===== */
+/* ===== V1.1.0 LIGHT THEME FIX ===== */
 html[data-theme="light"] /* FINAL THEME SAFETY: never force a white page in dark mode. */
 html{background:var(--bg-main);color:var(--text-main);}
 html[data-theme="dark"], html:not([data-theme="light"]){background:var(--bg-main);color:var(--text-main);}
@@ -1170,6 +1194,8 @@ body.ui-simple>header,body.ui-simple>main,body.ui-simple>footer{display:none!imp
 body.ui-simple>#simpleApp{display:block!important}
 .simple-shell{width:min(560px,100%);margin:0 auto}
 .simple-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:22px}
+.simple-brand-row{display:flex;align-items:center;gap:10px}
+.simple-logo{width:34px;height:34px;object-fit:contain;border-radius:9px;display:block;flex-shrink:0}
 .simple-brand{font-size:1.05rem;font-weight:800;letter-spacing:-.02em;color:var(--text-main)}
 .simple-sub{font-size:.72rem;color:var(--text-muted);margin-top:3px}
 .simple-tools{display:flex;gap:6px;align-items:center}.simple-auth{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.simple-auth-status{font-size:.68rem;color:var(--text-muted);min-height:18px;display:flex;align-items:center;gap:6px}.simple-auth-status img{width:22px;height:22px;border-radius:50%;display:none}.simple-auth-status.logged img{display:block}.simple-auth-btn{min-height:40px;padding:0 12px;border:1px solid var(--card-border);border-radius:9px;background:var(--card-bg);color:var(--text-main);font:inherit;font-size:.74rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:8px}.simple-auth-btn.google{background:#fff;color:#111;border-color:rgba(0,0,0,.12)}.simple-auth-btn:disabled{opacity:.5;cursor:not-allowed}.simple-file-actions{display:flex;gap:6px;width:100%;justify-content:center}.simple-mini-btn{border:1px solid var(--card-border);width:100%;background:transparent;color:var(--text-muted);border-radius:7px;padding:5px 8px;font:inherit;font-size:.62rem;cursor:pointer}.simple-mini-btn:hover{color:var(--text-main);border-color:var(--accent-cyan)}
@@ -1178,12 +1204,12 @@ body.ui-simple>#simpleApp{display:block!important}
 .simple-panel{border:1px solid var(--card-border);background:var(--card-bg);border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:none}
 .simple-panel-title{font-size:.82rem;font-weight:800;color:var(--text-main);margin-bottom:10px}
 .simple-files{display:grid;grid-template-columns:1fr 1fr;gap:9px}.simple-file-wrap{min-width:0;display:flex;flex-direction:column;gap:6px}
-.simple-file{border:1px dashed var(--card-border);border-radius:9px;padding:12px;text-align:center;cursor:pointer;background:transparent;min-height:116px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px}
+.simple-file{border:1px dashed var(--card-border);border-radius:9px;padding:9px;text-align:center;cursor:pointer;background:transparent;min-height:92px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px}
 .simple-file:hover{border-color:var(--accent-cyan)}
 .simple-file i{font-size:1.1rem;color:var(--accent-cyan)}
 .simple-file strong{font-size:.76rem;color:var(--text-main)}
 .simple-file small{font-size:.64rem;color:var(--text-muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.simple-preview{width:64px;height:64px;image-rendering:pixelated;image-rendering:crisp-edges;display:none;border:1px solid var(--card-border);border-radius:6px}
+.simple-preview{width:52px;height:52px;image-rendering:pixelated;image-rendering:crisp-edges;display:none;border:1px solid var(--card-border);border-radius:6px}
 .simple-preview.has-image{display:block}
 .simple-select{width:100%;height:42px;border:1px solid var(--card-border);background:var(--bg-main);color:var(--text-main);border-radius:9px;padding:0 10px;font:inherit;font-size:.78rem;outline:none}
 .simple-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
@@ -1201,10 +1227,10 @@ body.ui-simple>#simpleApp{display:block!important}
 .simple-multi-desc{font-size:.78rem;color:var(--text-muted);margin:-5px 0 12px}
 .simple-multi-files{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
 .simple-multi-card{min-width:0;display:flex;flex-direction:column;gap:6px}
-.simple-multi-card .simple-file{min-height:116px}
+.simple-multi-card .simple-file{min-height:92px}
 .simple-multi-card .simple-file strong{font-size:.76rem;color:var(--text-main)}
 .simple-multi-card .simple-file small{font-size:.64rem;color:var(--text-muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.simple-multi-preview{width:64px;height:64px;image-rendering:pixelated;image-rendering:crisp-edges;display:none;border:1px solid var(--card-border);border-radius:6px;background:transparent;margin:0 auto}
+.simple-multi-preview{width:52px;height:52px;image-rendering:pixelated;image-rendering:crisp-edges;display:none;border:1px solid var(--card-border);border-radius:6px;background:transparent;margin:0 auto}
 .simple-multi-preview.has-image{display:block}
 .simple-multi-name{display:flex;gap:5px}
 .simple-multi-name input{min-width:0;flex:1;background:var(--bg-main);border:1px solid var(--card-border);border-radius:7px;padding:7px;color:var(--text-main);font:inherit;font-size:.72rem}
@@ -1345,7 +1371,10 @@ body {
 <section id="simpleApp" aria-label="Simple interface">
   <div class="simple-shell">
     <div class="simple-top">
-      <div><div class="simple-brand">NVO Skin Merger</div><div class="simple-sub">Native 64×32 / 64×64 / 128×64 / 128×128 Skin Merger</div></div>
+      <div class="simple-brand-row">
+        <img class="simple-logo" src="logo.png" alt="" loading="eager" onerror="this.remove()">
+        <div><div class="simple-brand">NVO Skin Merger</div><div class="simple-sub">Native 64×32 / 64×64 / 128×64 / 128×128 Skin Merger</div></div>
+      </div>
       <div class="simple-tools">
         <button class="simple-tool" id="simpleLangBtn" type="button" aria-label="Language"><span id="simpleLangLabel">EN</span></button>
         <button class="simple-tool" id="simpleThemeBtn" type="button" aria-label="Theme"><i class="fa-solid fa-moon" id="simpleThemeIcon"></i></button>
@@ -1467,7 +1496,8 @@ body {
 
 
     <header class="animate-fade">
-        <div class="version-pill"><span class="version-dot"></span> V1.0.0 <span>•</span> YENİDEN BAŞLIYOR</div>
+        <img class="site-logo" src="logo.png" alt="NVO MC Skin Merger" loading="eager" onerror="this.remove()">
+        <div class="version-pill"><span class="version-dot"></span> V1.1.0 <span>•</span> YENİDEN BAŞLIYOR</div>
         <h1 data-i18n="title">NVO MC SKIN MERGER</h1>
         <p class="subtitle" data-i18n="subtitle">Yeni nesil arayüz • Mevcut merger sistemi korunarak geliştirildi.</p>
         <div class="header-links">
@@ -1584,6 +1614,43 @@ body {
             </div>
         </div>
 
+        <div class="glass-card animate-fade multi-input-card" id="skinCard5" style="display:none;">
+            <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-arrow-left"></i> <span>Ek Skin (Skin 5)</span></div>
+                <span class="model-tag" id="tagSkin5">Model: Bekleniyor</span>
+            </div>
+            <div class="upload-box">
+                <input type="file" id="inputSkin5" accept="image/png">
+                <p id="label5" style="font-size:0.9rem; color:var(--text-muted);">Görsel Seç veya Sürükle</p>
+                <canvas id="canvas5" class="preview-canvas" width="64" height="64"></canvas>
+                <div class="file-meta" id="meta5"><span><span class="status-dot"></span> Bekleniyor</span></div>
+                <div class="utility-row"><button class="utility-btn" id="clear5" type="button"><i class="fa-solid fa-trash"></i> <span>Temizle</span></button></div>
+                <div class="username-fetch-row">
+                    <input type="text" class="username-fetch-input" id="usernameFetch5" placeholder="Minecraft kullanıcı adı..." autocomplete="off" spellcheck="false">
+                    <button type="button" class="utility-btn username-fetch-btn" id="usernameFetchBtn5"><i class="fa-solid fa-magnifying-glass"></i> <span>Getir</span></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card animate-fade multi-input-card" id="skinCard6" style="display:none;">
+            <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-arrow-right"></i> <span>Ek Skin (Skin 6)</span></div>
+                <span class="model-tag" id="tagSkin6">Model: Bekleniyor</span>
+            </div>
+            <div class="upload-box">
+                <input type="file" id="inputSkin6" accept="image/png">
+                <p id="label6" style="font-size:0.9rem; color:var(--text-muted);">Görsel Seç veya Sürükle</p>
+                <canvas id="canvas6" class="preview-canvas" width="64" height="64"></canvas>
+                <div class="file-meta" id="meta6"><span><span class="status-dot"></span> Bekleniyor</span></div>
+                <div class="utility-row"><button class="utility-btn" id="clear6" type="button"><i class="fa-solid fa-trash"></i> <span>Temizle</span></button></div>
+                <div class="username-fetch-row">
+                    <input type="text" class="username-fetch-input" id="usernameFetch6" placeholder="Minecraft kullanıcı adı..." autocomplete="off" spellcheck="false">
+                    <button type="button" class="utility-btn username-fetch-btn" id="usernameFetchBtn6"><i class="fa-solid fa-magnifying-glass"></i> <span>Getir</span></button>
+                </div>
+            </div>
+        </div>
+
+
         <!-- Birleştirme Modu Seçimi -->
         <div class="glass-card full-width animate-fade">
             <div class="card-title" style="margin-bottom:12px;"><i class="fa-solid fa-sliders"></i> <span data-i18n="modeSectionTitle">Birleştirme (Merger) Modunu Seçin</span></div>
@@ -1594,110 +1661,118 @@ body {
             <div class="mode-scroll-window">
             <div class="mode-grid">
                 <div class="mode-card active" data-mode="half" data-mode-type="ready" role="button" tabindex="0" aria-pressed="true">
-                    <i class="fa-solid fa-columns"></i>
+                    <img class="merger-logo" src="mergers/half.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-columns"></i>
                     <span data-i18n="mode_half_title">50/50 Yarı Yarıya</span>
                     <p data-i18n="mode_half_desc">Sol yarısı Skin 1, sağ yarısı Skin 2 simetrik harmanlama.</p>
                 </div>
                 <div class="mode-card" data-mode="three_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-layer-group"></i><span data-i18n="mode_three_skin_title">3 Skin Merger</span>
+                    <img class="merger-logo" src="mergers/three_skin.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-layer-group"></i><span data-i18n="mode_three_skin_title">3 Skin Merger</span>
                     <p data-i18n="mode_three_skin_desc">Skin 1 üst yarı; Skin 2 ve 3 alt yarıyı ortadan yan bölerek tamamlar.</p>
                 </div>
                 <div class="mode-card" data-mode="four_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-table-cells-large"></i><span data-i18n="mode_four_skin_title">4 Skin Merger</span>
+                    <img class="merger-logo" src="mergers/four_skin.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-table-cells-large"></i><span data-i18n="mode_four_skin_title">4 Skin Merger</span>
                     <p data-i18n="mode_four_skin_desc">1+2 üst, 3+4 alt yarı; her çift ortadan yan bölünür.</p>
                 </div>
+                <div class="mode-card" data-mode="five_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <img class="merger-logo" src="mergers/five_skin.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-grip-lines-vertical"></i><span data-i18n="mode_five_skin_title">5 Skin Merger</span>
+                    <p data-i18n="mode_five_skin_desc">5 skin, eşit genişlikte 5 dikey şerit halinde soldan sağa birleştirilir.</p>
+                </div>
+                <div class="mode-card" data-mode="six_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                    <img class="merger-logo" src="mergers/six_skin.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-grip-lines-vertical"></i><span data-i18n="mode_six_skin_title">6 Skin Merger</span>
+                    <p data-i18n="mode_six_skin_desc">6 skin, eşit genişlikte 6 dikey şerit halinde soldan sağa birleştirilir.</p>
+                </div>
                 <div class="mode-card" data-mode="head_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-head-side-mask"></i>
+                    <img class="merger-logo" src="mergers/head_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-head-side-mask"></i>
                     <span data-i18n="mode_head_swap_title">Kafa Değişimi</span>
                     <p data-i18n="mode_head_swap_desc">Skin 1'in kafası ve şapkası, Skin 2'nin vücudu.</p>
                 </div>
                 <div class="mode-card" data-mode="top_bottom" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-arrows-up-down"></i>
+                    <img class="merger-logo" src="mergers/top_bottom.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-arrows-up-down"></i>
                     <span data-i18n="mode_top_bottom_title">Üst / Alt Bölme</span>
                     <p data-i18n="mode_top_bottom_desc">Gövde ve iki kol tam ortadan 6+6 piksel bölünür; üst Skin 1, alt Skin 2. Bacaklar Skin 2.</p>
                 </div>
                 <div class="mode-card" data-mode="arm_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-arrows-left-right"></i>
+                    <img class="merger-logo" src="mergers/arm_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-arrows-left-right"></i>
                     <span data-i18n="mode_arm_swap_title">Kol Değişimi</span>
                     <p data-i18n="mode_arm_swap_desc">Skin 1'in kafa, gövde ve bacakları korunur; iki kol Skin 2'den alınır.</p>
                 </div>
                 <div class="mode-card" data-mode="leg_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-person-walking-arrow-right"></i>
+                    <img class="merger-logo" src="mergers/leg_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-person-walking-arrow-right"></i>
                     <span data-i18n="mode_leg_swap_title">Bacak Değişimi</span>
                     <p data-i18n="mode_leg_swap_desc">Skin 1'in kafa, gövde ve kolları korunur; iki bacak Skin 2'den alınır.</p>
                 </div>
                 <div class="mode-card" data-mode="outer_overlay" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-shirt"></i>
+                    <img class="merger-logo" src="mergers/outer_overlay.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-shirt"></i>
                     <span data-i18n="mode_outer_overlay_title">Ceket & Zırh Katmanı</span>
                     <p data-i18n="mode_outer_overlay_desc">Temel vücut Skin 1, dış kıyafet/katman Skin 2.</p>
                 </div>
                 <div class="mode-card" data-mode="base_only" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-user"></i>
+                    <img class="merger-logo" src="mergers/base_only.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-user"></i>
                     <span data-i18n="mode_base_only_title">Sadece Temel Katman</span>
                     <p data-i18n="mode_base_only_desc">50/50 harmanlama yapılır, ardından şapka/ceket/kol kılıfı gibi tüm dış katmanlar temizlenir.</p>
                 </div>
                 <div class="mode-card" data-mode="front_back" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-repeat"></i>
+                    <img class="merger-logo" src="mergers/front_back.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-repeat"></i>
                     <span data-i18n="mode_front_back_title">Ön / Arka Bölme</span>
                     <p data-i18n="mode_front_back_desc">Karakterin ön yüzü Skin 1, sırt kısmı Skin 2.</p>
                 </div>
                 <div class="mode-card" data-mode="blend" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-droplet"></i>
+                    <img class="merger-logo" src="mergers/blend.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-droplet"></i>
                     <span data-i18n="mode_blend_title">Opacity Blend</span>
                     <p data-i18n="mode_blend_desc">İki texture %50 saydamlıkla üst üste bindirilir; hayalet/karışım efekti.</p>
                 </div>
                 <div class="mode-card" data-mode="chimera" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-shuffle"></i>
+                    <img class="merger-logo" src="mergers/chimera.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-shuffle"></i>
                     <span data-i18n="mode_chimera_title">Rastgele Karışım</span>
                     <p data-i18n="mode_chimera_desc">Kafa, gövde, kollar ve bacaklar için her parça rastgele Skin 1 veya Skin 2'den seçilir.</p>
                 </div>
                 <div class="mode-card" data-mode="body_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-vest"></i>
+                    <img class="merger-logo" src="mergers/body_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-vest"></i>
                     <span data-i18n="mode_body_swap_title">Gövde Değişimi</span>
                     <p data-i18n="mode_body_swap_desc">Skin 1'in kafa ve kolları korunur; gövde ve iki bacak Skin 2'den alınır.</p>
                 </div>
                 <div class="mode-card" data-mode="head_legs_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-person"></i>
+                    <img class="merger-logo" src="mergers/head_legs_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-person"></i>
                     <span data-i18n="mode_head_legs_swap_title">Kafa & Bacak Değişimi</span>
                     <p data-i18n="mode_head_legs_swap_desc">Skin 2'nin kafa ve bacakları, Skin 1'in gövde ve kollarıyla birleştirilir.</p>
                 </div>
                 <div class="mode-card" data-mode="reverse_overlay" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-layer-group"></i>
+                    <img class="merger-logo" src="mergers/reverse_overlay.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-layer-group"></i>
                     <span data-i18n="mode_reverse_overlay_title">Ters Katman</span>
                     <p data-i18n="mode_reverse_overlay_desc">Skin 2 temel beden olarak kullanılır; Skin 1'in dış kıyafet ve katmanları üzerine uygulanır.</p>
                 </div>
                 <div class="mode-card" data-mode="checker_blend" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-chess-board"></i>
+                    <img class="merger-logo" src="mergers/checker_blend.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-chess-board"></i>
                     <span data-i18n="mode_checker_blend_title">Piksel Mozaik</span>
                     <p data-i18n="mode_checker_blend_desc">UV haritasındaki pikseller dama düzeninde Skin 1 ve Skin 2 arasında dağıtılır.</p>
                 </div>
                 <div class="mode-card" data-mode="head_torso_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-user"></i>
+                    <img class="merger-logo" src="mergers/head_torso_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-user"></i>
                     <span data-i18n="mode_head_torso_swap_title">Kafa & Gövde Değişimi</span>
                     <p data-i18n="mode_head_torso_swap_desc">Skin 1 temel alınır; kafa ve gövde Skin 2'den alınır.</p>
                 </div>
                 <div class="mode-card" data-mode="arms_legs_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-person-running"></i>
+                    <img class="merger-logo" src="mergers/arms_legs_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-person-running"></i>
                     <span data-i18n="mode_arms_legs_swap_title">Kol & Bacak Değişimi</span>
                     <p data-i18n="mode_arms_legs_swap_desc">Skin 1'in kafa ve gövdesi korunur; kollar ve bacaklar Skin 2'den alınır.</p>
                 </div>
                 <div class="mode-card" data-mode="alternating_parts" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-shuffle"></i>
+                    <img class="merger-logo" src="mergers/alternating_parts.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-shuffle"></i>
                     <span data-i18n="mode_alternating_parts_title">Dengeli Parça Karışımı</span>
                     <p data-i18n="mode_alternating_parts_desc">Kafa ve bacaklar Skin 1, gövde ve kollar Skin 2'den.</p>
                 </div>
                 <div class="mode-card" data-mode="cross_limb_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-arrows-split-up-and-left"></i>
+                    <img class="merger-logo" src="mergers/cross_limb_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-arrows-split-up-and-left"></i>
                     <span data-i18n="mode_cross_limb_swap_title">Çapraz Uzuv Değişimi</span>
                     <p data-i18n="mode_cross_limb_swap_desc">Kafa, gövde ve sağ kol/bacak Skin 1'den; sol kol ve sol bacak Skin 2'den alınır.</p>
                 </div>
                 <div class="mode-card" data-mode="gradient_blend" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-fill-drip"></i>
+                    <img class="merger-logo" src="mergers/gradient_blend.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-fill-drip"></i>
                     <span data-i18n="mode_gradient_blend_title">Gradyan Geçiş</span>
                     <p data-i18n="mode_gradient_blend_desc">Kafadan ayağa doğru Skin 1'den Skin 2'ye yumuşak, doğrusal bir renk geçişi uygulanır.</p>
                 </div>
                 <div class="mode-card" data-mode="custom" data-mode-type="custom" role="button" tabindex="0" aria-pressed="false">
-                    <i class="fa-solid fa-hand-pointer"></i>
+                    <img class="merger-logo" src="mergers/custom.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-hand-pointer"></i>
                     <span data-i18n="mode_custom_title">Özel Seçmeli Merger</span>
                     <p data-i18n="mode_custom_desc">Kafa, gövde, kollar, bacaklar ve dış katmanı ayrı ayrı Skin 1 veya Skin 2'den seçerek kendi kombinasyonunuzu oluşturun.</p>
                 </div>
@@ -1753,13 +1828,8 @@ body {
             </div>
         </div>
 
-        <!-- Console & Progress Bar -->
+        <!-- Progress Bar (Derin Tarama Konsolu kaldırıldı) -->
         <div class="glass-card full-width animate-fade">
-            <div class="card-title"><i class="fa-solid fa-terminal"></i> <span data-i18n="terminalTitle">Derin Tarama Konsolu</span></div>
-            <div class="terminal" id="terminal">
-                <div class="terminal-line" data-i18n="terminalReady">[INFO] Sistem hazır. 64×64 PNG skin yükleyin; sürükle-bırak da desteklenir.</div>
-            </div>
-
             <div class="progress-wrapper" id="progressWrapper">
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill" id="progressBarFill"></div>
@@ -1859,7 +1929,7 @@ body {
     <div id="privacyModal" class="modal-overlay">
         <div class="modal-content">
             <h2><i class="fa-solid fa-shield-halved"></i> <span data-i18n="privacyModalTitle">Gizlilik Politikası</span></h2>
-            <p data-i18n="privacyP1"><strong>NVO MC Skin Merger v1.0.0</strong> kullanıcı verilerine %100 saygı duyar. Yüklediğiniz skin dosyaları doğrudan cihazınızda (tarayıcınızda) işlenir; sunucularımıza hiçbir zaman yüklenmez veya iletilmez.</p>
+            <p data-i18n="privacyP1"><strong>NVO MC Skin Merger v1.1.0</strong> kullanıcı verilerine %100 saygı duyar. Yüklediğiniz skin dosyaları doğrudan cihazınızda (tarayıcınızda) işlenir; sunucularımıza hiçbir zaman yüklenmez veya iletilmez.</p>
             <p data-i18n="privacyP2">Google ile giriş yaptığınızda, kimlik doğrulaması Firebase Authentication üzerinden Google tarafından yapılır. Sadece ad, e-posta ve profil fotoğrafınız oturum bilgisi olarak tarayıcınızda tutulur; bu bilgiler sunucularımızda saklanmaz. Ayrıca, toplam birleştirme sayısını göstermek amacıyla Firebase Firestore'da yalnızca anonim bir sayaç tutulur — kişisel veri içermez.</p>
             <button class="modal-close" onclick="closeModal('privacyModal')" data-i18n="closeBtn">Kapat</button>
         </div>
@@ -2046,7 +2116,7 @@ body {
         // gerektirir, bu sürümde bilinçli olarak dışarıda bırakıldı.
         const I18N = {
             tr: {
-                title: 'NVO MC SKIN MERGER v1.0.0',
+                title: 'NVO MC SKIN MERGER v1.1.0',
                 subtitle: 'Gelişmiş UV koordinat motoru ile Minecraft skinlerinizi kusursuz biçimde harmanlayın.',
                 skin1CardTitle: 'Ana Skin (Skin 1)',
                 skin2CardTitle: 'İkincil Skin (Skin 2)',
@@ -2059,6 +2129,8 @@ body {
                 mode_half_desc: 'Sol yarısı Skin 1, sağ yarısı Skin 2 simetrik harmanlama.',
                  mode_three_skin_title:'3 Skin Merger', mode_three_skin_desc:'Skin 1 üst yarı; Skin 2 ve 3 alt yarıyı ortadan yan bölerek tamamlar.',
                  mode_four_skin_title:'4 Skin Merger', mode_four_skin_desc:'1+2 üst yarı, 3+4 alt yarı; her çift ortadan yan bölünür.',
+                 mode_five_skin_title:'5 Skin Merger', mode_five_skin_desc:'5 skin, eşit genişlikte 5 dikey şerit halinde soldan sağa birleştirilir.',
+                 mode_six_skin_title:'6 Skin Merger', mode_six_skin_desc:'6 skin, eşit genişlikte 6 dikey şerit halinde soldan sağa birleştirilir.',
                 mode_head_swap_title: 'Kafa Değişimi',
                 mode_head_swap_desc: "Skin 1'in kafası ve şapkası, Skin 2'nin vücudu.",
                 mode_top_bottom_title: 'Üst / Alt Bölme',
@@ -2169,7 +2241,7 @@ body {
                 resetComplete: 'Her şey sıfırlandı. Yeniden başlayabilirsiniz.',
                 downloadLoginRequired: 'İndirme için Google ile giriş yapmalısınız. Texture ve çıktı gizli.',
                 downloadSuccess: 'Skin başarıyla indirildi!',
-                mergeEngineSuccess: '[BAŞARILI] NVO MERGER ENGINE v1.0.0 — birleştirme tamamlandı.',
+                mergeEngineSuccess: '[BAŞARILI] NVO MERGER ENGINE v1.1.0 — birleştirme tamamlandı.',
                 chimeraResult: (h,t,r,l,rl,ll) => `RASTGELE KARIŞIM → Kafa: Skin${h} · Gövde: Skin${t} · Sağ Kol: Skin${r} · Sol Kol: Skin${l} · Sağ Bacak: Skin${rl} · Sol Bacak: Skin${ll}`,
                 uvOutputTitle: '64x64 UV Harita Çıktısı',
                 resultDefault: 'Birleştirme sonucu burada görünecek.',
@@ -2193,7 +2265,7 @@ body {
                 mitModalTitle: 'MIT Lisansı',
                 closeBtn: 'Kapat',
                 copyrightModalTitle: 'Telif Hakkı',
-                privacyP1: "NVO MC Skin Merger v1.0.0 kullanıcı verilerine %100 saygı duyar. Yüklediğiniz skin dosyaları doğrudan cihazınızda (tarayıcınızda) işlenir; sunucularımıza hiçbir zaman yüklenmez veya iletilmez.",
+                privacyP1: "NVO MC Skin Merger v1.1.0 kullanıcı verilerine %100 saygı duyar. Yüklediğiniz skin dosyaları doğrudan cihazınızda (tarayıcınızda) işlenir; sunucularımıza hiçbir zaman yüklenmez veya iletilmez.",
                 privacyP2: "Google ile giriş yaptığınızda, kimlik doğrulaması Firebase Authentication üzerinden Google tarafından yapılır. Sadece ad, e-posta ve profil fotoğrafınız oturum bilgisi olarak tarayıcınızda tutulur; bu bilgiler sunucularımızda saklanmaz. Ayrıca, toplam birleştirme sayısını göstermek amacıyla Firebase Firestore'da yalnızca anonim bir sayaç tutulur — kişisel veri içermez.",
                 copyrightP1: "Minecraft, Mojang AB / Microsoft Corporation'ın tescilli markasıdır. Bu araç, Mojang veya Microsoft ile bağlantılı olmayan bağımsız bir NVO TEAM projesidir.",
                 copyrightP2: "Google ve Google logosu, Google LLC'nin ticari markalarıdır. Google ile Giriş özelliği, Google'ın kimlik doğrulama hizmetlerine uygun şekilde kullanılmaktadır.",
@@ -2232,7 +2304,7 @@ body {
                 anonymousName: 'NVO Gizli Kullanıcı',
             },
             en: {
-                title: 'NVO MC SKIN MERGER v1.0.0',
+                title: 'NVO MC SKIN MERGER v1.1.0',
                 subtitle: 'Blend your Minecraft skins flawlessly with an advanced UV coordinate engine.',
                 skin1CardTitle: 'Primary Skin (Skin 1)',
                 skin2CardTitle: 'Secondary Skin (Skin 2)',
@@ -2245,6 +2317,8 @@ body {
                 mode_half_desc: 'Left half from Skin 1, right half from Skin 2 — symmetric blend.',
                  mode_three_skin_title:'3 Skin Merger', mode_three_skin_desc:'Skin 1 forms the top half; Skin 2 and 3 split the bottom half vertically.',
                  mode_four_skin_title:'4 Skin Merger', mode_four_skin_desc:'1+2 form the top half, 3+4 the bottom half; each pair is split vertically.',
+                 mode_five_skin_title:'5 Skin Merger', mode_five_skin_desc:'5 skins are combined left to right as 5 equal vertical strips.',
+                 mode_six_skin_title:'6 Skin Merger', mode_six_skin_desc:'6 skins are combined left to right as 6 equal vertical strips.',
                 mode_head_swap_title: 'Head Swap',
                 mode_head_swap_desc: "Skin 1's head and hat, Skin 2's body.",
                 mode_top_bottom_title: 'Top / Bottom Split',
@@ -2355,7 +2429,7 @@ body {
                 resetComplete: 'Everything was reset. You can start again.',
                 downloadLoginRequired: 'Sign in with Google to download. Texture and output are locked.',
                 downloadSuccess: 'Skin downloaded successfully!',
-                mergeEngineSuccess: '[SUCCESS] NVO MERGER ENGINE v1.0.0 — merge completed.',
+                mergeEngineSuccess: '[SUCCESS] NVO MERGER ENGINE v1.1.0 — merge completed.',
                 chimeraResult: (h,t,r,l,rl,ll) => `RANDOM MIX → Head: Skin${h} · Torso: Skin${t} · Right Arm: Skin${r} · Left Arm: Skin${l} · Right Leg: Skin${rl} · Left Leg: Skin${ll}`,
                 uvOutputTitle: '64x64 UV Map Output',
                 resultDefault: 'Your merged result will appear here.',
@@ -2379,7 +2453,7 @@ body {
                 mitModalTitle: 'MIT License',
                 closeBtn: 'Close',
                 copyrightModalTitle: 'Copyright',
-                privacyP1: "NVO MC Skin Merger v1.0.0 fully respects your data. Skin files you upload are processed entirely on your device (in your browser); they are never uploaded or transmitted to our servers.",
+                privacyP1: "NVO MC Skin Merger v1.1.0 fully respects your data. Skin files you upload are processed entirely on your device (in your browser); they are never uploaded or transmitted to our servers.",
                 privacyP2: "When you sign in with Google, authentication is handled by Google via Firebase Authentication. Only your name, email and profile photo are kept as session info in your browser; this data is not stored on our servers. Additionally, an anonymous counter of total merges is kept in Firebase Firestore purely to display usage stats — it contains no personal data.",
                 copyrightP1: "Minecraft is a registered trademark of Mojang AB / Microsoft Corporation. This tool is an independent NVO TEAM project not affiliated with Mojang or Microsoft.",
                 copyrightP2: "Google and the Google logo are trademarks of Google LLC. The Google Sign-In feature is used in accordance with Google's authentication service guidelines.",
@@ -2930,9 +3004,13 @@ body {
         const canvas2 = document.getElementById('canvas2');
         const canvas3 = document.getElementById('canvas3'); canvas3.width=canvas3.height=64;
         const canvas4 = document.getElementById('canvas4'); canvas4.width=canvas4.height=64;
+        const canvas5 = document.getElementById('canvas5'); canvas5.width=canvas5.height=64;
+        const canvas6 = document.getElementById('canvas6'); canvas6.width=canvas6.height=64;
         const ctx3 = canvas3.getContext('2d',{alpha:true,willReadFrequently:true});
         const ctx4 = canvas4.getContext('2d',{alpha:true,willReadFrequently:true});
-        let model3=null, model4=null;
+        const ctx5 = canvas5.getContext('2d',{alpha:true,willReadFrequently:true});
+        const ctx6 = canvas6.getContext('2d',{alpha:true,willReadFrequently:true});
+        let model3=null, model4=null, model5=null, model6=null;
         const resultCanvas = document.getElementById('resultCanvas');
         const btnMerge = document.getElementById('btnMerge');
         const btnDownload = document.getElementById('btnDownload');
@@ -3208,6 +3286,9 @@ body {
          * @returns {void}
          */
         function log(msg, type = 'normal'){
+            // Derin Tarama Konsolu arayüzden kaldırıldı; terminal artık DOM'da yok.
+            // Geriye dönük uyumluluk için fonksiyon korunuyor ama sessizce console'a düşüyor.
+            if (!terminal) { console.log('[NVO]', msg); return; }
             const div = document.createElement('div');
             div.className = `terminal-line ${type}`;
             div.textContent = `> ${msg}`;
@@ -3468,28 +3549,37 @@ body {
             }
         }
 
-        // ===================== 3/4 Skin girişleri (aynı Skin 1/2 mekaniği) =====================
+        // ===================== 3/4/5/6 Skin girişleri (aynı Skin 1/2 mekaniği) =====================
         const skinCard3 = document.getElementById('skinCard3');
         const skinCard4 = document.getElementById('skinCard4');
+        const skinCard5 = document.getElementById('skinCard5');
+        const skinCard6 = document.getElementById('skinCard6');
 
-        function activeMultiMode(){ return selectedMode === 'three_skin' || selectedMode === 'four_skin'; }
-        function requiredMultiCount(){ return selectedMode === 'four_skin' ? 4 : selectedMode === 'three_skin' ? 3 : 2; }
+        // Mod adı -> gereken toplam skin sayısı. Yeni çoklu-skin modu eklemek
+        // için sadece bu haritaya bir satır eklemek yeterlidir; activeMultiMode,
+        // requiredMultiCount, syncMultiSkinPanel, multiInputsReady ve
+        // updateMultiStatus hepsi buradan otomatik türetilir.
+        const MULTI_SKIN_MODE_COUNTS = { three_skin: 3, four_skin: 4, five_skin: 5, six_skin: 6 };
+        function activeMultiMode(){ return Object.prototype.hasOwnProperty.call(MULTI_SKIN_MODE_COUNTS, selectedMode); }
+        function requiredMultiCount(){ return MULTI_SKIN_MODE_COUNTS[selectedMode] || 2; }
         function syncMultiSkinPanel(){
-            const active = activeMultiMode();
-            if (skinCard3) skinCard3.style.display = active ? '' : 'none';
-            if (skinCard4) skinCard4.style.display = selectedMode === 'four_skin' ? '' : 'none';
+            const needed = requiredMultiCount();
+            if (skinCard3) skinCard3.style.display = needed >= 3 ? '' : 'none';
+            if (skinCard4) skinCard4.style.display = needed >= 4 ? '' : 'none';
+            if (skinCard5) skinCard5.style.display = needed >= 5 ? '' : 'none';
+            if (skinCard6) skinCard6.style.display = needed >= 6 ? '' : 'none';
             updateMultiStatus();
         }
         function multiInputsReady(){
             if (!activeMultiMode()) return true;
             const needed = requiredMultiCount();
-            const models = [model1, model2, model3, model4].slice(0, needed);
-            const canvases = [canvas1, canvas2, canvas3, canvas4].slice(0, needed);
+            const models = [model1, model2, model3, model4, model5, model6].slice(0, needed);
+            const canvases = [canvas1, canvas2, canvas3, canvas4, canvas5, canvas6].slice(0, needed);
             return models.every(Boolean) && canvases.every(c => c && c.width && c.height) &&
                    canvases.every(c => getSkinFormat(c) === getSkinFormat(canvases[0]));
         }
         function updateMultiStatus(){
-            [[3,ctx3,model3],[4,ctx4,model4]].forEach(([slot,ctx,model])=>{
+            [[3,ctx3,model3],[4,ctx4,model4],[5,ctx5,model5],[6,ctx6,model6]].forEach(([slot,ctx,model])=>{
                 const meta=document.getElementById('meta'+slot);
                 const label=document.getElementById('label'+slot);
                 const tag=document.getElementById('tagSkin'+slot);
@@ -3499,10 +3589,18 @@ body {
             });
         }
 
+        const EXTRA_SKIN_CTX = { 3: ctx3, 4: ctx4, 5: ctx5, 6: ctx6 };
+        function setExtraSkinModel(slot, value){
+            if (slot === 3) model3 = value;
+            else if (slot === 4) model4 = value;
+            else if (slot === 5) model5 = value;
+            else if (slot === 6) model6 = value;
+        }
+
         async function handleExtraSkin(file, slot){
             if(!file) return;
-            const ctx = slot === 3 ? ctx3 : ctx4;
-            const labelId = slot === 3 ? 'label3' : 'label4';
+            const ctx = EXTRA_SKIN_CTX[slot];
+            const labelId = 'label'+slot;
             try {
                 if(file.type !== APP_CONFIG.PNG_MIME) throw new Error(t('invalidPng'));
                 if(file.size <= 0 || file.size > APP_CONFIG.MAX_FILE_BYTES) throw new Error(t('fileTooLarge'));
@@ -3519,7 +3617,7 @@ body {
                     ctx.canvas.width=width; ctx.canvas.height=height; ctx.clearRect(0,0,width,height); ctx.drawImage(source,0,0);
                 }
                 const model=detectSkinModel(ctx);
-                if(slot===3) model3=model; else model4=model;
+                setExtraSkinModel(slot, model);
                 const label=document.getElementById(labelId); if(label) label.textContent=file.name || `Skin ${slot}.png`;
                 const meta=document.getElementById('meta'+slot); if(meta) meta.innerHTML=`<span><span class="status-dot"></span> ${ctx.canvas.width}×${ctx.canvas.height} PNG • ${model.toUpperCase()}</span>`;
                 const tag=document.getElementById('tagSkin'+slot); if(tag) tag.textContent=`Model: ${model.toUpperCase()}`;
@@ -3530,6 +3628,8 @@ body {
         }
         document.getElementById('inputSkin3')?.addEventListener('change',e=>void handleExtraSkin(e.target.files?.[0],3));
         document.getElementById('inputSkin4')?.addEventListener('change',e=>void handleExtraSkin(e.target.files?.[0],4));
+        document.getElementById('inputSkin5')?.addEventListener('change',e=>void handleExtraSkin(e.target.files?.[0],5));
+        document.getElementById('inputSkin6')?.addEventListener('change',e=>void handleExtraSkin(e.target.files?.[0],6));
 
         // 3/4 merger için mevcut 50/50 ve Üst/Alt motorlarının aynısını, farklı canvaslar üzerinde çalıştırır.
         function mergeHalfPair(srcCanvas, srcModel, overlayCanvas, overlayModel, dstCanvas){
@@ -3577,6 +3677,33 @@ body {
             mergeHalfPair(canvas3,model3,canvas4,model4,bottom);
             mergeTopBottomPair(top,model1,bottom,model3,resultCanvas);
             log('4 Skin Merger tamamlandı: (Skin 1 + 2) 50/50, (Skin 3 + 4) 50/50, ardından Üst/Alt.','success');
+        }
+
+        // 5/6 Skin Merger: her skinin TAM UV dokusu, eşit genişlikte dikey bir
+        // şeride sıkıştırılıp soldan sağa yan yana yerleştirilir (parça/uzuv
+        // bazlı değil, doğrudan piksel sütunu bazlı bir birleştirmedir).
+        function mergeVerticalStrips(canvases, dstCanvas){
+            const base = canvases[0];
+            const w = base.width, h = base.height, n = canvases.length;
+            dstCanvas.width = w; dstCanvas.height = h;
+            const dctx = dstCanvas.getContext('2d', { alpha: true, willReadFrequently: true });
+            dctx.imageSmoothingEnabled = false;
+            dctx.clearRect(0, 0, w, h);
+            for (let i = 0; i < n; i++) {
+                const x0 = Math.round(w * i / n);
+                const x1 = i === n - 1 ? w : Math.round(w * (i + 1) / n);
+                if (x1 <= x0) continue;
+                dctx.drawImage(canvases[i], x0, 0, x1 - x0, h, x0, 0, x1 - x0, h);
+            }
+            return dstCanvas;
+        }
+        function executeFiveSkinMerge(){
+            mergeVerticalStrips([canvas1, canvas2, canvas3, canvas4, canvas5], resultCanvas);
+            log('5 Skin Merger tamamlandı: 5 skin eşit genişlikte dikey şeritler halinde birleştirildi.', 'success');
+        }
+        function executeSixSkinMerge(){
+            mergeVerticalStrips([canvas1, canvas2, canvas3, canvas4, canvas5, canvas6], resultCanvas);
+            log('6 Skin Merger tamamlandı: 6 skin eşit genişlikte dikey şeritler halinde birleştirildi.', 'success');
         }
         syncMultiSkinPanel();
         // ===================== /3/4 Skin girişleri =====================
@@ -3657,6 +3784,8 @@ body {
         wireUsernameFetch('usernameFetchBtn2', 'usernameFetch2', ctx2, 'label2', false);
         wireExtraUsernameFetch('usernameFetchBtn3', 'usernameFetch3', 3);
         wireExtraUsernameFetch('usernameFetchBtn4', 'usernameFetch4', 4);
+        wireExtraUsernameFetch('usernameFetchBtn5', 'usernameFetch5', 5);
+        wireExtraUsernameFetch('usernameFetchBtn6', 'usernameFetch6', 6);
         // ===================== /Kullanıcı Adıyla Skin Çekme =====================
 
 
@@ -4052,6 +4181,10 @@ body {
             const pick = () => Math.random() < 0.5 ? src1 : src2;
 
             switch (selectedMode) {
+                case 'five_skin':
+                    executeFiveSkinMerge(); break;
+                case 'six_skin':
+                    executeSixSkinMerge(); break;
                 case 'head_swap':
                     drawSkinToOutput(canvas2); legacyCopyPart(src1, ctxOut, 'head'); break;
                 case 'arm_swap':
@@ -4164,6 +4297,8 @@ body {
 
             if (selectedMode === 'three_skin') { executeThreeSkinMerge();
             } else if (selectedMode === 'four_skin') { executeFourSkinMerge();
+            } else if (selectedMode === 'five_skin') { executeFiveSkinMerge();
+            } else if (selectedMode === 'six_skin') { executeSixSkinMerge();
             } else if (selectedMode === 'half') {
                 executeHalfMerge();
 
@@ -4560,10 +4695,11 @@ body {
         document.getElementById('clear1').addEventListener('click', () => clearSkin(1));
         document.getElementById('clear2').addEventListener('click', () => clearSkin(2));
         function clearExtraSkin(slot){
-            const ctx=slot===3?ctx3:ctx4;
+            const ctx=EXTRA_SKIN_CTX[slot];
+            if(!ctx) return;
             ctx.canvas.width=ctx.canvas.height=64;
             ctx.clearRect(0,0,64,64);
-            if(slot===3) model3=null; else model4=null;
+            setExtraSkinModel(slot, null);
             const input=document.getElementById('inputSkin'+slot);
             const label=document.getElementById('label'+slot);
             const meta=document.getElementById('meta'+slot);
@@ -4579,7 +4715,9 @@ body {
         }
         document.getElementById('clear3')?.addEventListener('click',()=>clearExtraSkin(3));
         document.getElementById('clear4')?.addEventListener('click',()=>clearExtraSkin(4));
-        document.getElementById('btnResetAll')?.addEventListener('click',()=>{clearExtraSkin(3);clearExtraSkin(4);});
+        document.getElementById('clear5')?.addEventListener('click',()=>clearExtraSkin(5));
+        document.getElementById('clear6')?.addEventListener('click',()=>clearExtraSkin(6));
+        document.getElementById('btnResetAll')?.addEventListener('click',()=>{clearExtraSkin(3);clearExtraSkin(4);clearExtraSkin(5);clearExtraSkin(6);});
 
 
         // "Tüm Modları İndir" butonu HER ZAMAN btnMerge ile AYNI ön koşullara
@@ -4677,7 +4815,7 @@ body {
             progressWrapper.classList.remove('active');
             progressBarFill.style.width = '0%';
             progressText.textContent = '0%';
-            terminal.innerHTML = '';
+            if (terminal) terminal.innerHTML = '';
             setCompareActive('result');
             const defaultCard = document.querySelector('.mode-card[data-mode="half"]');
             if (defaultCard) selectModeCard(defaultCard);
@@ -4695,10 +4833,15 @@ body {
             box.addEventListener('drop', e => {
                 e.preventDefault();
                 box.classList.remove('drag-over');
-                handleFile(e.dataTransfer.files[0],
-                    index === 0 ? ctx1 : ctx2,
-                    index === 0 ? 'label1' : 'label2',
-                    index === 0);
+                const file = e.dataTransfer.files[0];
+                if (!file) return;
+                // HATA DÜZELTMESİ: Önceden tüm .upload-box'lar (Skin 3/4/5/6 dahil)
+                // index===0 ? Skin1 : Skin2 mantığıyla eşleniyordu; Skin 3+ kutularına
+                // sürüklenen dosyalar yanlışlıkla Skin 2'nin üzerine yazıyordu.
+                // Artık DOM sırasına göre (Skin1, Skin2, Skin3, ...) doğru slota gider.
+                if (index === 0) handleFile(file, ctx1, 'label1', true);
+                else if (index === 1) handleFile(file, ctx2, 'label2', false);
+                else void handleExtraSkin(file, index + 1);
             });
         });
 
@@ -4746,7 +4889,7 @@ body {
         // modları üreteceğini belirler. Daha önce head_torso_swap, arms_legs_swap
         // ve alternating_parts modları burada UNUTULMUŞTU — o modlar ZIP'e hiç
         // dahil edilmiyordu. Şimdi tüm hazır modlar (yeni eklenen 3 tanesi dahil) eksiksiz listelendi.
-        const ALL_MERGE_MODES = ['half','head_swap','top_bottom','arm_swap','leg_swap','outer_overlay','base_only','front_back','blend','chimera','body_swap','head_legs_swap','reverse_overlay','checker_blend','head_torso_swap','arms_legs_swap','alternating_parts','cross_limb_swap','gradient_blend','three_skin','four_skin','custom'];
+        const ALL_MERGE_MODES = ['half','head_swap','top_bottom','arm_swap','leg_swap','outer_overlay','base_only','front_back','blend','chimera','body_swap','head_legs_swap','reverse_overlay','checker_blend','head_torso_swap','arms_legs_swap','alternating_parts','cross_limb_swap','gradient_blend','three_skin','four_skin','five_skin','six_skin','custom'];
 
         async function downloadAllModes(){
             if (isLoadingAuth) { reportUserError(new Error(t('authNotReady')), 'warn'); return; }
@@ -5072,6 +5215,7 @@ body {
 /* SIMPLE UI bridge: independent UI, shared validated merger engine. */
 (function(){
   const simpleModeLabels = { three_skin:'mode_three_skin_title', four_skin:'mode_four_skin_title',
+    five_skin:'mode_five_skin_title', six_skin:'mode_six_skin_title',
     half:'mode_half_title', head_swap:'mode_head_swap_title', top_bottom:'mode_top_bottom_title',
     arm_swap:'mode_arm_swap_title', leg_swap:'mode_leg_swap_title', outer_overlay:'mode_outer_overlay_title',
     base_only:'mode_base_only_title', front_back:'mode_front_back_title', blend:'mode_blend_title',
@@ -5090,17 +5234,29 @@ body {
     else dst.classList.remove('has-image');
   }
 
-  function isSimpleMultiMode(){ const v=$('simpleModeSelect')?.value; return v==='three_skin'||v==='four_skin'; }
+  // Mod adı -> gereken toplam skin sayısı (ana arayüzdeki MULTI_SKIN_MODE_COUNTS ile birebir aynı).
+  const SIMPLE_MULTI_COUNTS = { three_skin:3, four_skin:4, five_skin:5, six_skin:6 };
+  function isSimpleMultiMode(){ const v=$('simpleModeSelect')?.value; return Object.prototype.hasOwnProperty.call(SIMPLE_MULTI_COUNTS, v); }
+  function getSimpleMultiCount(){ return SIMPLE_MULTI_COUNTS[$('simpleModeSelect')?.value] || 0; }
+  // model3..model6 ana script bloğunda üst seviyede `let` ile tanımlı; klasik
+  // (module olmayan) script'ler aynı global scope'u paylaştığından burada
+  // doğrudan isimleriyle okunabilirler.
+  function getExtraModel(n){ return n===3?model3:n===4?model4:n===5?model5:n===6?model6:null; }
 
   function syncSimpleMultiPreviews(){
-    const count=$('simpleModeSelect')?.value==='four_skin'?4:3;
+    const count=getSimpleMultiCount();
     for(let n=3;n<=count;n++){
-      const src=$('multiPreview'+n), dst=$('simpleMultiPreview'+n), real=$('inputSkin'+n);
+      // HATA DÜZELTMESİ: burada var olmayan 'multiPreview'+n ID'si aranıyordu
+      // (gerçek elemanın id'si 'canvas'+n) ve "yüklendi mi" kontrolü class'a
+      // bakıyordu — canvas3-6 hiçbir zaman bu class'ı almıyordu. Bu yüzden basit
+      // moddaki 3/4/5/6. skin önizlemeleri hiçbir zaman senkronlanmıyordu.
+      // Artık doğru canvas ID'si ve gerçek model durumu kullanılıyor.
+      const src=$('canvas'+n), dst=$('simpleMultiPreview'+n), real=$('inputSkin'+n);
       if(!dst) continue;
       const c=dst.getContext('2d');
       c.clearRect(0,0,64,64);
-      const show=!!src?.classList.contains('has-image') || !!real?.files?.length;
-      if(show){ try{ c.drawImage(src||real,0,0,64,64); }catch(e){} dst.classList.add('has-image'); }
+      const show=!!getExtraModel(n);
+      if(show && src){ try{ c.drawImage(src,0,0,64,64); }catch(e){} dst.classList.add('has-image'); }
       else dst.classList.remove('has-image');
       const file=real?.files?.[0];
       const nameEl=$('simpleMultiFileName'+n);
@@ -5112,14 +5268,13 @@ body {
     const panel=$('simpleMultiSkinPanel'), box=$('simpleMultiFiles');
     if(!panel||!box) return;
     const active=isSimpleMultiMode();
-    const count=$('simpleModeSelect')?.value==='four_skin'?4:3;
+    const count=getSimpleMultiCount();
     panel.style.display=active?'':'none';
     if(!active) return;
 
-    $('simpleMultiTitle').textContent=count===4?'4 Skin Merger':'3 Skin Merger';
-    $('simpleMultiDesc').textContent=count===4
-      ?'Skin 1–4 kutuları aşağıdaki 1–2 düzeniyle aynı şekilde kullanılabilir.'
-      :'Skin 1–3 kutuları aşağıdaki 1–2 düzeniyle aynı şekilde kullanılabilir.';
+    const modeKey=simpleModeLabels[$('simpleModeSelect')?.value];
+    $('simpleMultiTitle').textContent=(typeof t==='function' && modeKey) ? t(modeKey) : `${count} Skin Merger`;
+    $('simpleMultiDesc').textContent=`Skin 1–${count} kutuları aşağıdaki 1–2 düzeniyle aynı şekilde kullanılabilir.`;
     box.innerHTML='';
 
     for(let n=3;n<=count;n++){
