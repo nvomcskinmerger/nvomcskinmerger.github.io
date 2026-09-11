@@ -1675,11 +1675,11 @@ body {
                 </div>
                 <div class="mode-card" data-mode="five_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/five_skin.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-grip-lines-vertical"></i><span data-i18n="mode_five_skin_title">5 Skin Merger</span>
-                    <p data-i18n="mode_five_skin_desc">5 skin, eşit genişlikte 5 dikey şerit halinde soldan sağa birleştirilir.</p>
+                    <p data-i18n="mode_five_skin_desc">5 skin, karakterin gerçek 3D genişliği boyunca 5 eşit dikey şeride bölünür; her şerit tek bir skinden alınır.</p>
                 </div>
                 <div class="mode-card" data-mode="six_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/six_skin.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-grip-lines-vertical"></i><span data-i18n="mode_six_skin_title">6 Skin Merger</span>
-                    <p data-i18n="mode_six_skin_desc">6 skin, eşit genişlikte 6 dikey şerit halinde soldan sağa birleştirilir.</p>
+                    <p data-i18n="mode_six_skin_desc">6 skin, karakterin gerçek 3D genişliği boyunca 6 eşit dikey şeride bölünür; her şerit tek bir skinden alınır.</p>
                 </div>
                 <div class="mode-card" data-mode="head_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/head_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-head-side-mask"></i>
@@ -2129,8 +2129,8 @@ body {
                 mode_half_desc: 'Sol yarısı Skin 1, sağ yarısı Skin 2 simetrik harmanlama.',
                  mode_three_skin_title:'3 Skin Merger', mode_three_skin_desc:'Skin 1 üst yarı; Skin 2 ve 3 alt yarıyı ortadan yan bölerek tamamlar.',
                  mode_four_skin_title:'4 Skin Merger', mode_four_skin_desc:'1+2 üst yarı, 3+4 alt yarı; her çift ortadan yan bölünür.',
-                 mode_five_skin_title:'5 Skin Merger', mode_five_skin_desc:'5 skin, eşit genişlikte 5 dikey şerit halinde soldan sağa birleştirilir.',
-                 mode_six_skin_title:'6 Skin Merger', mode_six_skin_desc:'6 skin, eşit genişlikte 6 dikey şerit halinde soldan sağa birleştirilir.',
+                 mode_five_skin_title:'5 Skin Merger', mode_five_skin_desc:'5 skin, karakterin gerçek 3D genişliği boyunca 5 eşit dikey şeride bölünür; her şerit tek bir skinden alınır.',
+                 mode_six_skin_title:'6 Skin Merger', mode_six_skin_desc:'6 skin, karakterin gerçek 3D genişliği boyunca 6 eşit dikey şeride bölünür; her şerit tek bir skinden alınır.',
                 mode_head_swap_title: 'Kafa Değişimi',
                 mode_head_swap_desc: "Skin 1'in kafası ve şapkası, Skin 2'nin vücudu.",
                 mode_top_bottom_title: 'Üst / Alt Bölme',
@@ -2317,8 +2317,8 @@ body {
                 mode_half_desc: 'Left half from Skin 1, right half from Skin 2 — symmetric blend.',
                  mode_three_skin_title:'3 Skin Merger', mode_three_skin_desc:'Skin 1 forms the top half; Skin 2 and 3 split the bottom half vertically.',
                  mode_four_skin_title:'4 Skin Merger', mode_four_skin_desc:'1+2 form the top half, 3+4 the bottom half; each pair is split vertically.',
-                 mode_five_skin_title:'5 Skin Merger', mode_five_skin_desc:'5 skins are combined left to right as 5 equal vertical strips.',
-                 mode_six_skin_title:'6 Skin Merger', mode_six_skin_desc:'6 skins are combined left to right as 6 equal vertical strips.',
+                 mode_five_skin_title:'5 Skin Merger', mode_five_skin_desc:'The character height is divided into 5 equal horizontal bands, one skin per band.',
+                 mode_six_skin_title:'6 Skin Merger', mode_six_skin_desc:'The character height is divided into 6 equal horizontal bands, one skin per band.',
                 mode_head_swap_title: 'Head Swap',
                 mode_head_swap_desc: "Skin 1's head and hat, Skin 2's body.",
                 mode_top_bottom_title: 'Top / Bottom Split',
@@ -3679,31 +3679,124 @@ body {
             log('4 Skin Merger tamamlandı: (Skin 1 + 2) 50/50, (Skin 3 + 4) 50/50, ardından Üst/Alt.','success');
         }
 
-        // 5/6 Skin Merger: her skinin TAM UV dokusu, eşit genişlikte dikey bir
-        // şeride sıkıştırılıp soldan sağa yan yana yerleştirilir (parça/uzuv
-        // bazlı değil, doğrudan piksel sütunu bazlı bir birleştirmedir).
-        function mergeVerticalStrips(canvases, dstCanvas){
-            const base = canvases[0];
-            const w = base.width, h = base.height, n = canvases.length;
-            dstCanvas.width = w; dstCanvas.height = h;
-            const dctx = dstCanvas.getContext('2d', { alpha: true, willReadFrequently: true });
-            dctx.imageSmoothingEnabled = false;
-            dctx.clearRect(0, 0, w, h);
-            for (let i = 0; i < n; i++) {
-                const x0 = Math.round(w * i / n);
-                const x1 = i === n - 1 ? w : Math.round(w * (i + 1) / n);
-                if (x1 <= x0) continue;
-                dctx.drawImage(canvases[i], x0, 0, x1 - x0, h, x0, 0, x1 - x0, h);
+        // 5/6 Skin Merger — GERÇEK 3D DİKEY ŞERİTLER.
+        // ÖNEMLİ: Şeritler PNG'nin kolonlarına göre değil, Minecraft karakterinin
+        // gerçek 3D X eksenine göre oluşturulur. Yani karakteri önden baktığımızda
+        // soldan sağa N eşit dikey parçaya böleriz; her parça tek bir skinden gelir.
+        // UV atlasındaki kafa/gövde/kol/bacak kutularının konumu bu seçimi belirlemez.
+        // Her UV yüzündeki piksel önce 3D uzaydaki X konumuna çevrilir, sonra ilgili
+        // skinin aynı yüzünden alınır. Böylece 3D viewer'da şeritler gerçekten dikeydir.
+
+        function verticalSlicePartGeometry(part, model){
+            const armW = model === 'alex' ? 3 : 4;
+            switch(part){
+                case 'rightArm': return {x0:4, x1:4+armW};
+                case 'leftArm':  return {x0:-4-armW, x1:-4};
+                case 'rightLeg': return {x0:-4, x1:0};
+                case 'leftLeg':  return {x0:0, x1:4};
+                case 'head':
+                case 'torso':
+                default: return {x0:-4, x1:4};
+            }
+        }
+
+        function copyFaceVerticalSlices(srcCtx, dstCtx, srcFace, dstFace, srcPart, dstPart, srcModel, dstModel, skinIndex, skinCount, globalX0, globalX1){
+            if(!srcFace || !dstFace) return;
+            const ss = getLayoutScale(srcCtx.canvas);
+            const ds = getLayoutScale(dstCtx.canvas);
+            const [slx,sly,slw,slh] = srcFace;
+            const [dlx,dly,dlw,dlh] = dstFace;
+            const sx0=Math.round(slx*ss), sy0=Math.round(sly*ss), sw=Math.max(1,Math.round(slw*ss)), sh=Math.max(1,Math.round(slh*ss));
+            const dx0=Math.round(dlx*ds), dy0=Math.round(dly*ds), dw=Math.max(1,Math.round(dlw*ds)), dh=Math.max(1,Math.round(dlh*ds));
+            const srcData=srcCtx.getImageData(0,0,srcCtx.canvas.width,srcCtx.canvas.height);
+            const dstData=dstCtx.getImageData(0,0,dstCtx.canvas.width,dstCtx.canvas.height);
+            const sGeom=verticalSlicePartGeometry(srcPart,srcModel);
+            const dGeom=verticalSlicePartGeometry(dstPart,dstModel);
+            const faceName=arguments[12] || '';
+
+            for(let py=0;py<dh;py++){
+                const fy=(py+0.5)/dh;
+                for(let px=0;px<dw;px++){
+                    const fx=(px+0.5)/dw;
+                    let worldX;
+                    // Front/back/top/bottom faces span the part width.
+                    // Side faces are located on a fixed X boundary.
+                    if(faceName==='left') worldX=dGeom.x0;
+                    else if(faceName==='right') worldX=dGeom.x1;
+                    else worldX=dGeom.x0 + fx*(dGeom.x1-dGeom.x0);
+
+                    let band=Math.floor(((worldX-globalX0)/(globalX1-globalX0))*skinCount);
+                    band=Math.max(0,Math.min(skinCount-1,band));
+                    if(band!==skinIndex) continue;
+
+                    const sx=sx0+Math.min(sw-1,Math.max(0,Math.floor(fx*sw)));
+                    const sy=sy0+Math.min(sh-1,Math.max(0,Math.floor(fy*sh)));
+                    const dx=dx0+px, dy=dy0+py;
+                    const si=(sy*srcData.width+sx)*4, di=(dy*dstData.width+dx)*4;
+                    dstData.data[di]=srcData.data[si];
+                    dstData.data[di+1]=srcData.data[si+1];
+                    dstData.data[di+2]=srcData.data[si+2];
+                    dstData.data[di+3]=srcData.data[si+3];
+                }
+            }
+            dstCtx.putImageData(dstData,0,0);
+        }
+
+        function mergeCharacterVerticalSlices(canvases, models, dstCanvas){
+            const base=canvases[0];
+            const n=canvases.length;
+            dstCanvas.width=base.width; dstCanvas.height=base.height;
+            const dctx=dstCanvas.getContext('2d',{alpha:true,willReadFrequently:true});
+            dctx.imageSmoothingEnabled=false;
+            dctx.clearRect(0,0,dstCanvas.width,dstCanvas.height);
+            dctx.drawImage(base,0,0);
+
+            const dstModel=models[0] || 'steve';
+            const armW=dstModel==='alex'?3:4;
+            const globalX0=-4-armW;
+            const globalX1=4+armW;
+            const faceNames=['top','bottom','left','front','right','back'];
+            const parts=[
+                'head','torso','rightLeg','leftLeg','rightArm','leftArm'
+            ];
+
+            // Base + overlay kutularının tamamını gerçek 3D X konumuna göre dağıt.
+            for(const part of parts){
+                const layers=part==='head'?['base','overlay']:
+                    part==='torso'?['base','overlay']:
+                    part==='rightLeg'||part==='leftLeg'?['base','overlay']:
+                    ['base','overlay'];
+                for(const layer of layers){
+                    const dstBox = part==='rightArm'||part==='leftArm'
+                        ? armBox(part,layer,dstModel)
+                        : UV_MAP[part][layer];
+                    const df=getFacesForBox(dstBox,dctx);
+                    if(!df) continue;
+                    for(let skinIndex=0;skinIndex<n;skinIndex++){
+                        const srcCtx=[ctx1,ctx2,ctx3,ctx4,ctx5,ctx6][skinIndex];
+                        const srcModel=models[skinIndex];
+                        if(!srcCtx||!srcModel) continue;
+                        const srcBox = part==='rightArm'||part==='leftArm'
+                            ? armBox(part,layer,srcModel)
+                            : UV_MAP[part][layer];
+                        const sf=getFacesForBox(srcBox,srcCtx);
+                        if(!sf) continue;
+                        for(const faceName of faceNames){
+                            copyFaceVerticalSlices(srcCtx,dctx,sf[faceName],df[faceName],part,part,srcModel,dstModel,skinIndex,n,globalX0,globalX1,faceName);
+                        }
+                    }
+                }
             }
             return dstCanvas;
         }
+
         function executeFiveSkinMerge(){
-            mergeVerticalStrips([canvas1, canvas2, canvas3, canvas4, canvas5], resultCanvas);
-            log('5 Skin Merger tamamlandı: 5 skin eşit genişlikte dikey şeritler halinde birleştirildi.', 'success');
+            mergeCharacterVerticalSlices([canvas1,canvas2,canvas3,canvas4,canvas5],[model1,model2,model3,model4,model5], resultCanvas);
+            log('5 Skin Merger tamamlandı: karakterin gerçek 3D genişliği 5 eşit dikey şeride bölündü; her şerit tek bir skinden alındı.', 'success');
         }
         function executeSixSkinMerge(){
-            mergeVerticalStrips([canvas1, canvas2, canvas3, canvas4, canvas5, canvas6], resultCanvas);
-            log('6 Skin Merger tamamlandı: 6 skin eşit genişlikte dikey şeritler halinde birleştirildi.', 'success');
+            mergeCharacterVerticalSlices([canvas1,canvas2,canvas3,canvas4,canvas5,canvas6],[model1,model2,model3,model4,model5,model6], resultCanvas);
+            log('6 Skin Merger tamamlandı: karakterin gerçek 3D genişliği 6 eşit dikey şeride bölündü; her şerit tek bir skinden alındı.', 'success');
         }
         syncMultiSkinPanel();
         // ===================== /3/4 Skin girişleri =====================
