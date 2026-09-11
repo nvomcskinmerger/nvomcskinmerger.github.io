@@ -3700,51 +3700,13 @@ body {
             }
         }
 
-        function copyFaceVerticalSlices(srcCtx, dstCtx, srcFace, dstFace, srcPart, dstPart, srcModel, dstModel, skinIndex, skinCount, globalX0, globalX1){
-            if(!srcFace || !dstFace) return;
-            const ss = getLayoutScale(srcCtx.canvas);
-            const ds = getLayoutScale(dstCtx.canvas);
-            const [slx,sly,slw,slh] = srcFace;
-            const [dlx,dly,dlw,dlh] = dstFace;
-            const sx0=Math.round(slx*ss), sy0=Math.round(sly*ss), sw=Math.max(1,Math.round(slw*ss)), sh=Math.max(1,Math.round(slh*ss));
-            const dx0=Math.round(dlx*ds), dy0=Math.round(dly*ds), dw=Math.max(1,Math.round(dlw*ds)), dh=Math.max(1,Math.round(dlh*ds));
-            const srcData=srcCtx.getImageData(0,0,srcCtx.canvas.width,srcCtx.canvas.height);
-            const dstData=dstCtx.getImageData(0,0,dstCtx.canvas.width,dstCtx.canvas.height);
-            const sGeom=verticalSlicePartGeometry(srcPart,srcModel);
-            const dGeom=verticalSlicePartGeometry(dstPart,dstModel);
-            const faceName=arguments[12] || '';
-
-            for(let py=0;py<dh;py++){
-                const fy=(py+0.5)/dh;
-                for(let px=0;px<dw;px++){
-                    const fx=(px+0.5)/dw;
-                    let worldX;
-                    // Front/back/top/bottom faces span the part width.
-                    // Side faces are located on a fixed X boundary.
-                    if(faceName==='left') worldX=dGeom.x0;
-                    else if(faceName==='right') worldX=dGeom.x1;
-                    else worldX=dGeom.x0 + fx*(dGeom.x1-dGeom.x0);
-
-                    let band=Math.floor(((worldX-globalX0)/(globalX1-globalX0))*skinCount);
-                    band=Math.max(0,Math.min(skinCount-1,band));
-                    if(band!==skinIndex) continue;
-
-                    const sx=sx0+Math.min(sw-1,Math.max(0,Math.floor(fx*sw)));
-                    const sy=sy0+Math.min(sh-1,Math.max(0,Math.floor(fy*sh)));
-                    const dx=dx0+px, dy=dy0+py;
-                    const si=(sy*srcData.width+sx)*4, di=(dy*dstData.width+dx)*4;
-                    dstData.data[di]=srcData.data[si];
-                    dstData.data[di+1]=srcData.data[si+1];
-                    dstData.data[di+2]=srcData.data[si+2];
-                    dstData.data[di+3]=srcData.data[si+3];
-                }
-            }
-            dstCtx.putImageData(dstData,0,0);
-        }
-
         function mergeCharacterVerticalSlices(canvases, models, dstCanvas){
-            const base=canvases[0];
+            // 5/6 Skin: 50/50 mantığının N parçalı hali.
+            // Texture atlasını kolonlara bölmez; Minecraft karakterinin gerçek
+            // 3D X genişliğini 5 veya 6 eşit dikey banda böler.
             const n=canvases.length;
+            if(!n || n<5 || n>6) return dstCanvas;
+            const base=canvases[0];
             dstCanvas.width=base.width; dstCanvas.height=base.height;
             const dctx=dstCanvas.getContext('2d',{alpha:true,willReadFrequently:true});
             dctx.imageSmoothingEnabled=false;
@@ -3755,35 +3717,73 @@ body {
             const armW=dstModel==='alex'?3:4;
             const globalX0=-4-armW;
             const globalX1=4+armW;
-            const faceNames=['top','bottom','left','front','right','back'];
-            const parts=[
-                'head','torso','rightLeg','leftLeg','rightArm','leftArm'
-            ];
+            const totalW=globalX1-globalX0;
+            const parts=['head','torso','rightLeg','leftLeg','rightArm','leftArm'];
+            const faces=['top','bottom','left','front','right','back'];
+            const sourceCtx=[ctx1,ctx2,ctx3,ctx4,ctx5,ctx6];
 
-            // Base + overlay kutularının tamamını gerçek 3D X konumuna göre dağıt.
+            // Her UV yüzünü bir kez üret: hedef yüzündeki her piksel için
+            // gerçek 3D X konumunu hesapla ve o banda ait skinin AYNI yüzünden
+            // aynı normalize edilmiş konumu al.
             for(const part of parts){
-                const layers=part==='head'?['base','overlay']:
-                    part==='torso'?['base','overlay']:
-                    part==='rightLeg'||part==='leftLeg'?['base','overlay']:
-                    ['base','overlay'];
-                for(const layer of layers){
-                    const dstBox = part==='rightArm'||part==='leftArm'
-                        ? armBox(part,layer,dstModel)
-                        : UV_MAP[part][layer];
+                for(const layer of ['base','overlay']){
+                    const dstBox=(part==='rightArm'||part==='leftArm')
+                        ? armBox(part,layer,dstModel) : UV_MAP[part][layer];
                     const df=getFacesForBox(dstBox,dctx);
                     if(!df) continue;
-                    for(let skinIndex=0;skinIndex<n;skinIndex++){
-                        const srcCtx=[ctx1,ctx2,ctx3,ctx4,ctx5,ctx6][skinIndex];
-                        const srcModel=models[skinIndex];
-                        if(!srcCtx||!srcModel) continue;
-                        const srcBox = part==='rightArm'||part==='leftArm'
-                            ? armBox(part,layer,srcModel)
-                            : UV_MAP[part][layer];
-                        const sf=getFacesForBox(srcBox,srcCtx);
-                        if(!sf) continue;
-                        for(const faceName of faceNames){
-                            copyFaceVerticalSlices(srcCtx,dctx,sf[faceName],df[faceName],part,part,srcModel,dstModel,skinIndex,n,globalX0,globalX1,faceName);
+                    const dg=verticalSlicePartGeometry(part,dstModel);
+
+                    for(const faceName of faces){
+                        const face=df[faceName];
+                        if(!face) continue;
+                        const ds=getLayoutScale(dstCanvas);
+                        const dx=Math.round(face[0]*ds), dy=Math.round(face[1]*ds);
+                        const dw=Math.max(1,Math.round(face[2]*ds));
+                        const dh=Math.max(1,Math.round(face[3]*ds));
+                        const out=dctx.getImageData(dx,dy,dw,dh);
+
+                        const sources=[];
+                        for(let i=0;i<n;i++){
+                            const sc=sourceCtx[i], sm=models[i];
+                            if(!sc||!sm){ sources.push(null); continue; }
+                            const sb=(part==='rightArm'||part==='leftArm')
+                                ? armBox(part,layer,sm) : UV_MAP[part][layer];
+                            const sf=getFacesForBox(sb,sc)?.[faceName];
+                            if(!sf){ sources.push(null); continue; }
+                            const ss=getLayoutScale(sc.canvas);
+                            sources.push({
+                                data:sc.getImageData(0,0,sc.canvas.width,sc.canvas.height),
+                                x:Math.round(sf[0]*ss), y:Math.round(sf[1]*ss),
+                                w:Math.max(1,Math.round(sf[2]*ss)), h:Math.max(1,Math.round(sf[3]*ss))
+                            });
                         }
+
+                        for(let py=0;py<dh;py++){
+                            const fy=(py+0.5)/dh;
+                            for(let px=0;px<dw;px++){
+                                const fx=(px+0.5)/dw;
+                                // Front/back/top/bottom: yatay yüz koordinatı X'tir.
+                                // Sol/sağ yan yüz: X sabittir; yüzün tamamı o banda aittir.
+                                let worldX;
+                                if(faceName==='left') worldX=dg.x0;
+                                else if(faceName==='right') worldX=dg.x1;
+                                else worldX=dg.x0+fx*(dg.x1-dg.x0);
+
+                                let band=Math.floor(((worldX-globalX0)/totalW)*n);
+                                band=Math.max(0,Math.min(n-1,band));
+                                const src=sources[band];
+                                if(!src) continue;
+                                const sx=src.x+Math.min(src.w-1,Math.max(0,Math.floor(fx*src.w)));
+                                const sy=src.y+Math.min(src.h-1,Math.max(0,Math.floor(fy*src.h)));
+                                const si=(sy*src.data.width+sx)*4;
+                                const oi=(py*dw+px)*4;
+                                out.data[oi]=src.data.data[si];
+                                out.data[oi+1]=src.data.data[si+1];
+                                out.data[oi+2]=src.data.data[si+2];
+                                out.data[oi+3]=src.data.data[si+3];
+                            }
+                        }
+                        dctx.putImageData(out,dx,dy);
                     }
                 }
             }
