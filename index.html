@@ -3689,104 +3689,93 @@ body {
             dctx.clearRect(0,0,dstCanvas.width,dstCanvas.height);
             dctx.drawImage(base,0,0);
 
-            const armW = m => m==='alex' ? 3 : 4;
-            // 3D modelde: sağ kol -> gövde -> sol kol. Şeritler bu toplam genişlikte eşittir.
-            const modelBounds = m => ({ minX:-4-armW(m), maxX:4+armW(m) });
-            const dstBounds=modelBounds(dstModel);
-            const totalW=dstBounds.maxX-dstBounds.minX;
-            const bandForX=x=>Math.max(0,Math.min(N-1,Math.floor(((x-dstBounds.minX)/totalW)*N)));
+            const armW=m=>m==='alex'?3:4;
+            // 3D karakter genişliği: sağ kol dış kenarından sol kol dış kenarına.
+            const bounds=m=>({min:-4-armW(m),max:4+armW(m)});
+            const db=bounds(dstModel);
+            const bandAtX=x=>Math.max(0,Math.min(N-1,Math.floor(((x-db.min)/(db.max-db.min))*N)));
 
             const parts=['head','torso','rightLeg','leftLeg','rightArm','leftArm'];
             const faces=['top','bottom','right','front','left','back'];
-            const imageCache=new Map();
-            const getImageDataCached=(canvas)=>{
-                if(!canvas) return null;
-                let data=imageCache.get(canvas);
-                if(!data){
-                    const c=canvas.getContext('2d',{willReadFrequently:true});
-                    data=c.getImageData(0,0,canvas.width,canvas.height);
-                    imageCache.set(canvas,data);
-                }
-                return data;
+            const cache=new Map();
+            const pixels=canvas=>{
+                if(!canvas)return null;
+                if(!cache.has(canvas)) cache.set(canvas,canvas.getContext('2d',{willReadFrequently:true}).getImageData(0,0,canvas.width,canvas.height));
+                return cache.get(canvas);
             };
-
-            function boxFor(part,layer,model){
-                return (part==='rightArm'||part==='leftArm')
-                    ? armBox(part,layer,model)
-                    : UV_MAP[part]?.[layer];
-            }
-            function geomFor(part,model){
+            const boxFor=(part,layer,model)=>(part==='rightArm'||part==='leftArm')?armBox(part,layer,model):UV_MAP[part]?.[layer];
+            const geom=(part,model)=>{
                 const aw=armW(model);
                 switch(part){
-                    case 'rightArm': return {minX:-4-aw,maxX:-4};
-                    case 'leftArm':  return {minX:4,maxX:4+aw};
-                    case 'rightLeg': return {minX:-4,maxX:0};
-                    case 'leftLeg':  return {minX:0,maxX:4};
-                    case 'head':
-                    case 'torso':
-                    default: return {minX:-4,maxX:4};
+                    case 'rightArm': return {min:-4-aw,max:-4};
+                    case 'leftArm': return {min:4,max:4+aw};
+                    case 'rightLeg': return {min:-4,max:0};
+                    case 'leftLeg': return {min:0,max:4};
+                    default: return {min:-4,max:4};
                 }
-            }
-            function worldXForFace(faceName,fx,geom){
-                // UV face'nin yatay ekseni dünya X'i taşıyan yüzlerde kullanılır.
-                // Sağ/sol yan yüzlerin X'i sabittir.
-                if(faceName==='right') return geom.maxX;
-                if(faceName==='left') return geom.minX;
-                return geom.minX + fx*(geom.maxX-geom.minX);
-            }
+            };
+
+            // UV yüzünün yatay eksenini gerçek X eksenine çevirir.
+            // Ön yüz: soldan sağa +X. Arka yüz: atlas yönü ters olduğundan -X.
+            // Üst/alt yüzlerde de karakterin X yönü korunur; yalnızca UV yönü
+            // yüzün doğal atlas yönüne göre ters çevrilir. Yan yüzlerde X sabittir:
+            // o yüzün tamamı tek banda aittir, yüzü kendi içinde kesmeyiz.
+            const xForFace=(face,fx,g)=>{
+                if(face==='front') return g.min+fx*(g.max-g.min);
+                if(face==='back') return g.max-fx*(g.max-g.min);
+                if(face==='right') return g.min;
+                if(face==='left') return g.max;
+                if(face==='top') return g.min+fx*(g.max-g.min);
+                if(face==='bottom') return g.max-fx*(g.max-g.min);
+                return g.min+fx*(g.max-g.min);
+            };
 
             for(const part of parts){
                 for(const layer of ['base','overlay']){
                     const dstBox=boxFor(part,layer,dstModel);
-                    const df=getFacesForBox(dstBox,dctx);
-                    if(!df) continue;
-                    const dg=geomFor(part,dstModel);
+                    const df=dstBox?getFacesForBox(dstBox,dctx):null;
+                    if(!df)continue;
+                    const dg=geom(part,dstModel);
 
                     for(const faceName of faces){
                         const face=df[faceName];
-                        if(!face || face[2]<=0 || face[3]<=0) continue;
+                        if(!face||face[2]<=0||face[3]<=0)continue;
                         const k=getLayoutScale(dstCanvas);
-                        const dx=Math.round(face[0]*k), dy=Math.round(face[1]*k);
-                        const dw=Math.max(1,Math.round(face[2]*k)), dh=Math.max(1,Math.round(face[3]*k));
+                        const dx=Math.round(face[0]*k),dy=Math.round(face[1]*k);
+                        const dw=Math.max(1,Math.round(face[2]*k)),dh=Math.max(1,Math.round(face[3]*k));
                         const out=dctx.getImageData(dx,dy,dw,dh);
 
-                        // Her kaynak skin için AYNI 3D yüzün UV karşılığını hazırla.
                         const sources=canvases.map((canvas,i)=>{
                             const ctx=canvas?.getContext('2d',{willReadFrequently:true});
-                            const sm=models[i] || dstModel;
-                            const sb=boxFor(part,layer,sm);
-                            const sf=sb ? getFacesForBox(sb,ctx)?.[faceName] : null;
-                            const data=getImageDataCached(canvas);
-                            if(!sf || !data) return null;
+                            const sb=boxFor(part,layer,models[i]||dstModel);
+                            const sf=sb?getFacesForBox(sb,ctx)?.[faceName]:null;
+                            const data=pixels(canvas);
+                            if(!sf||!data)return null;
                             const sk=getLayoutScale(canvas);
-                            return {data, x:Math.round(sf[0]*sk), y:Math.round(sf[1]*sk),
-                                w:Math.max(1,Math.round(sf[2]*sk)), h:Math.max(1,Math.round(sf[3]*sk))};
+                            return {data,x:Math.round(sf[0]*sk),y:Math.round(sf[1]*sk),w:Math.max(1,Math.round(sf[2]*sk)),h:Math.max(1,Math.round(sf[3]*sk))};
                         });
 
                         for(let py=0;py<dh;py++){
                             const fy=(py+0.5)/dh;
                             for(let px=0;px<dw;px++){
                                 const fx=(px+0.5)/dw;
-                                const worldX=worldXForFace(faceName,fx,dg);
-                                const band=bandForX(worldX);
+                                const worldX=xForFace(faceName,fx,dg);
+                                const band=bandAtX(worldX);
                                 const src=sources[band];
-                                if(!src) continue;
+                                if(!src)continue;
 
-                                // Kaynak modelde aynı fiziksel X konumunu koru.
-                                // Arm genişliği Steve/Alex arasında farklıysa normalize et.
-                                const sm=models[band] || dstModel;
-                                const sg=geomFor(part,sm);
-                                let sourceFx=fx;
-                                if(faceName!=='right' && faceName!=='left'){
-                                    const srcSpan=sg.maxX-sg.minX;
-                                    sourceFx=srcSpan>0 ? (worldX-sg.minX)/srcSpan : fx;
-                                    sourceFx=Math.max(0,Math.min(1,sourceFx));
-                                    // Back yüzü UV'de yatay olarak terslenir.
-                                    if(faceName==='back') sourceFx=1-sourceFx;
+                                const sm=models[band]||dstModel;
+                                const sg=geom(part,sm);
+                                let sfx=fx;
+                                if(faceName==='back'||faceName==='bottom'){
+                                    // Bu iki yüzün atlas UV'si +X yerine -X yönünde akar.
+                                    sfx=1-fx;
                                 }
-                                const sx=src.x+Math.min(src.w-1,Math.max(0,Math.floor(sourceFx*src.w)));
+                                // Yan yüzlerde kaynak yüz tamamen tek banda ait olduğu için
+                                // kendi UV koordinatı aynen korunur.
+                                const sx=src.x+Math.min(src.w-1,Math.max(0,Math.floor(sfx*src.w)));
                                 const sy=src.y+Math.min(src.h-1,Math.max(0,Math.floor(fy*src.h)));
-                                const si=(sy*src.data.width+sx)*4, oi=(py*dw+px)*4;
+                                const si=(sy*src.data.width+sx)*4,oi=(py*dw+px)*4;
                                 out.data[oi]=src.data.data[si];
                                 out.data[oi+1]=src.data.data[si+1];
                                 out.data[oi+2]=src.data.data[si+2];
