@@ -3673,13 +3673,15 @@ body {
             log('4 Skin Merger tamamlandı: (Skin 1 + 2) 50/50, (Skin 3 + 4) 50/50, ardından Üst/Alt.','success');
         }
 
-        // 5 Skin Merger — mevcut 50/50 UV mantığının 5 parçalı hali.
-        // Texture atlasını körlemesine kolonlara bölmez. Minecraft'ın UV kutularındaki
-        // her yüz ayrı ayrı ele alınır; yüzün yatay ekseni 5 eşit parçaya bölünür ve
-        // her parça Skin 1..5'ten aynı UV yüzünün karşılık gelen parçasını alır.
-        // Böylece sonuç 3D viewer'da gerçekten 5 dikey şerit olarak görünür.
+        // 5 Skin Merger — mevcut 50/50'nin gerçek 3D/UV genellemesi.
+        // ÖNEMLİ: PNG'yi 64px texture kolonlarına bölmez. Karakterin gerçek
+        // X genişliği (iki kolun dış kenarları arası) 5 EŞİT banda bölünür.
+        // Her UV yüzündeki piksel, 3D kutudaki gerçek X konumuna göre Skin 1..5'ten
+        // aynı yüzün karşılık gelen pikselini alır. Böylece 3D viewer'da şeritler
+        // koldan başlayıp gövde üzerinden diğer kola kadar eşit fiziksel genişlikte olur.
         function mergeFiveSkinUV(canvases, models, dstCanvas){
-            const n=5;
+            const N=5;
+            const dstModel=models[0] || 'steve';
             const base=canvases[0];
             dstCanvas.width=base.width; dstCanvas.height=base.height;
             const dctx=dstCanvas.getContext('2d',{alpha:true,willReadFrequently:true});
@@ -3687,79 +3689,102 @@ body {
             dctx.clearRect(0,0,dstCanvas.width,dstCanvas.height);
             dctx.drawImage(base,0,0);
 
-            const dstModel=models[0] || 'steve';
-            const parts=['head','torso','rightLeg','leftLeg','rightArm','leftArm'];
-            const faces=['top','bottom','left','front','right','back'];
-            const sourceContexts=canvases.map(c=>c?.getContext('2d',{willReadFrequently:true}));
+            const armW = m => m==='alex' ? 3 : 4;
+            // 3D modelde: sağ kol -> gövde -> sol kol. Şeritler bu toplam genişlikte eşittir.
+            const modelBounds = m => ({ minX:-4-armW(m), maxX:4+armW(m) });
+            const dstBounds=modelBounds(dstModel);
+            const totalW=dstBounds.maxX-dstBounds.minX;
+            const bandForX=x=>Math.max(0,Math.min(N-1,Math.floor(((x-dstBounds.minX)/totalW)*N)));
 
-            function partGeometry(part, model){
-                const armW=model==='alex'?3:4;
+            const parts=['head','torso','rightLeg','leftLeg','rightArm','leftArm'];
+            const faces=['top','bottom','right','front','left','back'];
+            const imageCache=new Map();
+            const getImageDataCached=(canvas)=>{
+                if(!canvas) return null;
+                let data=imageCache.get(canvas);
+                if(!data){
+                    const c=canvas.getContext('2d',{willReadFrequently:true});
+                    data=c.getImageData(0,0,canvas.width,canvas.height);
+                    imageCache.set(canvas,data);
+                }
+                return data;
+            };
+
+            function boxFor(part,layer,model){
+                return (part==='rightArm'||part==='leftArm')
+                    ? armBox(part,layer,model)
+                    : UV_MAP[part]?.[layer];
+            }
+            function geomFor(part,model){
+                const aw=armW(model);
                 switch(part){
-                    case 'rightArm': return {x0:4,x1:4+armW};
-                    case 'leftArm': return {x0:-4-armW,x1:-4};
-                    case 'rightLeg': return {x0:-4,x1:0};
-                    case 'leftLeg': return {x0:0,x1:4};
+                    case 'rightArm': return {minX:-4-aw,maxX:-4};
+                    case 'leftArm':  return {minX:4,maxX:4+aw};
+                    case 'rightLeg': return {minX:-4,maxX:0};
+                    case 'leftLeg':  return {minX:0,maxX:4};
                     case 'head':
                     case 'torso':
-                    default: return {x0:-4,x1:4};
+                    default: return {minX:-4,maxX:4};
                 }
+            }
+            function worldXForFace(faceName,fx,geom){
+                // UV face'nin yatay ekseni dünya X'i taşıyan yüzlerde kullanılır.
+                // Sağ/sol yan yüzlerin X'i sabittir.
+                if(faceName==='right') return geom.maxX;
+                if(faceName==='left') return geom.minX;
+                return geom.minX + fx*(geom.maxX-geom.minX);
             }
 
             for(const part of parts){
                 for(const layer of ['base','overlay']){
-                    const dstBox=(part==='rightArm'||part==='leftArm')
-                        ? armBox(part,layer,dstModel) : UV_MAP[part][layer];
+                    const dstBox=boxFor(part,layer,dstModel);
                     const df=getFacesForBox(dstBox,dctx);
                     if(!df) continue;
-                    const dg=partGeometry(part,dstModel);
+                    const dg=geomFor(part,dstModel);
 
                     for(const faceName of faces){
                         const face=df[faceName];
                         if(!face || face[2]<=0 || face[3]<=0) continue;
-
-                        // UV yüzünün yatay eksenini 5 gerçek dilime ayır.
-                        // left/right yüzlerde X sabittir; bu yüzün tamamı aynı banda gider.
-                        let fixedBand=null;
-                        if(faceName==='left'){
-                            const pos=(dg.x0 - (-4))/(8 + (dstModel==='alex'? -1:0));
-                            fixedBand=Math.max(0,Math.min(4,Math.floor(pos*5)));
-                        }else if(faceName==='right'){
-                            const pos=(dg.x1 - (-4))/(8 + (dstModel==='alex'? -1:0));
-                            fixedBand=Math.max(0,Math.min(4,Math.floor(pos*5)));
-                        }
-
                         const k=getLayoutScale(dstCanvas);
                         const dx=Math.round(face[0]*k), dy=Math.round(face[1]*k);
                         const dw=Math.max(1,Math.round(face[2]*k)), dh=Math.max(1,Math.round(face[3]*k));
                         const out=dctx.getImageData(dx,dy,dw,dh);
 
-                        const sources=[];
-                        for(let i=0;i<n;i++){
-                            const sc=sourceContexts[i], sm=models[i];
-                            if(!sc){sources.push(null);continue;}
-                            const sb=(part==='rightArm'||part==='leftArm')
-                                ? armBox(part,layer,sm) : UV_MAP[part][layer];
-                            const sf=getFacesForBox(sb,sc)?.[faceName];
-                            if(!sf){sources.push(null);continue;}
-                            const sk=getLayoutScale(sc.canvas);
-                            const sx=Math.round(sf[0]*sk), sy=Math.round(sf[1]*sk);
-                            const sw=Math.max(1,Math.round(sf[2]*sk)), sh=Math.max(1,Math.round(sf[3]*sk));
-                            sources.push({data:sc.getImageData(0,0,sc.canvas.width,sc.canvas.height),x:sx,y:sy,w:sw,h:sh});
-                        }
+                        // Her kaynak skin için AYNI 3D yüzün UV karşılığını hazırla.
+                        const sources=canvases.map((canvas,i)=>{
+                            const ctx=canvas?.getContext('2d',{willReadFrequently:true});
+                            const sm=models[i] || dstModel;
+                            const sb=boxFor(part,layer,sm);
+                            const sf=sb ? getFacesForBox(sb,ctx)?.[faceName] : null;
+                            const data=getImageDataCached(canvas);
+                            if(!sf || !data) return null;
+                            const sk=getLayoutScale(canvas);
+                            return {data, x:Math.round(sf[0]*sk), y:Math.round(sf[1]*sk),
+                                w:Math.max(1,Math.round(sf[2]*sk)), h:Math.max(1,Math.round(sf[3]*sk))};
+                        });
 
                         for(let py=0;py<dh;py++){
                             const fy=(py+0.5)/dh;
                             for(let px=0;px<dw;px++){
                                 const fx=(px+0.5)/dw;
-                                let band=fixedBand;
-                                if(band===null){
-                                    const worldX=dg.x0+fx*(dg.x1-dg.x0);
-                                    const norm=(worldX+4)/(8 + (dstModel==='alex'? -1:0));
-                                    band=Math.max(0,Math.min(4,Math.floor(norm*5)));
-                                }
+                                const worldX=worldXForFace(faceName,fx,dg);
+                                const band=bandForX(worldX);
                                 const src=sources[band];
                                 if(!src) continue;
-                                const sx=src.x+Math.min(src.w-1,Math.max(0,Math.floor(fx*src.w)));
+
+                                // Kaynak modelde aynı fiziksel X konumunu koru.
+                                // Arm genişliği Steve/Alex arasında farklıysa normalize et.
+                                const sm=models[band] || dstModel;
+                                const sg=geomFor(part,sm);
+                                let sourceFx=fx;
+                                if(faceName!=='right' && faceName!=='left'){
+                                    const srcSpan=sg.maxX-sg.minX;
+                                    sourceFx=srcSpan>0 ? (worldX-sg.minX)/srcSpan : fx;
+                                    sourceFx=Math.max(0,Math.min(1,sourceFx));
+                                    // Back yüzü UV'de yatay olarak terslenir.
+                                    if(faceName==='back') sourceFx=1-sourceFx;
+                                }
+                                const sx=src.x+Math.min(src.w-1,Math.max(0,Math.floor(sourceFx*src.w)));
                                 const sy=src.y+Math.min(src.h-1,Math.max(0,Math.floor(fy*src.h)));
                                 const si=(sy*src.data.width+sx)*4, oi=(py*dw+px)*4;
                                 out.data[oi]=src.data.data[si];
@@ -3776,8 +3801,12 @@ body {
         }
 
         function executeFiveSkinMerge(){
-            mergeFiveSkinUV([canvas1,canvas2,canvas3,canvas4,canvas5],[model1,model2,model3,model4,model5],resultCanvas);
-            log('5 Skin Merger tamamlandı: Minecraft UV yüzleri 5 eşit dikey parçaya ayrıldı ve her parça ayrı skinden alındı.','success');
+            mergeFiveSkinUV(
+                [canvas1,canvas2,canvas3,canvas4,canvas5],
+                [model1,model2,model3,model4,model5],
+                resultCanvas
+            );
+            log('5 Skin Merger tamamlandı: karakterin iki kolu arasındaki gerçek 3D genişlik 5 eşit dikey banda bölündü.','success');
         }
 
         syncMultiSkinPanel();
