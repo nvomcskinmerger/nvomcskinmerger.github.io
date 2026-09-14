@@ -3726,7 +3726,7 @@ body {
                 if(face==='right') return g.min;
                 if(face==='left') return g.max;
                 if(face==='top') return g.min+fx*(g.max-g.min);
-                if(face==='bottom') return g.max-fx*(g.max-g.min);
+                if(face==='bottom') return g.min+fx*(g.max-g.min);
                 return g.min+fx*(g.max-g.min);
             };
 
@@ -3764,16 +3764,13 @@ body {
                                 const src=sources[band];
                                 if(!src)continue;
 
-                                const sm=models[band]||dstModel;
-                                const sg=geom(part,sm);
-                                let sfx=fx;
-                                if(faceName==='back'||faceName==='bottom'){
-                                    // Bu iki yüzün atlas UV'si +X yerine -X yönünde akar.
-                                    sfx=1-fx;
-                                }
-                                // Yan yüzlerde kaynak yüz tamamen tek banda ait olduğu için
-                                // kendi UV koordinatı aynen korunur.
-                                const sx=src.x+Math.min(src.w-1,Math.max(0,Math.floor(sfx*src.w)));
+                                // Kaynak ve hedef aynı Minecraft UV yüzünü kullandığı için
+                                // bandı fiziksel X üzerinden seçsek bile yüzün kendi UV
+                                // koordinatını ters çevirmiyoruz. Özellikle bottom/back
+                                // yüzlerinde yapılan ikinci bir 1-fx dönüşümü görüntüyü
+                                // tersine çeviriyordu. UV atlasındaki gerçek yönü
+                                // boxFaces() zaten tanımlıyor.
+                                const sx=src.x+Math.min(src.w-1,Math.max(0,Math.floor(fx*src.w)));
                                 const sy=src.y+Math.min(src.h-1,Math.max(0,Math.floor(fy*src.h)));
                                 const si=(sy*src.data.width+sx)*4,oi=(py*dw+px)*4;
                                 out.data[oi]=src.data.data[si];
