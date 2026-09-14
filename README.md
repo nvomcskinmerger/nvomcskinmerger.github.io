@@ -2,13 +2,13 @@
 
 <div align="center">
 
-### Next-Generation Minecraft Skin Merger
+## Next-Generation Minecraft Skin Merger
 
-**Combine • Remix • Preview • Export Minecraft Skins — directly in your browser.**
+**Minecraft skinlerini birleştir, düzenle, önizle ve PNG olarak dışa aktar.**
 
 [🌐 Live Demo](https://nvomcskinmerger.github.io/) · [💻 GitHub](https://github.com/nvomcskinmerger/nvomcskinmerger.github.io) · [🐛 Report a Bug](https://github.com/nvomcskinmerger/nvomcskinmerger.github.io/issues)
 
-![Version](https://img.shields.io/badge/version-V1.0.0-8A2BE2?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-V1.1.1-8A2BE2?style=for-the-badge)
 ![License](https://img.shields.io/badge/license-MIT-success?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/platform-Web-blue?style=for-the-badge)
 ![Minecraft](https://img.shields.io/badge/Minecraft-Skins-62B47A?style=for-the-badge)
@@ -17,508 +17,462 @@
 
 ---
 
-## 🖼️ Preview
+## 📌 V1.1.1 Güncellemesi
 
-<p align="center">
-  <img src="./og-preview.png" alt="NVO MC Skin Merger preview" width="900">
-</p>
+**NVO MC SKIN MERGER V1.1.1** ile merger sistemi yeniden düzenlendi ve
+mevcut mergerlerin durumları arayüzde açıkça gösterilecek şekilde
+belgelendi.
 
-> **NVO MC Skin Merger** is a browser-based Minecraft skin creation and
-> merging studio focused on fast workflows, detailed skin manipulation,
-> multi-skin composition, previewing and exporting.
+### Durum etiketleri
 
-------------------------------------------------------------------------
+| Etiket | Anlamı |
+|---|---|
+| 🟢 **GÜNCELLENDİ** | Merger aktif ve V1.1.1 kapsamında güncellenmiştir. |
+| 🔵 **YENİ** | V1.1.1 ile eklenen yeni merger/özelliktir. |
+| 🔴 **HATALI** | Bilinen bir hata nedeniyle şu anda güvenilir değildir. |
+| ⚫ **KULLANIM DIŞI** | Artık kullanılmayan veya projeden kaldırılmıştır. |
 
-## 📌 Table of Contents
+> **V1.1.1 mevcut durum:** Bu sürümde aşağıdaki listede **HATALI** veya
+> **KULLANIM DIŞI** olarak işaretlenen aktif bir merger yoktur.
+> Mevcut mergerler **GÜNCELLENDİ** durumundadır.
 
--   [✨ What is NVO MC Skin Merger?](#-what-is-nvo-mc-skin-merger)
--   [🚀 Highlights](#-highlights)
--   [🧩 Skin Merger System](#-skin-merger-system)
--   [🎯 Supported Merge Modes](#-supported-merge-modes)
--   [🎨 Custom Selective Merger](#-custom-selective-merger)
--   [👤 Minecraft Username → Skin](#-minecraft-username--skin)
--   [📐 Supported Skin Formats](#-supported-skin-formats)
--   [🧊 3D Preview & Animation](#-3d-preview--animation)
-- [🖼️ Preview, Compare & Result Workflow](#-preview-compare--result-workflow)
--   [🔐 Authentication & History](#-authentication--history)
--   [🛡️ Privacy](#-privacy)
--   [⚡ How to Use](#-how-to-use)
--   [💻 Technology](#-technology)
--   [📂 Repository Structure](#-repository-structure)
--   [🌐 GitHub Pages Deployment](#-github-pages-deployment)
--   [🧪 Validation & Compatibility](#-validation--compatibility)
--   [🐛 Troubleshooting](#-troubleshooting)
--   [🤝 Contributing](#-contributing)
--   [🗺️ Roadmap](#️-roadmap)
--   [📄 License](#-license)
--   [⚠️ Trademark Notice](#️-trademark-notice)
+---
 
-------------------------------------------------------------------------
+# 🧩 Merger Durumları
 
-## ✨ What is NVO MC Skin Merger?
+Aşağıdaki liste mevcut proje dosyasındaki merger aileleri ve proje
+README'sinde tanımlanan kullanıcı-facing isimler temel alınarak
+hazırlanmıştır.
 
-**NVO MC Skin Merger** is an advanced, browser-first Minecraft skin
-merger designed for players, skin artists, server owners, content
-creators and anyone who wants to experiment with Minecraft character
-textures without opening a traditional image editor.
+| # | Merger | V1.1.1 Durumu |
+|---:|---|---|
+| 1 | **50/50 / Half** | 🟢 Güncellendi |
+| 2 | **Top / Bottom** | 🟢 Güncellendi |
+| 3 | **Head Swap** | 🟢 Güncellendi |
+| 4 | **Body Swap** | 🟢 Güncellendi |
+| 5 | **Arm Swap** | 🟢 Güncellendi |
+| 6 | **Leg Swap** | 🟢 Güncellendi |
+| 7 | **Arms + Legs Swap** | 🟢 Güncellendi |
+| 8 | **Head + Legs Swap** | 🟢 Güncellendi |
+| 9 | **Head + Torso Swap** | 🟢 Güncellendi |
+| 10 | **Base Only** | 🟢 Güncellendi |
+| 11 | **Outer Overlay** | 🟢 Güncellendi |
+| 12 | **Reverse Overlay** | 🟢 Güncellendi |
+| 13 | **Front / Back** | 🟢 Güncellendi |
+| 14 | **Blend** | 🟢 Güncellendi |
+| 15 | **Checker Blend** | 🟢 Güncellendi |
+| 16 | **Gradient Blend** | 🟢 Güncellendi |
+| 17 | **Alternating Parts** | 🟢 Güncellendi |
+| 18 | **Cross Limb Swap** | 🟢 Güncellendi |
+| 19 | **Chimera / Random Mix** | 🟢 Güncellendi |
+| 20 | **3 Skin Merger** | 🟢 Güncellendi |
+| 21 | **4 Skin Merger** | 🟢 Güncellendi |
+| 22 | **5 Skin Merger** | 🟢 Güncellendi |
 
-The project brings multiple workflows together in one interface:
+### Durum özeti
 
--   Two-skin merging
--   Three-skin composition
--   Four-skin composition
--   Body-part swapping
--   Overlay/base manipulation
--   Random/chimera-style combinations
--   Custom selective merging
--   Minecraft username-based skin loading
--   2D texture previews
--   3D character preview
--   Animation controls
--   Result comparison
--   History / gallery workflows
--   PNG output
+- 🟢 **GÜNCELLENDİ:** Mevcut aktif mergerler.
+- 🔵 **YENİ:** Şu anda ayrı bir yeni etiketi gerektiren aktif merger yok.
+- 🔴 **HATALI:** Şu anda bildirilen aktif hatalı merger yok.
+- ⚫ **KULLANIM DIŞI:** Kullanım dışı olarak işaretlenen aktif merger yok.
 
-> **Current release:** `V1.0.0`
+---
 
-------------------------------------------------------------------------
+# ✨ Proje Hakkında
 
-## 🚀 Highlights
+**NVO MC SKIN MERGER**, Minecraft skinlerini tarayıcı üzerinden
+birleştirmek ve ortaya çıkan texture'ı kontrol etmek için hazırlanmış
+browser-first bir uygulamadır.
 
-  Capability                      Status
-  ------------------------------ --------
-  2 Skin Merger                     ✅
-  3 Skin Merger                     ✅
-  4 Skin Merger                     ✅
-  50/50 Merger                      ✅
-  Top / Bottom Merger               ✅
-  Body-part based merging           ✅
-  Custom Selective Merger           ✅
-  Minecraft username loading        ✅
-  Multiple skin resolutions         ✅
-  2D preview                        ✅
-  3D preview                        ✅
-  Character animation               ✅
-  Before / After comparison         ✅
-  History / Gallery                 ✅
-  PNG export                        ✅
-  Google authentication             ✅
-  GitHub Pages compatible           ✅
-  Single-page application           ✅
-  No desktop software required      ✅
+Temel hedefler:
 
-------------------------------------------------------------------------
+- Minecraft skinlerini hızlı şekilde birleştirmek
+- Mevcut merger mekaniklerini korumak
+- Minecraft UV yapısını dikkate almak
+- Base ve overlay katmanlarını işlemek
+- 2D texture sonucunu görmek
+- 3D karakter önizlemesi yapmak
+- Sonucu PNG olarak dışa aktarmak
+- Birden fazla skin ile zincirleme çalışma yapmak
 
-# 🧩 Skin Merger System
+Uygulama masaüstü bir resim düzenleyicisine ihtiyaç duymadan tarayıcı
+üzerinden çalışacak şekilde tasarlanmıştır.
 
-The project extends the original merger workflow without replacing its
-underlying mechanics.
+---
 
-## 2️⃣ Two Skin Merger
+# 🧩 Çoklu Skin Merger Sistemi
 
-The classic workflow uses:
+## 3 Skin Merger
 
--   **Skin 1**
--   **Skin 2**
--   A selected merger mode
--   Generated result
+3 Skin sistemi aşamalı olarak çalışır:
 
-The application works with Minecraft UV layouts instead of treating
-skins as ordinary flat images.
-
-------------------------------------------------------------------------
-
-## 3️⃣ Three Skin Merger
-
-The three-skin workflow is intentionally chained:
-
-``` text
+```text
 Skin 1 ─┐
-        ├── 50/50 Vertical ──┐
-Skin 2 ─┘                    │
-                             ├── Top / Bottom ──> RESULT
-Skin 3 ──────────────────────┘
+        ├── 50/50 ──┐
+Skin 2 ─┘           │
+                    ├── Top / Bottom ──> RESULT
+Skin 3 ─────────────┘
 ```
 
-### Processing order
+İşlem sırası:
 
-1.  Skin 1 + Skin 2
-2.  Existing 50/50 vertical merger
-3.  Intermediate result + Skin 3
-4.  Existing top/bottom merger
-5.  Final result
+1. Skin 1 + Skin 2
+2. Mevcut 50/50 merger
+3. Ara sonuç + Skin 3
+4. Mevcut Top / Bottom merger
+5. Final sonuç
 
-This is a staged composition workflow --- **not a separate split/merge
-engine**.
+Bu yapı ayrı bir alternatif split sistemi yerine mevcut merger
+mekaniklerinin zincirlenmesini esas alır.
 
-------------------------------------------------------------------------
+---
 
-## 4️⃣ Four Skin Merger
+## 4 Skin Merger
 
-The four-skin workflow uses two parallel 50/50 combinations followed by
-the existing top/bottom operation:
+4 Skin sistemi iki adet 50/50 işlemini daha sonra Top / Bottom işlemiyle
+birleştirir:
 
-``` text
+```text
 Skin 1 ─┐
-        ├── 50/50 Vertical ──┐
-Skin 2 ─┘                    │
-                             ├── Top / Bottom ──> FINAL
-Skin 3 ─┐                    │
-        ├── 50/50 Vertical ──┘
+        ├── 50/50 ──┐
+Skin 2 ─┘           │
+                    ├── Top / Bottom ──> FINAL
+Skin 3 ─┐           │
+        ├── 50/50 ──┘
 Skin 4 ─┘
 ```
 
-### Processing order
+İşlem sırası:
 
-1.  Skin 1 + Skin 2 → 50/50 result
-2.  Skin 3 + Skin 4 → 50/50 result
-3.  First intermediate result + second intermediate result
-4.  Existing top/bottom merger
-5.  Final result
+1. Skin 1 + Skin 2 → 50/50
+2. Skin 3 + Skin 4 → 50/50
+3. İki ara sonuç → Top / Bottom
+4. Final sonuç
 
-------------------------------------------------------------------------
+---
 
-## 5️⃣ Five Skin Merger
+## 5 Skin Merger
 
-The five-skin workflow divides the character into **five equal vertical
-model/UV bands**. It is UV-aware and does not simply crop the PNG texture
-into five ordinary image columns.
+5 Skin Merger, basitçe PNG'yi beş dikey kolon halinde kesmek yerine
+**Minecraft model geometrisi ve UV bölgeleri üzerinden** beş eşit dikey
+banda ayırma mantığı kullanır.
 
-``` text
+```text
 Skin 1 ─┐
 Skin 2 ─┤
-Skin 3 ─┼── 5 equal UV/model bands ──> RESULT
+Skin 3 ─┼── 5 eşit UV / model bandı ──> RESULT
 Skin 4 ─┤
 Skin 5 ─┘
 ```
 
-### Processing rules
+Önemli noktalar:
 
-- Exactly **5 skins** are used.
-- Each skin supplies one vertical band of the Minecraft model geometry.
-- Head, torso, arms and legs use their corresponding Minecraft UV regions.
-- Front, back, top, bottom and side faces preserve their UV orientation.
-- Steve/Alex arm widths are respected.
-- Base and overlay layers are handled through the UV-aware mapping.
-- **6 Skin Merger is not included in the current release.**
+- Tam olarak **5 skin** kullanılır.
+- Bölme Minecraft modelinin yatay genişliği esas alınarak yapılır.
+- İlgili UV yüzleri ayrı ayrı işlenir.
+- Ön, arka, üst, alt ve yan yüzlerin UV yönleri korunur.
+- Steve / Alex kol genişliği dikkate alınır.
+- Base ve overlay katmanları UV bölgeleri üzerinden işlenir.
+- **6 Skin Merger mevcut sürümün bir parçası değildir.**
 
-------------------------------------------------------------------------
+---
 
-# 🎯 Supported Merge Modes
+# 🎯 Merger Aileleri
 
-Current mode families include:
+## Core
 
-### Core
+- 50/50 / Half
+- Top / Bottom
+- Head Swap
+- Body Swap
+- Arm Swap
+- Leg Swap
+- Arms + Legs Swap
+- Head + Legs Swap
+- Head + Torso Swap
 
--   `50/50 / Half`
--   `Top / Bottom`
--   `Head Swap`
--   `Body Swap`
--   `Arm Swap`
--   `Leg Swap`
--   `Arms + Legs Swap`
--   `Head + Legs Swap`
--   `Head + Torso Swap`
+## Texture / Overlay
 
-### Texture / Overlay
+- Base Only
+- Outer Overlay
+- Reverse Overlay
+- Front / Back
+- Blend
+- Checker Blend
+- Gradient Blend
 
--   `Base Only`
--   `Outer Overlay`
--   `Reverse Overlay`
--   `Front / Back`
--   `Blend`
--   `Checker Blend`
--   `Gradient Blend`
+## Advanced
 
-### Advanced
+- Alternating Parts
+- Cross Limb Swap
+- Chimera / Random Mix
+- Custom Selective Merger
 
--   `Alternating Parts`
--   `Cross Limb Swap`
--   `Chimera / Random Mix`
--   `Custom Selective Merger`
+## Multi-Skin
 
-### Multi-Skin
+- 3 Skin Merger
+- 4 Skin Merger
+- 5 Skin Merger
 
--   `3 Skin Merger`
--   `4 Skin Merger`
--   `5 Skin Merger`
+> **6 Skin Merger:** V1.1.1 kapsamında bulunmamaktadır.
 
-The available mode list may evolve with future merger-engine releases.
-
-------------------------------------------------------------------------
+---
 
 # 🎨 Custom Selective Merger
 
-The **Custom Selective Merger** provides finer control than a single
-predefined merge mode.
+Custom Selective Merger, tek bir global merger seçmek yerine belirli
+vücut bölgelerini ayrı ayrı kontrol etmeye yönelik gelişmiş çalışma
+alanıdır.
 
-Instead of choosing one global operation, body regions can be controlled
-individually.
+Genel akış:
 
-``` text
-Choose base body
-       ↓
-Select Skin 1 / Skin 2
-       ↓
-Control overlay layers
-       ↓
-Preview the composition
-       ↓
-Generate final texture
+```text
+Base body seç
+     ↓
+Skin 1 / Skin 2 kaynaklarını seç
+     ↓
+Overlay katmanlarını kontrol et
+     ↓
+Sonucu önizle
+     ↓
+Final texture oluştur
 ```
 
-Quick actions include:
+Desteklenen hızlı seçim mantığı:
 
--   **All Skin 1**
--   **All Skin 2**
--   **Overlays Off**
+- All Skin 1
+- All Skin 2
+- Overlays Off
 
-Individual body-part controls can be cycled through supported source
-states.
+---
 
-------------------------------------------------------------------------
+# 👤 Minecraft Kullanıcı Adı ile Skin Getirme
 
-# 👤 Minecraft Username → Skin
+Uygulamada PNG yüklemenin yanında Minecraft kullanıcı adı üzerinden skin
+yükleme workflow'u bulunur.
 
-A local PNG is not always necessary.
-
-The application supports entering a Minecraft username and retrieving
-the associated skin.
-
-``` text
-Minecraft username
+```text
+Minecraft kullanıcı adı
         ↓
-      GETIR
+      GETİR
         ↓
-Fetch skin
+     Skin yükle
         ↓
-Load into Skin slot
+      Önizle
         ↓
-Preview
-        ↓
-Merge
+       Merge
 ```
 
-The same interaction model is available for the additional inputs used
-by the 3-, 4- and 5-skin workflows.
+3, 4 ve 5 Skin workflow'larında ek skin alanları aynı temel yükleme
+mantığını kullanacak şekilde tasarlanmıştır.
 
-> Username fetching depends on the external profile/skin services used
-> by the application and normal browser/network availability.
+> Kullanıcı adıyla skin getirme özelliği harici profil/skin servislerine
+> ve normal internet bağlantısına bağlıdır.
 
-------------------------------------------------------------------------
+---
 
-# 📐 Supported Skin Formats
+# 📐 Skin Formatları
 
-The application validates Minecraft skin dimensions before processing.
+Uygulama Minecraft skin texture çözünürlüklerini kontrol eder.
 
-  Resolution     Supported
-  ------------- -----------
-  `64 × 32`         ✅
-  `64 × 64`         ✅
-  `128 × 64`        ✅
-  `128 × 128`       ✅
+Desteklenen çözünürlükler:
 
-The merger detects the active skin format and prevents incompatible
-combinations where required.
+| Çözünürlük | Durum |
+|---|---|
+| 64 × 32 | ✅ |
+| 64 × 64 | ✅ |
+| 128 × 64 | ✅ |
+| 128 × 128 | ✅ |
 
-Minecraft skins are structured UV maps, so the engine needs to preserve:
+UV-aware işlemlerde özellikle aşağıdaki bilgiler korunmalıdır:
 
--   Texture coordinates
--   Body regions
--   Arm/leg layouts
--   Base layers
--   Overlay layers
--   Resolution scaling
+- Texture koordinatları
+- Head / torso / arm / leg bölgeleri
+- Base layer
+- Overlay layer
+- Steve / Alex kol yapısı
+- Texture çözünürlüğü
 
-------------------------------------------------------------------------
+---
 
-# 🧊 3D Preview & Animation
+# 🧊 3D Önizleme
 
-NVO MC Skin Merger goes beyond a flat PNG preview.
+Uygulama yalnızca düz PNG sonucuna bakmakla sınırlı değildir.
 
-The application includes a 3D skin viewer workflow with character
-animation controls such as:
+3D skin viewer üzerinden karakteri incelemek ve mevcut animasyon
+kontrollerini kullanmak mümkündür.
 
--   🚶 Walk
--   🏃 Run
--   🧍 Idle
--   🔄 Rotate
+Örnek kontroller:
 
-The purpose is to inspect the final skin as an actual Minecraft
-character rather than only checking the UV texture.
+- 🚶 Walk
+- 🏃 Run
+- 🧍 Idle
+- 🔄 Rotate
 
-------------------------------------------------------------------------
+3D görüntü, UV üzerinde doğru görünen bir texture'ın Minecraft
+karakterinde de doğru görünüp görünmediğini kontrol etmek için özellikle
+faydalıdır.
 
-# 🖼️ Preview, Compare & Result Workflow
+---
 
-After merging, the application can provide:
+# 🖼️ Sonuç ve Önizleme
 
--   Generated PNG result
--   UV output preview
--   Result information
--   Before / After comparison
--   3D character inspection
--   Reusing the generated result as Skin 1
--   Downloading the final texture
+Merge işleminden sonra workflow içerisinde:
 
-### Chained workflow
+- Final PNG
+- UV texture görüntüsü
+- Sonuç bilgileri
+- Before / After karşılaştırması
+- 3D karakter önizlemesi
+- Sonucu tekrar Skin 1 olarak kullanma
+- PNG dışa aktarma
 
-``` text
+gibi işlemler kullanılabilir.
+
+Zincirleme kullanım:
+
+```text
 Skin 1 + Skin 2
       ↓
-   RESULT
+    RESULT
       ↓
-Use Result as Skin 1
+Result → Skin 1
       ↓
-Upload new Skin 2
+Yeni Skin 2
       ↓
-   NEXT MERGE
+ NEXT MERGE
 ```
 
-This makes repeated experimentation much faster.
+---
 
-------------------------------------------------------------------------
+# 🔐 Giriş ve Hesap Özellikleri
 
-# 🔐 Authentication & History
+Uygulamada Google / Firebase tabanlı hesap özellikleri bulunabilir.
 
-The application integrates Google authentication through Firebase.
+Hesap gerektiren özellikler ile temel merger işlemleri birbirinden
+ayrılacak şekilde tasarlanmıştır.
 
-Account-related functionality can include:
+**Önemli:**
 
--   History / Gallery
--   Saved results
--   Re-accessing generated results
--   Download-related protected functionality
+> Skin merge işleminin kendisi Google hesabıyla giriş yapılmasını
+> gerektirmemelidir. Hesap gereksinimleri history, gallery veya korumalı
+> hesap özellikleri gibi alanlarla sınırlı olabilir.
 
-The basic merger workflow is designed to remain useful without requiring
-authentication for every operation.
+---
 
-### History / Gallery
+# 🛡️ Gizlilik
 
-The gallery workflow is designed around:
+Skin işleme mümkün olan yerlerde browser-side olarak gerçekleştirilir.
 
--   Saving generated results
--   Loading previous results
--   Refreshing the gallery
--   Reusing saved textures
--   Deleting saved entries
+Yüklenen skin dosyalarının işlenmesi ile hesap / Firebase özellikleri
+aynı şey değildir.
 
-------------------------------------------------------------------------
+Harici skin servisleri kullanıldığında, kullanıcı adı üzerinden skin
+getirme işlemi ilgili harici servisin çalışma koşullarına bağlıdır.
 
-# 🛡️ Privacy
+Projeyi fork ederken storage, analytics, authentication veya harici
+servislerde değişiklik yapılırsa gizlilik metinleri de yeniden kontrol
+edilmelidir.
 
-The project includes an in-app privacy/legal information layer.
+---
 
-Skin processing is designed around browser-side workflows wherever
-possible.
+# ⚡ Kullanım
 
-The application's privacy text states that uploaded skin files are
-processed on the user's device rather than being treated as files that
-must be uploaded to an NVO server.
-
-Google authentication is handled through Firebase Authentication.
-
-> If you fork or modify the project, review the privacy/legal text again
-> whenever you change storage, analytics, authentication or external
-> services.
-
-------------------------------------------------------------------------
-
-# ⚡ How to Use
-
-### 1. Open the application
+## 1. Siteyi aç
 
 **https://nvomcskinmerger.github.io/**
 
-### 2. Select a mode
+## 2. Merger seç
 
-Choose:
+İhtiyacına göre:
 
--   Standard 2-skin mode
--   3 Skin Merger
--   4 Skin Merger
--   Advanced merger
--   Custom Selective Merger
+- 2 Skin
+- 3 Skin
+- 4 Skin
+- 5 Skin
+- Core mergerler
+- Texture / Overlay mergerler
+- Advanced mergerler
+- Custom Selective Merger
 
-### 3. Add skins
+kullanılabilir.
 
-You can:
+## 3. Skinleri yükle
 
--   Upload PNG files
--   Enter Minecraft usernames
--   Preview loaded skins
--   Check detected model/format information
+Her slot için:
 
-### 4. Merge
+- PNG yükleyebilir
+- Minecraft kullanıcı adı kullanabilir
+- Skin önizlemesini kontrol edebilir
+- Model / çözünürlük bilgilerini inceleyebilirsin
 
-Select the desired operation and start the merger.
+## 4. Merge yap
 
-For 3- and 4-skin workflows, the application follows the predefined
-staged process automatically.
+Seçilen mergeri çalıştır.
 
-### 5. Inspect
+3, 4 ve 5 Skin sistemlerinde gerekli çoklu-skin işlemleri kendi
+workflow'una göre gerçekleştirilir.
 
-Review the result using:
+## 5. Sonucu kontrol et
 
--   2D texture view
--   UV output
--   Before / After comparison
--   3D viewer
+Kontrol edilebilecek alanlar:
 
-### 6. Export
+- 2D texture
+- UV
+- Before / After
+- 3D karakter
 
-Download the generated PNG when the required account/authentication
-conditions are satisfied.
+## 6. Dışa aktar
 
-------------------------------------------------------------------------
+Final PNG'yi indir.
 
-# 💻 Technology
+---
 
-NVO MC Skin Merger is intentionally lightweight and browser-oriented.
+# 💻 Teknoloji
 
-### Front end
+NVO MC SKIN MERGER browser-first bir yapı kullanır.
 
--   HTML5
--   CSS3
--   JavaScript
--   Canvas API
+### Frontend
+
+- HTML5
+- CSS3
+- JavaScript
+- Canvas API
 
 ### Rendering
 
--   HTML Canvas
--   WebGL-based 3D skin viewer workflow
--   Minecraft UV texture mapping
+- HTML Canvas
+- WebGL tabanlı 3D skin viewer workflow
+- Minecraft UV texture mapping
 
-### Services
+### Servisler
 
--   Firebase Authentication
--   Firebase-related history/usage functionality
--   External Minecraft skin/profile retrieval services
+- Firebase Authentication
+- Firebase ile ilişkili hesap/history özellikleri
+- Harici Minecraft skin/profile servisleri
 
 ### Hosting
 
--   GitHub Pages
+- GitHub Pages
 
-### Architecture
+### Ana uygulama
 
-The main application is designed as a single-page web application with
-the primary application contained in:
-
-``` text
+```text
 index.html
 ```
 
-This makes deployment straightforward and avoids requiring a traditional
-Node.js/PHP server for the static front end.
+Ana uygulama tek sayfalı web uygulaması mantığında çalışır ve statik
+hosting için uygundur.
 
-------------------------------------------------------------------------
+---
 
-# 📂 Repository Structure
+# 📂 Repository Yapısı
 
-``` text
+```text
 nvomcskinmerger.github.io/
 │
 ├── index.html
+├── README.md
 ├── LICENSE
 ├── og-preview.png
 ├── favicon.png
@@ -526,230 +480,227 @@ nvomcskinmerger.github.io/
 └── apple-touch-icon.png
 ```
 
-  File                     Purpose
-  ------------------------ ---------------------------
-  `index.html`             Main web application
-  `og-preview.png`         Social/Open Graph preview
-  `favicon.png`            Browser favicon
-  `favicon-512.png`        Large favicon/app icon
-  `apple-touch-icon.png`   Apple touch icon
-  `LICENSE`                MIT License
+| Dosya | Görevi |
+|---|---|
+| `index.html` | Ana web uygulaması |
+| `README.md` | Proje dokümantasyonu |
+| `og-preview.png` | Open Graph / sosyal medya önizlemesi |
+| `favicon.png` | Tarayıcı faviconu |
+| `favicon-512.png` | Büyük uygulama ikonu |
+| `apple-touch-icon.png` | Apple touch icon |
+| `LICENSE` | MIT lisansı |
 
-------------------------------------------------------------------------
+---
 
-# 🌐 GitHub Pages Deployment
+# 🌐 GitHub Pages
 
-The project is designed for static hosting.
+Proje statik hosting için uygundur.
 
-1.  Fork or clone the repository.
-2.  Open **Settings → Pages**.
-3.  Select the desired branch.
-4.  Select the repository root as the publishing source.
-5.  Save.
-6.  Wait for GitHub Pages to publish the site.
+1. Repository'yi fork veya clone et.
+2. **Settings → Pages** bölümünü aç.
+3. Yayınlanacak branch'i seç.
+4. Repository root'u kaynak olarak seç.
+5. Kaydet.
+6. GitHub Pages deployment'ının tamamlanmasını bekle.
 
-Because the front end is browser-based, no traditional server deployment
-is required for the main application.
+Ana uygulama için geleneksel Node.js veya PHP sunucusu gerekmez.
 
-------------------------------------------------------------------------
+---
 
-# 🧪 Validation & Compatibility
+# 🧪 Kontrol ve Uyumluluk
 
-The merger validates important input conditions before processing.
+Merge işleminden önce temel input kontrolleri yapılmalıdır.
 
-### Input validation
+Kontrol edilen durumlar arasında:
 
-The application can reject:
+- PNG olmayan dosyalar
+- Geçersiz PNG verisi
+- Desteklenmeyen çözünürlükler
+- Aşırı büyük dosyalar
+- Uyumsuz skin formatları
+- Okunamayan image data
 
--   Non-PNG files
--   Invalid PNG data
--   Unsupported dimensions
--   Oversized files
--   Incompatible skin formats
--   Unreadable image data
+bulunabilir.
 
-### Browser requirements
+## Tarayıcı
 
-The project is intended for modern browsers supporting:
+Modern tarayıcı kullanılması önerilir:
 
--   HTML5 Canvas
--   Modern JavaScript
--   WebGL for 3D preview
--   Modern File APIs
--   Browser storage/session capabilities
+- Chrome
+- Edge
+- Firefox
+- Safari
 
-Recommended browsers:
+3D preview için WebGL desteği gereklidir.
 
--   Chrome
--   Edge
--   Firefox
--   Safari
+---
 
-------------------------------------------------------------------------
+# 🐛 Hata Ayıklama
 
-# 🐛 Troubleshooting
+## Merge çalışmıyor
 
-## Merge button does not work
+Şunları kontrol et:
 
-Check:
+1. Gerekli skin slotlarının tamamı dolu mu?
+2. 3 Skin için Skin 1–3 hazır mı?
+3. 4 Skin için Skin 1–4 hazır mı?
+4. 5 Skin için Skin 1–5 hazır mı?
+5. Skin çözünürlükleri uyumlu mu?
+6. PNG dosyaları geçerli mi?
+7. Tarayıcı console'unda JavaScript hatası var mı?
 
-1.  All required skin slots are loaded.
-2.  3 Skin mode has Skin 1--3 ready.
-3.  4 Skin mode has Skin 1--4 ready.
-4.  Skin formats are compatible.
-5.  PNG files are valid Minecraft skin textures.
-6.  The browser console does not report a JavaScript error.
+## 5 Skin sonucu yanlış görünüyorsa
 
-### 3 Skin
+5 Skin sistemi basit PNG kolon kesme yöntemi değildir.
 
-``` text
-Skin 1 ✅
-Skin 2 ✅
-Skin 3 ✅
-     ↓
-   MERGE
+Özellikle kontrol edilmesi gerekenler:
+
+- Skin UV layout'u
+- Base / overlay yapısı
+- Steve / Alex model tipi
+- Texture çözünürlüğü
+- Ön / arka / üst / alt yüzlerin yönleri
+- Yan yüzlerin UV yönleri
+
+3D preview sonucu kontrol etmek için kullanılmalıdır.
+
+## Kullanıcı adı ile skin gelmiyor
+
+Olası nedenler:
+
+- Geçersiz Minecraft kullanıcı adı
+- Oyuncu bulunamıyor
+- Harici skin servisi geçici olarak çalışmıyor
+- Network / CORS / browser kısıtlaması
+- Geçici servis kesintisi
+
+Gerekirse skin PNG olarak manuel yüklenebilir.
+
+## 3D preview görünmüyor
+
+Kontrol et:
+
+- WebGL açık mı?
+- Donanım hızlandırma aktif mi?
+- Browser console hata veriyor mu?
+- Oluşturulmuş bir sonuç var mı?
+
+---
+
+# 🧠 Tasarım İlkeleri
+
+## 1. Mevcut merger mekaniklerini koru
+
+Yeni özellikler mevcut merger mantığını gereksiz yere değiştirmeden
+genişletilmelidir.
+
+## 2. UV-aware işlem
+
+Minecraft skinleri sıradan düz resimler değildir.
+
+Bu nedenle merger işlemleri mümkün olduğunca:
+
+- UV koordinatlarını
+- model yüzlerini
+- base layer'ı
+- overlay layer'ı
+- Steve / Alex farklarını
+
+dikkate almalıdır.
+
+## 3. Hızlı browser workflow
+
+```text
+Skin
+ ↓
+Merge
+ ↓
+Preview
+ ↓
+Export
 ```
 
-### 4 Skin
+## 4. Kademeli kullanım
 
-``` text
-Skin 1 ✅
-Skin 2 ✅
-Skin 3 ✅
-Skin 4 ✅
-     ↓
-   MERGE
-```
+Basit mergerlerden gelişmiş işlemlere kadar farklı kullanım seviyeleri
+sunulur.
 
-## Username skin does not load
+## 5. Creator-first UX
 
-Possible causes:
+Amaç, kullanıcıyı karmaşık bir image editor workflow'una zorlamadan hızlı
+skin denemeleri yapabilmesini sağlamaktır.
 
--   Invalid Minecraft username
--   Player does not exist
--   External skin service unavailable
--   Browser/network restrictions
--   Temporary third-party outage
+---
 
-Try uploading the PNG manually.
+# 🤝 Katkıda Bulunma
 
-## 3D preview does not appear
+Katkılar memnuniyetle karşılanır.
 
-Check:
-
--   WebGL availability
--   Browser hardware acceleration
--   Browser console errors
--   Authentication requirements for the current feature
--   Whether a generated result exists
-
-## Skin looks incorrect
-
-Make sure the input is a genuine Minecraft skin layout and that the
-source skins use compatible resolutions/layouts.
-
-------------------------------------------------------------------------
-
-# 🧠 Design Philosophy
-
-NVO MC Skin Merger is built around five principles.
-
-### 1. Preserve existing merger mechanics
-
-New workflows should extend the existing merger engine rather than
-unnecessarily replacing it.
-
-### 2. Texture-aware processing
-
-Minecraft skins are structured UV maps. Operations should respect that
-structure.
-
-### 3. Fast browser workflows
-
-The intended flow is:
-
-``` text
-Skin → Merge → Preview → Export
-```
-
-without requiring desktop image-editing software.
-
-### 4. Progressive complexity
-
-Beginners can use simple merger modes while advanced users can move
-into:
-
--   Custom selection
--   Overlay control
--   Multi-skin workflows (3, 4 and 5 Skin)
--   3D inspection
--   Chained results
-
-### 5. Creator-first UX
-
-The interface is designed for rapid experimentation instead of forcing
-creators through a complicated image-editing workflow.
-
-------------------------------------------------------------------------
-
-# 🤝 Contributing
-
-Contributions are welcome.
-
-## Suggested workflow
-
-``` bash
+```bash
 git clone https://github.com/nvomcskinmerger/nvomcskinmerger.github.io.git
 cd nvomcskinmerger.github.io
 ```
 
-Then:
+Önerilen süreç:
 
-1.  Create a branch.
-2.  Make your changes.
-3.  Test the affected merger modes.
-4.  Test multiple resolutions.
-5.  Test 3/4-skin workflows if relevant.
-6.  Test username loading if relevant.
-7.  Test 3D preview if relevant.
-8.  Open a pull request.
+1. Yeni branch oluştur.
+2. Değişikliği yap.
+3. Etkilenen mergerleri test et.
+4. Farklı skin çözünürlüklerini test et.
+5. 3 / 4 / 5 Skin workflowlarını ilgili değişikliklerde test et.
+6. Username skin loading etkileniyorsa onu test et.
+7. 3D preview etkileniyorsa onu test et.
+8. Pull request aç.
 
-### Bug reports should include
+### Bug report
 
--   Browser and version
--   Operating system
--   Skin resolution
--   Merger mode
--   Number of skins
--   Steps to reproduce
--   Console error, if any
--   Screenshot/video when useful
+Mümkün olduğunda şunları ekle:
 
-------------------------------------------------------------------------
+- Tarayıcı ve sürümü
+- İşletim sistemi
+- Skin çözünürlüğü
+- Merger adı
+- Skin sayısı
+- Tekrarlama adımları
+- Console hatası
+- Screenshot / video
+
+---
 
 # 🗺️ Roadmap
 
-Potential future improvements:
+Gelecekte değerlendirilebilecek geliştirmeler:
 
--   [ ] More advanced texture controls
--   [ ] More multi-skin composition modes
--   [ ] Improved 3D editing
--   [ ] More precise layer controls
--   [ ] Additional export options
--   [ ] Better mobile editing workflow
--   [ ] More preview customization
--   [ ] Expanded gallery capabilities
--   [ ] More advanced skin analysis
--   [ ] Performance improvements for large textures
--   [ ] Additional creator-focused tools
+- [ ] Daha gelişmiş texture kontrolleri
+- [ ] Daha fazla multi-skin workflow
+- [ ] Geliştirilmiş 3D editing
+- [ ] Daha hassas layer kontrolleri
+- [ ] Ek export seçenekleri
+- [ ] Daha iyi mobil kullanım
+- [ ] Daha fazla preview özelleştirmesi
+- [ ] Genişletilmiş gallery özellikleri
+- [ ] Gelişmiş skin analizi
+- [ ] Büyük texturelarda performans iyileştirmeleri
+- [ ] Creator-focused ek araçlar
 
-The roadmap may change as the project evolves.
+---
 
-------------------------------------------------------------------------
+# 📊 Proje Durumu
 
-# 📊 Project Status
+**Version: `V1.1.1`**
 
-**Current version:** `V1.0.0`
+### V1.1.1 durum politikası
+
+Bu sürümde mergerlerin yanında durum etiketi kullanılabilir:
+
+- 🟢 **GÜNCELLENDİ**
+- 🔵 **YENİ**
+- 🔴 **HATALI**
+- ⚫ **KULLANIM DIŞI**
+
+**Mevcut V1.1.1 durumunda aktif mergerler güncellenmiş durumdadır.
+Şu anda HATALI veya KULLANIM DIŞI olarak işaretlenecek aktif merger
+bulunmamaktadır.**
 
 Repository:
 
@@ -759,45 +710,42 @@ Live application:
 
 https://nvomcskinmerger.github.io/
 
-------------------------------------------------------------------------
+---
 
 # 📄 License
 
-This project is released under the **MIT License**.
+Bu proje **MIT License** ile yayınlanmaktadır.
 
-See [`LICENSE`](./LICENSE) for the complete license text.
+Detaylar için [`LICENSE`](./LICENSE) dosyasına bakın.
 
 Copyright © 2026 **NVO MC Skin Merger / nvomcskinmerger**
 
-------------------------------------------------------------------------
+---
 
 # ⚠️ Trademark Notice
 
-Minecraft is a trademark of **Mojang AB / Microsoft Corporation**.
+Minecraft, **Mojang AB / Microsoft Corporation**'ın ticari markasıdır.
 
-NVO MC Skin Merger is an independent project and is **not affiliated
-with, endorsed by, sponsored by, or officially connected to Mojang or
-Microsoft**.
+NVO MC Skin Merger bağımsız bir projedir ve Mojang veya Microsoft ile
+bağlantılı, onlar tarafından onaylanmış, sponsorluğu yapılmış veya resmi
+olarak desteklenen bir proje değildir.
 
-Google and the Google logo are trademarks of Google LLC.
+Google ve Google logosu Google LLC'nin ticari markalarıdır.
 
-------------------------------------------------------------------------
+---
 
 # 💙 Credits
 
-Built for the Minecraft skin creation community by **NVO MC Skin
-Merger**.
+Minecraft skin oluşturma topluluğu için **NVO MC Skin Merger** tarafından
+geliştirilmiştir.
 
-If this project helps you create skins, consider giving the repository a
-⭐ on GitHub.
+Proje işine yarıyorsa GitHub repository'sine ⭐ bırakabilirsin.
 
 <div align="center">
-[![GitHub Stars](https://img.shields.io/github/stars/nvomcskinmerger/nvomcskinmerger.github.io?style=for-the-badge&logo=github)](https://github.com/nvomcskinmerger/nvomcskinmerger.github.io)
-[![GitHub Issues](https://img.shields.io/github/issues/nvomcskinmerger/nvomcskinmerger.github.io?style=for-the-badge&logo=github)](https://github.com/nvomcskinmerger/nvomcskinmerger.github.io/issues)
 
 ### ⭐ Star the project if you find it useful!
 
-**NVO MC SKIN MERGER — V1.0.0**
+**NVO MC SKIN MERGER — V1.1.1**
 
 *Merge your skins. Build your character. Create something unique.*
 
