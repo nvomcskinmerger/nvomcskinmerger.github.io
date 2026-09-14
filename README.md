@@ -178,6 +178,32 @@ Skin 4 ─┘
 
 ------------------------------------------------------------------------
 
+## 5️⃣ Five Skin Merger
+
+The five-skin workflow divides the character into **five equal vertical
+model/UV bands**. It is UV-aware and does not simply crop the PNG texture
+into five ordinary image columns.
+
+``` text
+Skin 1 ─┐
+Skin 2 ─┤
+Skin 3 ─┼── 5 equal UV/model bands ──> RESULT
+Skin 4 ─┤
+Skin 5 ─┘
+```
+
+### Processing rules
+
+- Exactly **5 skins** are used.
+- Each skin supplies one vertical band of the Minecraft model geometry.
+- Head, torso, arms and legs use their corresponding Minecraft UV regions.
+- Front, back, top, bottom and side faces preserve their UV orientation.
+- Steve/Alex arm widths are respected.
+- Base and overlay layers are handled through the UV-aware mapping.
+- **6 Skin Merger is not included in the current release.**
+
+------------------------------------------------------------------------
+
 # 🎯 Supported Merge Modes
 
 Current mode families include:
@@ -215,6 +241,7 @@ Current mode families include:
 
 -   `3 Skin Merger`
 -   `4 Skin Merger`
+-   `5 Skin Merger`
 
 The available mode list may evolve with future merger-engine releases.
 
@@ -273,7 +300,7 @@ Merge
 ```
 
 The same interaction model is available for the additional inputs used
-by the 3- and 4-skin workflows.
+by the 3-, 4- and 5-skin workflows.
 
 > Username fetching depends on the external profile/skin services used
 > by the application and normal browser/network availability.
@@ -654,7 +681,7 @@ into:
 
 -   Custom selection
 -   Overlay control
--   Multi-skin workflows
+-   Multi-skin workflows (3, 4 and 5 Skin)
 -   3D inspection
 -   Chained results
 
