@@ -474,6 +474,53 @@
             font-weight: 600;
             color: var(--text-main);
         }
+        .mode-card .merger-name-row {
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:6px;
+            flex-wrap:wrap;
+            width:100%;
+        }
+        .mode-card .merger-name-row > span:first-child {
+            font-size:0.85rem;
+            font-weight:600;
+            color:var(--text-main);
+        }
+        .merger-statuses {
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:4px;
+            flex-wrap:wrap;
+        }
+        .merger-status {
+            display:inline-flex;
+            align-items:center;
+            gap:3px;
+            padding:2px 7px;
+            border:1px solid rgba(255,255,255,.13);
+            border-radius:999px;
+            font-size:.62rem !important;
+            line-height:1.35;
+            font-weight:700 !important;
+            letter-spacing:.02em;
+            backdrop-filter:blur(10px);
+            -webkit-backdrop-filter:blur(10px);
+            box-shadow:0 3px 12px rgba(0,0,0,.12);
+            white-space:nowrap;
+        }
+        .merger-status.active { background:rgba(34,197,94,.13); border-color:rgba(34,197,94,.34); color:#86efac; }
+        .merger-status.faulty { background:rgba(239,68,68,.13); border-color:rgba(239,68,68,.34); color:#fca5a5; }
+        .merger-status.new { background:rgba(59,130,246,.13); border-color:rgba(59,130,246,.34); color:#93c5fd; }
+        .merger-status.deprecated { background:rgba(107,114,128,.15); border-color:rgba(156,163,175,.30); color:#d1d5db; }
+        .merger-status.popular { background:rgba(245,158,11,.13); border-color:rgba(245,158,11,.34); color:#fcd34d; }
+        html[data-theme="light"] .merger-status.active {color:#15803d;background:rgba(34,197,94,.10)}
+        html[data-theme="light"] .merger-status.faulty {color:#b91c1c;background:rgba(239,68,68,.10)}
+        html[data-theme="light"] .merger-status.new {color:#1d4ed8;background:rgba(59,130,246,.10)}
+        html[data-theme="light"] .merger-status.deprecated {color:#4b5563;background:rgba(107,114,128,.10)}
+        html[data-theme="light"] .merger-status.popular {color:#a16207;background:rgba(245,158,11,.10)}
+
 
         .mode-card p {
             font-size: 0.72rem;
@@ -1332,6 +1379,219 @@ body {
   }
 }
 </style>
+
+<style id="nvo-desktop-rebuild">
+/* =========================================================
+   NVO DESKTOP UI — V1.1.1
+   Deliberately restrained: editor/workstation feel, not a
+   generic "AI dashboard". Mobile layout remains untouched.
+   ========================================================= */
+@media (min-width: 901px){
+  :root{
+    --desk-bg:#080a0e;
+    --desk-panel:#0e1117;
+    --desk-panel-2:#11151c;
+    --desk-line:rgba(255,255,255,.085);
+    --desk-line-strong:rgba(255,255,255,.14);
+    --desk-muted:#8b929d;
+    --desk-accent:#ff4d67;
+    --desk-green:#56d38a;
+  }
+
+  body{
+    background:
+      linear-gradient(180deg,#080a0e 0%,#090b10 46%,#07090d 100%) !important;
+    color:#f4f5f7;
+  }
+  body:before{
+    opacity:.055 !important;
+    background-size:44px 44px !important;
+  }
+
+  header{
+    max-width:1500px !important;
+    margin:0 auto !important;
+    padding:28px 34px 20px !important;
+    text-align:left !important;
+    display:grid !important;
+    grid-template-columns:minmax(360px,1fr) auto !important;
+    grid-template-areas:
+      "brand tools"
+      "auth auth" !important;
+    column-gap:32px !important;
+    row-gap:16px !important;
+    border-bottom:1px solid var(--desk-line) !important;
+  }
+  header .site-logo{
+    width:42px !important;height:42px !important;
+    border-radius:10px !important;
+  }
+  header h1{
+    font-size:2.45rem !important;
+    line-height:1 !important;
+    letter-spacing:-.055em !important;
+    background:none !important;
+    -webkit-text-fill-color:initial !important;
+    color:#f5f6f8 !important;
+    margin:0 !important;
+  }
+  header .subtitle{
+    margin:8px 0 0 !important;
+    max-width:760px !important;
+    font-size:.86rem !important;
+    color:#8e96a2 !important;
+  }
+  header > div:first-of-type,
+  header .header-brand,
+  header .brand-block{grid-area:brand;}
+  header .header-links{grid-area:tools;align-self:center;justify-self:end;}
+  header .auth-bar{grid-area:auth;}
+
+  .container{
+    max-width:1500px !important;
+    padding:26px 34px 48px !important;
+    margin:0 auto !important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+    gap:18px !important;
+    align-items:start !important;
+  }
+  .glass-card{
+    background:var(--desk-panel) !important;
+    border:1px solid var(--desk-line) !important;
+    border-radius:12px !important;
+    box-shadow:0 14px 34px rgba(0,0,0,.18) !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    padding:20px !important;
+    transition:border-color .18s ease,background-color .18s ease,transform .18s ease,box-shadow .18s ease !important;
+  }
+  .glass-card:hover{
+    border-color:var(--desk-line-strong) !important;
+    background:var(--desk-panel-2) !important;
+    box-shadow:0 18px 40px rgba(0,0,0,.24) !important;
+  }
+  .card-header{margin-bottom:14px !important;}
+  .card-title{font-size:.9rem !important;letter-spacing:.01em;}
+  .model-tag{font-size:.64rem !important;}
+
+  /* Bigger merger logos — enough presence without turning into icons-only cards. */
+  .mode-card .merger-logo{
+    width:54px !important;
+    height:54px !important;
+    border-radius:11px !important;
+    image-rendering:auto;
+    transition:transform .22s cubic-bezier(.2,.7,.2,1),filter .22s ease !important;
+  }
+  .mode-card:hover .merger-logo{transform:translateY(-2px) scale(1.06);}
+  .mode-card.active .merger-logo{transform:scale(1.04);}
+
+  .mode-card{
+    min-height:156px !important;
+    padding:17px 14px !important;
+    border-radius:11px !important;
+    background:#0c0f14 !important;
+    border-color:var(--desk-line) !important;
+    gap:9px !important;
+    position:relative;
+    overflow:hidden;
+    transition:transform .18s ease,border-color .18s ease,background-color .18s ease,box-shadow .18s ease !important;
+  }
+  .mode-card:before{
+    content:"";
+    position:absolute;
+    left:0;top:0;bottom:0;width:2px;
+    background:transparent;
+    transition:background-color .18s ease;
+  }
+  .mode-card:hover{
+    transform:translateY(-3px) !important;
+    background:#10141b !important;
+    border-color:rgba(255,255,255,.15) !important;
+    box-shadow:0 10px 26px rgba(0,0,0,.2) !important;
+  }
+  .mode-card.active{
+    background:#11141a !important;
+    border-color:rgba(255,77,103,.42) !important;
+    box-shadow:inset 0 0 0 1px rgba(255,77,103,.08),0 10px 26px rgba(0,0,0,.18) !important;
+  }
+  .mode-card.active:before{background:var(--desk-accent);}
+  .mode-card.active i{color:var(--desk-accent) !important;}
+  .mode-card span{font-size:.78rem !important;}
+  .mode-card p{font-size:.66rem !important;line-height:1.35 !important;color:#737b87 !important;max-width:220px;}
+  .mode-card .merger-name-row{gap:5px !important;}
+  .merger-status{font-size:.56rem !important;padding:2px 6px !important;}
+
+  .mode-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:10px !important;
+  }
+  .mode-scroll-window{
+    max-height:590px !important;
+    padding-right:4px !important;
+  }
+
+  /* Make the merger selector feel like a tool panel rather than a generic card. */
+  .mode-tab-bar,.mode-tabs{background:#090c11 !important;border:1px solid var(--desk-line) !important;border-radius:9px !important;padding:4px !important;}
+  .mode-tab{border-radius:6px !important;font-size:.7rem !important;}
+  .mode-tab.active{box-shadow:none !important;}
+
+  .upload-box{
+    min-height:270px !important;
+    background:#090c11 !important;
+    border:1px dashed rgba(255,255,255,.13) !important;
+    border-radius:10px !important;
+    transition:border-color .18s ease,background-color .18s ease !important;
+  }
+  .upload-box:hover{border-color:rgba(255,77,103,.42) !important;background:#0b0f15 !important;}
+  .preview-canvas{
+    width:152px !important;height:152px !important;
+    image-rendering:pixelated !important;
+    box-shadow:0 0 0 1px rgba(255,255,255,.08) !important;
+  }
+
+  .btn,.utility-btn,.three-controls button,.google-login{
+    transition:transform .16s ease,background-color .16s ease,border-color .16s ease,box-shadow .16s ease !important;
+  }
+  .btn:hover:not(:disabled),.utility-btn:hover:not(:disabled),.three-controls button:hover:not(:disabled),.google-login:hover:not(:disabled){
+    transform:translateY(-1px) !important;
+  }
+
+  /* Entrance motion: short, staggered and tied to the actual work panels. */
+  .container > .glass-card{animation:nvoDeskIn .38s cubic-bezier(.2,.75,.2,1) both;}
+  .container > .glass-card:nth-child(1){animation-delay:.03s;}
+  .container > .glass-card:nth-child(2){animation-delay:.07s;}
+  .container > .glass-card:nth-child(3){animation-delay:.11s;}
+  .container > .glass-card:nth-child(4){animation-delay:.15s;}
+  .container > .glass-card:nth-child(5){animation-delay:.19s;}
+  .container > .glass-card:nth-child(6){animation-delay:.23s;}
+  @keyframes nvoDeskIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+  /* Quiet status motion, only while an operation is actually active. */
+  .is-loading .btn-spinner{animation:nvoSpin .8s linear infinite;}
+  @keyframes nvoSpin{to{transform:rotate(360deg)}}
+
+  /* Light desktop: keep the same structure, change only surfaces. */
+  html[data-theme="light"] body{background:#f2f3f5 !important;color:#1d2025;}
+  html[data-theme="light"] body:before{opacity:.025 !important;}
+  html[data-theme="light"] .glass-card{background:#fff !important;border-color:rgba(20,25,30,.10) !important;box-shadow:0 12px 30px rgba(30,35,40,.07) !important;}
+  html[data-theme="light"] .mode-card{background:#f8f9fa !important;border-color:rgba(20,25,30,.10) !important;}
+  html[data-theme="light"] .mode-card:hover{background:#fff !important;border-color:rgba(20,25,30,.17) !important;}
+  html[data-theme="light"] .mode-card.active{background:#fff7f8 !important;border-color:rgba(220,45,72,.35) !important;}
+  html[data-theme="light"] .upload-box{background:#fafafa !important;border-color:rgba(20,25,30,.14) !important;}
+  html[data-theme="light"] .mode-tab-bar,html[data-theme="light"] .mode-tabs{background:#f5f6f7 !important;border-color:rgba(20,25,30,.10) !important;}
+}
+
+/* Small screens keep the existing mobile layout. Only enlarge the logos slightly. */
+@media (max-width:900px){
+  .mode-card .merger-logo{width:40px;height:40px;border-radius:9px;}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .container > .glass-card{animation:none !important;}
+  .mode-card,.mode-card .merger-logo,.btn,.utility-btn,.three-controls button,.google-login{transition:none !important;}
+}
+</style>
+
 </head>
 <body class="nvo-gate-active">
 <!-- Turnstile giriş doğrulama ekranı: yoğunluk/şüpheli trafikte kutucuk gösterir, normal ziyaretçide görünmeden geçer -->
@@ -1672,114 +1932,114 @@ body {
             </div>
             <div class="mode-scroll-window">
             <div class="mode-grid">
-                <div class="mode-card active" data-mode="half" data-mode-type="ready" role="button" tabindex="0" aria-pressed="true">
+                <div class="mode-card active" data-mode="half" data-status="active,popular" data-mode-type="ready" role="button" tabindex="0" aria-pressed="true">
                     <img class="merger-logo" src="mergers/half.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-columns"></i>
                     <span data-i18n="mode_half_title">50/50 Yarı Yarıya</span>
                     <p data-i18n="mode_half_desc">Sol yarısı Skin 1, sağ yarısı Skin 2 simetrik harmanlama.</p>
                 </div>
-                <div class="mode-card" data-mode="three_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="three_skin" data-status="active,new" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/three_skin.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-layer-group"></i><span data-i18n="mode_three_skin_title">3 Skin Merger</span>
                     <p data-i18n="mode_three_skin_desc">Skin 1 üst yarı; Skin 2 ve 3 alt yarıyı ortadan yan bölerek tamamlar.</p>
                 </div>
-                <div class="mode-card" data-mode="four_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="four_skin" data-status="active,new" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/four_skin.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-table-cells-large"></i><span data-i18n="mode_four_skin_title">4 Skin Merger</span>
                     <p data-i18n="mode_four_skin_desc">1+2 üst, 3+4 alt yarı; her çift ortadan yan bölünür.</p>
                 </div>
-                <div class="mode-card" data-mode="five_skin" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="five_skin" data-status="active,new" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/five_skin.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-grip-lines-vertical"></i><span data-i18n="mode_five_skin_title">5 Skin Merger</span>
                     <p data-i18n="mode_five_skin_desc">5 skin, karakterin gerçek 3D genişliği boyunca 5 eşit dikey şeride bölünür; her şerit tek bir skinden alınır.</p>
                 </div>
-<div class="mode-card" data-mode="head_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+<div class="mode-card" data-mode="head_swap" data-status="active,popular" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/head_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-head-side-mask"></i>
                     <span data-i18n="mode_head_swap_title">Kafa Değişimi</span>
                     <p data-i18n="mode_head_swap_desc">Skin 1'in kafası ve şapkası, Skin 2'nin vücudu.</p>
                 </div>
-                <div class="mode-card" data-mode="top_bottom" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="top_bottom" data-status="active,popular" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/top_bottom.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-arrows-up-down"></i>
                     <span data-i18n="mode_top_bottom_title">Üst / Alt Bölme</span>
                     <p data-i18n="mode_top_bottom_desc">Gövde ve iki kol tam ortadan 6+6 piksel bölünür; üst Skin 1, alt Skin 2. Bacaklar Skin 2.</p>
                 </div>
-                <div class="mode-card" data-mode="arm_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="arm_swap" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/arm_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-arrows-left-right"></i>
                     <span data-i18n="mode_arm_swap_title">Kol Değişimi</span>
                     <p data-i18n="mode_arm_swap_desc">Skin 1'in kafa, gövde ve bacakları korunur; iki kol Skin 2'den alınır.</p>
                 </div>
-                <div class="mode-card" data-mode="leg_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="leg_swap" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/leg_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-person-walking-arrow-right"></i>
                     <span data-i18n="mode_leg_swap_title">Bacak Değişimi</span>
                     <p data-i18n="mode_leg_swap_desc">Skin 1'in kafa, gövde ve kolları korunur; iki bacak Skin 2'den alınır.</p>
                 </div>
-                <div class="mode-card" data-mode="outer_overlay" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="outer_overlay" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/outer_overlay.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-shirt"></i>
                     <span data-i18n="mode_outer_overlay_title">Ceket & Zırh Katmanı</span>
                     <p data-i18n="mode_outer_overlay_desc">Temel vücut Skin 1, dış kıyafet/katman Skin 2.</p>
                 </div>
-                <div class="mode-card" data-mode="base_only" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="base_only" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/base_only.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-user"></i>
                     <span data-i18n="mode_base_only_title">Sadece Temel Katman</span>
                     <p data-i18n="mode_base_only_desc">50/50 harmanlama yapılır, ardından şapka/ceket/kol kılıfı gibi tüm dış katmanlar temizlenir.</p>
                 </div>
-                <div class="mode-card" data-mode="front_back" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="front_back" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/front_back.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-repeat"></i>
                     <span data-i18n="mode_front_back_title">Ön / Arka Bölme</span>
                     <p data-i18n="mode_front_back_desc">Karakterin ön yüzü Skin 1, sırt kısmı Skin 2.</p>
                 </div>
-                <div class="mode-card" data-mode="blend" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="blend" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/blend.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-droplet"></i>
                     <span data-i18n="mode_blend_title">Opacity Blend</span>
                     <p data-i18n="mode_blend_desc">İki texture %50 saydamlıkla üst üste bindirilir; hayalet/karışım efekti.</p>
                 </div>
-                <div class="mode-card" data-mode="chimera" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="chimera" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/chimera.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-shuffle"></i>
                     <span data-i18n="mode_chimera_title">Rastgele Karışım</span>
                     <p data-i18n="mode_chimera_desc">Kafa, gövde, kollar ve bacaklar için her parça rastgele Skin 1 veya Skin 2'den seçilir.</p>
                 </div>
-                <div class="mode-card" data-mode="body_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="body_swap" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/body_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-vest"></i>
                     <span data-i18n="mode_body_swap_title">Gövde Değişimi</span>
                     <p data-i18n="mode_body_swap_desc">Skin 1'in kafa ve kolları korunur; gövde ve iki bacak Skin 2'den alınır.</p>
                 </div>
-                <div class="mode-card" data-mode="head_legs_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="head_legs_swap" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/head_legs_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-person"></i>
                     <span data-i18n="mode_head_legs_swap_title">Kafa & Bacak Değişimi</span>
                     <p data-i18n="mode_head_legs_swap_desc">Skin 2'nin kafa ve bacakları, Skin 1'in gövde ve kollarıyla birleştirilir.</p>
                 </div>
-                <div class="mode-card" data-mode="reverse_overlay" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="reverse_overlay" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/reverse_overlay.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-layer-group"></i>
                     <span data-i18n="mode_reverse_overlay_title">Ters Katman</span>
                     <p data-i18n="mode_reverse_overlay_desc">Skin 2 temel beden olarak kullanılır; Skin 1'in dış kıyafet ve katmanları üzerine uygulanır.</p>
                 </div>
-                <div class="mode-card" data-mode="checker_blend" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="checker_blend" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/checker_blend.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-chess-board"></i>
                     <span data-i18n="mode_checker_blend_title">Piksel Mozaik</span>
                     <p data-i18n="mode_checker_blend_desc">UV haritasındaki pikseller dama düzeninde Skin 1 ve Skin 2 arasında dağıtılır.</p>
                 </div>
-                <div class="mode-card" data-mode="head_torso_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="head_torso_swap" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/head_torso_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-user"></i>
                     <span data-i18n="mode_head_torso_swap_title">Kafa & Gövde Değişimi</span>
                     <p data-i18n="mode_head_torso_swap_desc">Skin 1 temel alınır; kafa ve gövde Skin 2'den alınır.</p>
                 </div>
-                <div class="mode-card" data-mode="arms_legs_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="arms_legs_swap" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/arms_legs_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-person-running"></i>
                     <span data-i18n="mode_arms_legs_swap_title">Kol & Bacak Değişimi</span>
                     <p data-i18n="mode_arms_legs_swap_desc">Skin 1'in kafa ve gövdesi korunur; kollar ve bacaklar Skin 2'den alınır.</p>
                 </div>
-                <div class="mode-card" data-mode="alternating_parts" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="alternating_parts" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/alternating_parts.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-shuffle"></i>
                     <span data-i18n="mode_alternating_parts_title">Dengeli Parça Karışımı</span>
                     <p data-i18n="mode_alternating_parts_desc">Kafa ve bacaklar Skin 1, gövde ve kollar Skin 2'den.</p>
                 </div>
-                <div class="mode-card" data-mode="cross_limb_swap" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="cross_limb_swap" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/cross_limb_swap.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-arrows-split-up-and-left"></i>
                     <span data-i18n="mode_cross_limb_swap_title">Çapraz Uzuv Değişimi</span>
                     <p data-i18n="mode_cross_limb_swap_desc">Kafa, gövde ve sağ kol/bacak Skin 1'den; sol kol ve sol bacak Skin 2'den alınır.</p>
                 </div>
-                <div class="mode-card" data-mode="gradient_blend" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="gradient_blend" data-status="active" data-mode-type="ready" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/gradient_blend.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-fill-drip"></i>
                     <span data-i18n="mode_gradient_blend_title">Gradyan Geçiş</span>
                     <p data-i18n="mode_gradient_blend_desc">Kafadan ayağa doğru Skin 1'den Skin 2'ye yumuşak, doğrusal bir renk geçişi uygulanır.</p>
                 </div>
-                <div class="mode-card" data-mode="custom" data-mode-type="custom" role="button" tabindex="0" aria-pressed="false">
+                <div class="mode-card" data-mode="custom" data-status="active,new" data-mode-type="custom" role="button" tabindex="0" aria-pressed="false">
                     <img class="merger-logo" src="mergers/custom.png" alt="" loading="lazy" onerror="this.remove()"><i class="fa-solid fa-hand-pointer"></i>
                     <span data-i18n="mode_custom_title">Özel Seçmeli Merger</span>
                     <p data-i18n="mode_custom_desc">Kafa, gövde, kollar, bacaklar ve dış katmanı ayrı ayrı Skin 1 veya Skin 2'den seçerek kendi kombinasyonunuzu oluşturun.</p>
@@ -5310,6 +5570,40 @@ body {
         });
     </script>
 
+
+<script>
+/* Merger glass status badges */
+(function(){
+  const labels={
+    active:{icon:'●',tr:'Aktif',en:'Active'},
+    faulty:{icon:'!',tr:'Hatalı',en:'Faulty'},
+    new:{icon:'✦',tr:'Yeni',en:'New'},
+    deprecated:{icon:'×',tr:'Kullanım Dışı',en:'Deprecated'},
+    popular:{icon:'★',tr:'Popüler',en:'Popular'}
+  };
+  function lang(){ return (document.documentElement.lang||window.currentLanguage||'tr').toLowerCase().startsWith('en')?'en':'tr'; }
+  function render(){
+    document.querySelectorAll('.mode-card[data-status]').forEach(card=>{
+      const title=card.querySelector('[data-i18n$="_title"]');
+      if(!title || card.querySelector('.merger-statuses')) return;
+      const row=document.createElement('div'); row.className='merger-name-row';
+      title.parentNode.insertBefore(row,title); row.appendChild(title);
+      const wrap=document.createElement('span'); wrap.className='merger-statuses';
+      (card.dataset.status||'').split(',').filter(Boolean).forEach(key=>{
+        const def=labels[key]; if(!def) return;
+        const b=document.createElement('span'); b.className='merger-status '+key; b.dataset.statusKey=key; b.textContent=def.icon+' '+def[lang()];
+        b.title=def[lang()]; wrap.appendChild(b);
+      });
+      row.appendChild(wrap);
+    });
+  }
+  window.renderMergerStatusBadges=render;
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',render); else render();
+  document.addEventListener('nvo:language-updated',()=>{
+    document.querySelectorAll('.merger-status[data-status-key]').forEach(b=>{ const d=labels[b.dataset.statusKey]; if(d) b.textContent=d.icon+' '+d[lang()]; });
+  });
+})();
+</script>
 <script>
 /* SIMPLE UI bridge: independent UI, shared validated merger engine. */
 (function(){
