@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NVO MC SKIN MERGER — V1.1.0</title>
-    <meta name="description" content="NVO MC Skin Merger V1.1.0 — Minecraft skinlerini mevcut merger sistemleriyle yeni nesil arayüz üzerinden birleştirin.">
+    <title>NVO MC SKIN MERGER — V1.1.1</title>
+    <meta name="description" content="NVO MC Skin Merger V1.1.1 — Minecraft skinlerini mevcut merger sistemleriyle yeni nesil arayüz üzerinden birleştirin.">
     <meta name="theme-color" content="#0c0707">
     <!-- Open Graph / Sosyal Medya Paylaşım Önizlemesi -->
     <meta property="og:type" content="website">
@@ -159,7 +159,7 @@
             border-radius: 16px;
         }
 
-        /* .brand-badge kaldırıldı (v1.1.0 sadeleştirmesinde header'dan çıkarıldı, dead CSS temizlendi) */
+        /* .brand-badge kaldırıldı (v1.1.1 sadeleştirmesinde header'dan çıkarıldı, dead CSS temizlendi) */
 
         .header-links {
             display: flex;
@@ -1114,7 +1114,7 @@
     }
 
     
-/* ===== V1.1.0 NEXT-GEN UI ===== */
+/* ===== V1.1.1 NEXT-GEN UI ===== */
 :root{--v1-border:rgba(255,255,255,.10);--v1-surface:rgba(18,20,28,.78);--v1-surface2:rgba(255,255,255,.045);--v1-accent:#ff4d67;--v1-accent2:#ff8a4d;}
 body{background:
  radial-gradient(circle at 15% 0%,rgba(255,77,103,.12),transparent 32%),
@@ -1140,7 +1140,7 @@ header .subtitle{max-width:680px;margin:10px auto 0;opacity:.72;}
 .container{position:relative;z-index:1;}
 
 
-/* ===== V1.1.0 LIGHT THEME FIX ===== */
+/* ===== V1.1.1 LIGHT THEME FIX ===== */
 html[data-theme="light"] /* FINAL THEME SAFETY: never force a white page in dark mode. */
 html{background:var(--bg-main);color:var(--text-main);}
 html[data-theme="dark"], html:not([data-theme="light"]){background:var(--bg-main);color:var(--text-main);}
@@ -1222,6 +1222,8 @@ body.ui-simple>#simpleApp{display:block!important}
 .simple-footer{text-align:center;color:var(--text-muted);font-size:.62rem;padding:5px 0 10px}
 .simple-hidden-input{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}
 @media(max-width:480px){.simple-files{grid-template-columns:1fr}.simple-file{min-height:94px}.simple-actions{grid-template-columns:1fr}}
+
+.simple-file-meta{font-size:.68rem;color:var(--text-muted);min-height:16px;text-align:center}.simple-username-row{display:grid;grid-template-columns:1fr auto;gap:6px}.simple-username-row input{min-width:0;padding:8px 9px;border:1px solid var(--border-color);border-radius:8px;background:var(--input-bg);color:var(--text-main);font-size:.72rem;outline:none}.simple-username-row button{border:1px solid var(--border-color);border-radius:8px;background:var(--panel-bg);color:var(--text-main);padding:0 10px;font-size:.72rem;cursor:pointer}.simple-username-row button:disabled{opacity:.55;cursor:not-allowed}@media(max-width:480px){.simple-username-row{grid-template-columns:1fr}.simple-username-row button{min-height:34px}}
 
 /* ===== Basit mod 3/4 Skin desteği ===== */
 .simple-multi-desc{font-size:.78rem;color:var(--text-muted);margin:-5px 0 12px}
@@ -1404,6 +1406,11 @@ body {
             <small id="simpleFile1" data-i18n="simpleChoose">PNG seç</small>
             <canvas id="simplePreview1" class="simple-preview" width="64" height="64"></canvas>
           </label>
+          <div class="simple-file-meta" id="simpleMeta1"><i class="fa-solid fa-circle-info"></i> <span data-i18n="simplePending">Bekleniyor</span></div>
+          <div class="simple-username-row">
+            <input type="text" id="simpleUsername1" data-i18n-placeholder="usernameFetchPlaceholder" placeholder="Minecraft kullanıcı adı..." autocomplete="off" spellcheck="false">
+            <button type="button" id="simpleFetch1"><i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="usernameFetchBtn">Getir</span></button>
+          </div>
           <button id="simpleClear1" class="simple-mini-btn" type="button" data-i18n="clearBtn">Temizle</button>
         </div>
         <div class="simple-file-wrap">
@@ -1413,6 +1420,11 @@ body {
             <small id="simpleFile2" data-i18n="simpleChoose">PNG seç</small>
             <canvas id="simplePreview2" class="simple-preview" width="64" height="64"></canvas>
           </label>
+          <div class="simple-file-meta" id="simpleMeta2"><i class="fa-solid fa-circle-info"></i> <span data-i18n="simplePending">Bekleniyor</span></div>
+          <div class="simple-username-row">
+            <input type="text" id="simpleUsername2" data-i18n-placeholder="usernameFetchPlaceholder" placeholder="Minecraft kullanıcı adı..." autocomplete="off" spellcheck="false">
+            <button type="button" id="simpleFetch2"><i class="fa-solid fa-magnifying-glass"></i> <span data-i18n="usernameFetchBtn">Getir</span></button>
+          </div>
           <button id="simpleClear2" class="simple-mini-btn" type="button" data-i18n="clearBtn">Temizle</button>
         </div>
       </div>
@@ -1497,7 +1509,7 @@ body {
 
     <header class="animate-fade">
         <img class="site-logo" src="logo.png" alt="NVO MC Skin Merger" loading="eager" onerror="this.remove()">
-        <div class="version-pill"><span class="version-dot"></span> V1.1.0 <span>•</span> YENİDEN BAŞLIYOR</div>
+        <div class="version-pill"><span class="version-dot"></span> V1.1.1 <span>•</span> YENİDEN BAŞLIYOR</div>
         <h1 data-i18n="title">NVO MC SKIN MERGER</h1>
         <p class="subtitle" data-i18n="subtitle">Yeni nesil arayüz • Mevcut merger sistemi korunarak geliştirildi.</p>
         <div class="header-links">
@@ -1925,7 +1937,7 @@ body {
     <div id="privacyModal" class="modal-overlay">
         <div class="modal-content">
             <h2><i class="fa-solid fa-shield-halved"></i> <span data-i18n="privacyModalTitle">Gizlilik Politikası</span></h2>
-            <p data-i18n="privacyP1"><strong>NVO MC Skin Merger v1.1.0</strong> kullanıcı verilerine %100 saygı duyar. Yüklediğiniz skin dosyaları doğrudan cihazınızda (tarayıcınızda) işlenir; sunucularımıza hiçbir zaman yüklenmez veya iletilmez.</p>
+            <p data-i18n="privacyP1"><strong>NVO MC Skin Merger v1.1.1</strong> kullanıcı verilerine %100 saygı duyar. Yüklediğiniz skin dosyaları doğrudan cihazınızda (tarayıcınızda) işlenir; sunucularımıza hiçbir zaman yüklenmez veya iletilmez.</p>
             <p data-i18n="privacyP2">Google ile giriş yaptığınızda, kimlik doğrulaması Firebase Authentication üzerinden Google tarafından yapılır. Sadece ad, e-posta ve profil fotoğrafınız oturum bilgisi olarak tarayıcınızda tutulur; bu bilgiler sunucularımızda saklanmaz. Ayrıca, toplam birleştirme sayısını göstermek amacıyla Firebase Firestore'da yalnızca anonim bir sayaç tutulur — kişisel veri içermez.</p>
             <button class="modal-close" onclick="closeModal('privacyModal')" data-i18n="closeBtn">Kapat</button>
         </div>
@@ -2112,7 +2124,7 @@ body {
         // gerektirir, bu sürümde bilinçli olarak dışarıda bırakıldı.
         const I18N = {
             tr: {
-                title: 'NVO MC SKIN MERGER v1.1.0',
+                title: 'NVO MC SKIN MERGER v1.1.1',
                 subtitle: 'Gelişmiş UV koordinat motoru ile Minecraft skinlerinizi kusursuz biçimde harmanlayın.',
                 skin1CardTitle: 'Ana Skin (Skin 1)',
                 skin2CardTitle: 'İkincil Skin (Skin 2)',
@@ -2158,7 +2170,7 @@ body {
                 customModesTab: 'Özel Modlar',
                 premiumStyle: 'Premium',
                 simpleStyle: 'Basit',
-            simpleUploadTitle: 'Skinleri yükle', simpleChoose: 'PNG seç',
+            simpleUploadTitle: 'Skinleri yükle', simpleChoose: 'PNG seç', simplePending: 'Bekleniyor',
                 themeToggleTitle: 'Tema değiştir',
                 switchToTurkish: 'Dili değiştir',
                 switchToEnglish: 'Switch language',
@@ -2236,7 +2248,7 @@ body {
                 resetComplete: 'Her şey sıfırlandı. Yeniden başlayabilirsiniz.',
                 downloadLoginRequired: 'İndirme için Google ile giriş yapmalısınız. Texture ve çıktı gizli.',
                 downloadSuccess: 'Skin başarıyla indirildi!',
-                mergeEngineSuccess: '[BAŞARILI] NVO MERGER ENGINE v1.1.0 — birleştirme tamamlandı.',
+                mergeEngineSuccess: '[BAŞARILI] NVO MERGER ENGINE v1.1.1 — birleştirme tamamlandı.',
                 chimeraResult: (h,t,r,l,rl,ll) => `RASTGELE KARIŞIM → Kafa: Skin${h} · Gövde: Skin${t} · Sağ Kol: Skin${r} · Sol Kol: Skin${l} · Sağ Bacak: Skin${rl} · Sol Bacak: Skin${ll}`,
                 uvOutputTitle: '64x64 UV Harita Çıktısı',
                 resultDefault: 'Birleştirme sonucu burada görünecek.',
@@ -2260,7 +2272,7 @@ body {
                 mitModalTitle: 'MIT Lisansı',
                 closeBtn: 'Kapat',
                 copyrightModalTitle: 'Telif Hakkı',
-                privacyP1: "NVO MC Skin Merger v1.1.0 kullanıcı verilerine %100 saygı duyar. Yüklediğiniz skin dosyaları doğrudan cihazınızda (tarayıcınızda) işlenir; sunucularımıza hiçbir zaman yüklenmez veya iletilmez.",
+                privacyP1: "NVO MC Skin Merger v1.1.1 kullanıcı verilerine %100 saygı duyar. Yüklediğiniz skin dosyaları doğrudan cihazınızda (tarayıcınızda) işlenir; sunucularımıza hiçbir zaman yüklenmez veya iletilmez.",
                 privacyP2: "Google ile giriş yaptığınızda, kimlik doğrulaması Firebase Authentication üzerinden Google tarafından yapılır. Sadece ad, e-posta ve profil fotoğrafınız oturum bilgisi olarak tarayıcınızda tutulur; bu bilgiler sunucularımızda saklanmaz. Ayrıca, toplam birleştirme sayısını göstermek amacıyla Firebase Firestore'da yalnızca anonim bir sayaç tutulur — kişisel veri içermez.",
                 copyrightP1: "Minecraft, Mojang AB / Microsoft Corporation'ın tescilli markasıdır. Bu araç, Mojang veya Microsoft ile bağlantılı olmayan bağımsız bir NVO TEAM projesidir.",
                 copyrightP2: "Google ve Google logosu, Google LLC'nin ticari markalarıdır. Google ile Giriş özelliği, Google'ın kimlik doğrulama hizmetlerine uygun şekilde kullanılmaktadır.",
@@ -2299,7 +2311,7 @@ body {
                 anonymousName: 'NVO Gizli Kullanıcı',
             },
             en: {
-                title: 'NVO MC SKIN MERGER v1.1.0',
+                title: 'NVO MC SKIN MERGER v1.1.1',
                 subtitle: 'Blend your Minecraft skins flawlessly with an advanced UV coordinate engine.',
                 skin1CardTitle: 'Primary Skin (Skin 1)',
                 skin2CardTitle: 'Secondary Skin (Skin 2)',
@@ -2345,7 +2357,7 @@ body {
                 customModesTab: 'Custom Modes',
                 premiumStyle: 'Premium',
                 simpleStyle: 'Simple',
-            simpleUploadTitle: 'Upload skins', simpleChoose: 'Choose PNG',
+            simpleUploadTitle: 'Upload skins', simpleChoose: 'Choose PNG', simplePending: 'Pending',
                 themeToggleTitle: 'Toggle theme',
                 switchToTurkish: 'Switch to Turkish',
                 switchToEnglish: 'Switch to English',
@@ -2423,7 +2435,7 @@ body {
                 resetComplete: 'Everything was reset. You can start again.',
                 downloadLoginRequired: 'Sign in with Google to download. Texture and output are locked.',
                 downloadSuccess: 'Skin downloaded successfully!',
-                mergeEngineSuccess: '[SUCCESS] NVO MERGER ENGINE v1.1.0 — merge completed.',
+                mergeEngineSuccess: '[SUCCESS] NVO MERGER ENGINE v1.1.1 — merge completed.',
                 chimeraResult: (h,t,r,l,rl,ll) => `RANDOM MIX → Head: Skin${h} · Torso: Skin${t} · Right Arm: Skin${r} · Left Arm: Skin${l} · Right Leg: Skin${rl} · Left Leg: Skin${ll}`,
                 uvOutputTitle: '64x64 UV Map Output',
                 resultDefault: 'Your merged result will appear here.',
@@ -2447,7 +2459,7 @@ body {
                 mitModalTitle: 'MIT License',
                 closeBtn: 'Close',
                 copyrightModalTitle: 'Copyright',
-                privacyP1: "NVO MC Skin Merger v1.1.0 fully respects your data. Skin files you upload are processed entirely on your device (in your browser); they are never uploaded or transmitted to our servers.",
+                privacyP1: "NVO MC Skin Merger v1.1.1 fully respects your data. Skin files you upload are processed entirely on your device (in your browser); they are never uploaded or transmitted to our servers.",
                 privacyP2: "When you sign in with Google, authentication is handled by Google via Firebase Authentication. Only your name, email and profile photo are kept as session info in your browser; this data is not stored on our servers. Additionally, an anonymous counter of total merges is kept in Firebase Firestore purely to display usage stats — it contains no personal data.",
                 copyrightP1: "Minecraft is a registered trademark of Mojang AB / Microsoft Corporation. This tool is an independent NVO TEAM project not affiliated with Mojang or Microsoft.",
                 copyrightP2: "Google and the Google logo are trademarks of Google LLC. The Google Sign-In feature is used in accordance with Google's authentication service guidelines.",
@@ -5430,6 +5442,14 @@ body {
     else $('simpleFile1').textContent=typeof t==='function'?t('simpleChoose'):'Choose PNG';
     if(i2?.files?.[0]) $('simpleFile2').textContent=i2.files[0].name;
     else $('simpleFile2').textContent=typeof t==='function'?t('simpleChoose'):'Choose PNG';
+    const meta=(n,model,input)=>{
+      const el=$('simpleMeta'+n); if(!el) return;
+      const file=input?.files?.[0];
+      if(model && file) el.innerHTML=`<i class="fa-solid fa-circle-check"></i> ${file.name} • ${input===i1?skinResolution1:skinResolution2}×${input===i1?skinResolution1:skinResolution2} • ${model.toUpperCase()}`;
+      else el.innerHTML=`<i class="fa-solid fa-circle-info"></i> <span>${typeof t==='function'?t('simplePending'):'Pending'}</span>`;
+    };
+    meta(1,typeof model1!=='undefined'?model1:null,i1);
+    meta(2,typeof model2!=='undefined'?model2:null,i2);
     syncSimpleMultiPreviews();
   }
 
@@ -5504,8 +5524,14 @@ body {
     $('simpleLangBtn')?.addEventListener('click',()=>$('langToggle')?.click());
     $('simpleThemeBtn')?.addEventListener('click',()=>$('themeToggle')?.click());
     $('simplePremiumBtn')?.addEventListener('click',()=>$('premiumStyleBtn')?.click());
-    $('simpleClear1')?.addEventListener('click',e=>{e.stopPropagation();$('clear1')?.click();});
-    $('simpleClear2')?.addEventListener('click',e=>{e.stopPropagation();$('clear2')?.click();});
+    $('simpleClear1')?.addEventListener('click',e=>{e.stopPropagation();$('clear1')?.click();if($('simpleUsername1'))$('simpleUsername1').value='';});
+    $('simpleClear2')?.addEventListener('click',e=>{e.stopPropagation();$('clear2')?.click();if($('simpleUsername2'))$('simpleUsername2').value='';});
+    $('simpleFetch1')?.addEventListener('click',()=>{ const v=$('simpleUsername1')?.value||''; const r=$('usernameFetch1'),b=$('usernameFetchBtn1'); if(r&&b){r.value=v;b.click();} });
+    $('simpleFetch2')?.addEventListener('click',()=>{ const v=$('simpleUsername2')?.value||''; const r=$('usernameFetch2'),b=$('usernameFetchBtn2'); if(r&&b){r.value=v;b.click();} });
+    $('simpleUsername1')?.addEventListener('keydown',e=>{if(e.key==='Enter'){$('simpleFetch1')?.click();}});
+    $('simpleUsername2')?.addEventListener('keydown',e=>{if(e.key==='Enter'){$('simpleFetch2')?.click();}});
+    document.addEventListener('nvo:skin-updated',syncSimplePreviews);
+    document.addEventListener('nvo:result-updated',syncSimpleResult);
 
     ['inputSkin1','inputSkin2','inputSkin3','inputSkin4','clear1','clear2','clear3','clear4','btnResetAll','btnUseAsSkin1'].forEach(id=>{
       const el=$(id); if(el){ el.addEventListener('change',()=>setTimeout(()=>{syncSimplePreviews();setSimpleMergeState();},80)); el.addEventListener('click',()=>setTimeout(()=>{syncSimplePreviews();syncSimpleResult();setSimpleMergeState();},80)); }
